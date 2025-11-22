@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.IDrawable;
 
 public class SceneView {
@@ -18,11 +17,11 @@ public class SceneView {
         this.batch = new SpriteBatch();
     }
 
-    public void render(GameWorld world) {
+    public void render(Iterable<IDrawable> drawables) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
-        world.getDrawables().forEach(this::draw);
+        drawables.forEach(this::draw);
 
         batch.end();
     }

@@ -81,26 +81,4 @@ public class CameraView {
             effectiveViewportSize.y / screenSize.y);
     return worldDelta;
   }
-
-  /**
-   * Zooms around a specific screen point, keeping that point fixed in world space.
-   * 
-   * @param screenPos Screen position in pixels (the point to zoom around)
-   * @param scrollAmount Scroll amount (positive = zoom in, negative = zoom out)
-   * @param zoomSpeed Zoom speed multiplier
-   * @param screenSize Screen size in pixels
-   */
-  public void zoomAround(Vector2 screenPos, float scrollAmount, float zoomSpeed, Vector2 screenSize) {
-    Vector2 worldPosBeforeZoom = screenToWorld(screenPos);
-
-    float zoomMultiplier = 1f + (-scrollAmount * zoomSpeed);
-    float newZoom = model.getZoom() * zoomMultiplier;
-    model.zoomTo(newZoom);
-    updateCamera();
-
-    Vector2 worldPosAfterZoom = screenToWorld(screenPos);
-
-    Vector2 offset = worldPosBeforeZoom.cpy().sub(worldPosAfterZoom);
-    model.moveBy(offset);
-  }
 }
