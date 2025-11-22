@@ -4,7 +4,6 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,10 +12,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.ViewportListener;
-import se.chalmers.tda367.team15.game.model.CameraConstraints;
-import se.chalmers.tda367.team15.game.model.CameraModel;
+import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
+import se.chalmers.tda367.team15.game.model.camera.CameraModel;
+import se.chalmers.tda367.team15.game.model.entity.Ant;
 import se.chalmers.tda367.team15.game.view.CameraView;
 import se.chalmers.tda367.team15.game.view.SceneView;
+import se.chalmers.tda367.team15.game.view.TextureRegistry;
 
 public class Main extends ApplicationAdapter {
     // World bounds - adjust these to match your game world size
@@ -27,6 +29,7 @@ public class Main extends ApplicationAdapter {
     private static final float MAX_ZOOM = 4.0f;
 
     // MVC components
+    private GameWorld gameWorld;
     private CameraModel cameraModel;
     private CameraView worldCameraView;
     private OrthographicCamera hudCamera;
@@ -36,9 +39,9 @@ public class Main extends ApplicationAdapter {
 
     // Rendering
     private SpriteBatch hudBatch;
-    private Texture image;
     private BitmapFont font;
     private ShapeRenderer shapeRenderer;
+    private TextureRegistry textureRegistry;
 
     @Override
     public void create() {
@@ -48,6 +51,12 @@ public class Main extends ApplicationAdapter {
 
         // Initialize model
         cameraModel = new CameraModel(constraints);
+        gameWorld = new GameWorld();
+        gameWorld.addEntity(new Ant(new Vector2(0, 0)));
+        gameWorld.addEntity(new Ant(new Vector2(0, 0)));
+        gameWorld.addEntity(new Ant(new Vector2(0, 0)));
+        gameWorld.addEntity(new Ant(new Vector2(0, 0)));
+        gameWorld.addEntity(new Ant(new Vector2(0, 0)));
 
         // Initialize cameras
         float screenWidth = Gdx.graphics.getWidth();
@@ -80,30 +89,37 @@ public class Main extends ApplicationAdapter {
             hudBatch.setProjectionMatrix(hudCamera.combined);
         });
 
-        sceneView = new SceneView(worldCameraView);
+        // Setup Rendering System
+        textureRegistry = new TextureRegistry();
+        sceneView = new SceneView(worldCameraView, textureRegistry);
+        
         hudBatch = new SpriteBatch();
         hudBatch.setProjectionMatrix(hudCamera.combined);
-        image = new Texture(Gdx.files.internal("libgdx.png"));
+        
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
     }
 
     @Override
     public void render() {
+        float dt = Gdx.graphics.getDeltaTime();
+
+        // Update
         cameraController.update();
         worldCameraView.updateCamera();
+        gameWorld.update(dt);
 
+        // Render
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        // Update shape renderer projection (world camera may have changed)
+        // World Render
+        sceneView.render(gameWorld);
+        
+        // Debug Grid
         shapeRenderer.setProjectionMatrix(worldCameraView.getCombinedMatrix());
         drawGrid();
 
-        sceneView.render(() -> {
-            // Render world entities here
-            sceneView.getBatch().draw(image, 0, 0, 12f, 2f);
-        });
-
+        // HUD Render
         hudBatch.begin();
         drawHUD();
         hudBatch.end();
@@ -169,8 +185,8 @@ public class Main extends ApplicationAdapter {
     public void dispose() {
         sceneView.dispose();
         hudBatch.dispose();
-        image.dispose();
         font.dispose();
         shapeRenderer.dispose();
+        textureRegistry.dispose();
     }
 }

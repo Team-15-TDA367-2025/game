@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-import se.chalmers.tda367.team15.game.model.CameraModel;
+import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
 public class CameraView {
   private OrthographicCamera camera;
