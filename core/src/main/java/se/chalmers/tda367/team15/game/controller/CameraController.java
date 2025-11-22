@@ -26,11 +26,10 @@ public class CameraController extends InputAdapter {
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             Vector2 mouseDelta = new Vector2(Gdx.input.getDeltaX(), -Gdx.input.getDeltaY());
             Vector2 screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            Vector2 viewportSize = cameraView.getViewportSize();
             
-            Vector2 worldDelta = cameraModel.screenDeltaToWorldDelta(mouseDelta, screenSize, viewportSize);
+            Vector2 worldDelta = cameraView.screenDeltaToWorldDelta(mouseDelta, screenSize);
             cameraModel.moveBy(worldDelta.scl(-1));
-            cameraModel.applyConstraints(viewportSize);
+            cameraModel.applyConstraints(cameraView.getViewportSize());
         }
     }
 
@@ -38,10 +37,9 @@ public class CameraController extends InputAdapter {
     public boolean scrolled(float amountX, float amountY) {
         Vector2 screenPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
         Vector2 screenSize = new Vector2(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Vector2 viewportSize = cameraView.getViewportSize();
         
-        cameraModel.zoomAround(screenPos, amountY, zoomSpeed, screenSize, viewportSize);
-        cameraModel.applyConstraints(viewportSize);
+        cameraView.zoomAround(screenPos, amountY, zoomSpeed, screenSize);
+        cameraModel.applyConstraints(cameraView.getViewportSize());
         
         return true;
     }

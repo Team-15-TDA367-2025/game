@@ -13,7 +13,7 @@ public class Ant extends Entity {
 
     @Override
     public void update(float deltaTime) {
-        this.position = this.position.add(velocity.cpy().scl(deltaTime));
+        position.mulAdd(velocity, deltaTime);
     }
 
     @Override

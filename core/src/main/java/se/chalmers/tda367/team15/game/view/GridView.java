@@ -23,15 +23,16 @@ public class GridView {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GRAY);
 
-        Vector2 effectiveViewportSize = cameraView.getViewportSize().scl(cameraView.getCamera().zoom);
+        Vector2 effectiveViewportSize = cameraView.getEffectiveViewportSize();
+        Vector2 cameraPosition = cameraView.getCameraPosition();
         float startX = (float) Math
-                .floor((cameraView.getCamera().position.x - effectiveViewportSize.x / 2f) / gridSize) * gridSize;
+                .floor((cameraPosition.x - effectiveViewportSize.x / 2f) / gridSize) * gridSize;
         float endX = (float) Math
-                .ceil((cameraView.getCamera().position.x + effectiveViewportSize.x / 2f) / gridSize) * gridSize;
+                .ceil((cameraPosition.x + effectiveViewportSize.x / 2f) / gridSize) * gridSize;
         float startY = (float) Math
-                .floor((cameraView.getCamera().position.y - effectiveViewportSize.y / 2f) / gridSize) * gridSize;
+                .floor((cameraPosition.y - effectiveViewportSize.y / 2f) / gridSize) * gridSize;
         float endY = (float) Math
-                .ceil((cameraView.getCamera().position.y + effectiveViewportSize.y / 2f) / gridSize) * gridSize;
+                .ceil((cameraPosition.y + effectiveViewportSize.y / 2f) / gridSize) * gridSize;
 
         // Draw vertical lines
         for (float x = startX; x <= endX; x += gridSize) {
