@@ -145,6 +145,8 @@ public class Main extends ApplicationAdapter {
 
         // camera debug info
         y -= 10f;
+        font.draw(hudBatch, String.format("FPS: %d", Gdx.graphics.getFramesPerSecond()), 10, y);
+        y -= lineHeight;
         font.draw(hudBatch, String.format("Camera xy: (%.1f, %.1f)",
                 cameraModel.getPosition().x, cameraModel.getPosition().y), 10, y);
         y -= lineHeight;
