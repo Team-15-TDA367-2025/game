@@ -10,6 +10,13 @@ public class CameraConstraints {
     private Rectangle bounds;
 
     public CameraConstraints(Rectangle bounds, float minZoom, float maxZoom) {
+        if (minZoom <= 0) {
+            throw new IllegalArgumentException("Min zoom must be greater than 0");
+        }
+        if (maxZoom <= minZoom) {
+            throw new IllegalArgumentException("Max zoom must be greater than min zoom");
+        }
+
         this.bounds = bounds;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;

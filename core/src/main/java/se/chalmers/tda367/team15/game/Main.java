@@ -18,10 +18,6 @@ import se.chalmers.tda367.team15.game.model.CameraModel;
 import se.chalmers.tda367.team15.game.view.CameraView;
 import se.chalmers.tda367.team15.game.view.SceneView;
 
-/**
- * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
- * platforms.
- */
 public class Main extends ApplicationAdapter {
     // World bounds - adjust these to match your game world size
     private static final float WORLD_SIZE = 100f;
@@ -75,6 +71,7 @@ public class Main extends ApplicationAdapter {
             float worldAspectRatio = (float) height / (float) width;
             worldCameraView.setViewport(WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * worldAspectRatio);
         });
+
         // HUD camera: match screen dimensions exactly
         viewportListener.addResizeHandler((width, height) -> {
             hudCamera.setToOrtho(false, width, height);

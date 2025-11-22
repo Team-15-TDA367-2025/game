@@ -29,7 +29,9 @@ public class CameraController extends InputAdapter {
             // Convert screen pixel movement to world coordinates
             float screenWidth = Gdx.graphics.getWidth();
             float screenHeight = Gdx.graphics.getHeight();
-            Vector2 effectiveViewportSize = cameraView.getViewportSize().scl(1 / model.getZoom());
+            float zoom = model.getZoom();
+            
+            Vector2 effectiveViewportSize = cameraView.getViewportSize().scl(1f / zoom);
 
             // Convert pixel delta to world delta
             Vector2 worldDelta = new Vector2((delta.x / screenWidth) * effectiveViewportSize.x,
@@ -42,10 +44,29 @@ public class CameraController extends InputAdapter {
 
     @Override
     public boolean scrolled(float amountX, float amountY) {
+        // Get cursor position in screen coordinates
+        float screenX = Gdx.input.getX();
+        float screenY = Gdx.input.getY();
+        
+        // Convert cursor position to world coordinates before zoom
+        Vector2 worldPosBeforeZoom = cameraView.screenToWorld(screenX, screenY);
+        
+        // Apply zoom
         float currentZoom = model.getZoom();
         float zoomMultiplier = 1f + (-amountY * zoomSpeed);
         float newZoom = currentZoom * zoomMultiplier;
         model.zoomTo(newZoom);
+        
+        // Update camera view to reflect new zoom
+        cameraView.updateCamera();
+        
+        // Convert cursor position to world coordinates after zoom
+        Vector2 worldPosAfterZoom = cameraView.screenToWorld(screenX, screenY);
+        
+        // Adjust camera position so the cursor stays at the same world position
+        Vector2 offset = worldPosBeforeZoom.sub(worldPosAfterZoom);
+        model.moveBy(offset);
+        
         return true;
     }
 

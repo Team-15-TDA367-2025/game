@@ -10,8 +10,7 @@ import se.chalmers.tda367.team15.game.model.CameraModel;
 public class CameraView {
   private OrthographicCamera camera;
   private CameraModel model;
-  private float viewportWidth;
-  private float viewportHeight;
+  private Vector2 viewportSize;
 
   public CameraView(CameraModel model, float viewportWidth, float viewportHeight) {
     this.model = model;
@@ -19,7 +18,6 @@ public class CameraView {
     // Create camera with aspect ratio consideration
     this.camera = new OrthographicCamera(0, 0);
     this.setViewport(viewportWidth, viewportHeight);
-    updateCamera();
   }
 
   public void updateCamera() {
@@ -29,15 +27,11 @@ public class CameraView {
   }
 
   public void setViewport(float width, float height) {
-    this.viewportWidth = width;
-    this.viewportHeight = height;
-
-    float aspectRatio = height / width;
+    this.viewportSize = new Vector2(width, height);
     camera.viewportWidth = width;
-    camera.viewportHeight = width * aspectRatio;
-    camera.update();
+    camera.viewportHeight = height;
+    updateCamera();
   }
-
   public Matrix4 getCombinedMatrix() {
     return camera.combined;
   }
@@ -47,7 +41,17 @@ public class CameraView {
   }
 
   public Vector2 getViewportSize() {
-    // We copy the vector to avoid modifying it
-    return new Vector2(viewportWidth, viewportHeight).cpy();
+    return viewportSize.cpy();
+  }
+
+  /**
+   * Converts screen coordinates to world coordinates.
+   * @param screenX Screen X coordinate (pixels)
+   * @param screenY Screen Y coordinate (pixels)
+   * @return World coordinates
+   */
+  public Vector2 screenToWorld(float screenX, float screenY) {
+    Vector3 worldPos = camera.unproject(new Vector3(screenX, screenY, 0));
+    return new Vector2(worldPos.x, worldPos.y);
   }
 }
