@@ -1,6 +1,5 @@
 package se.chalmers.tda367.team15.game.model;
 
-import com.badlogic.gdx.math.collision.Sphere;
 
 /**
  * Pheromone super class, all Pheromones inherit their base behaviour from this one.
