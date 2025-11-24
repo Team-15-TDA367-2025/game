@@ -19,7 +19,7 @@ public class FogRenderer {
         float tileSize = fogOfWar.getTileSize();
 
         batch.setColor(0, 0.2f, 0, 0.75f);
-        float offsetX = -fogOfWar.getWidth() / 2f * fogOfWar.getTileSize();
+        float offsetX = -fogOfWar.getWidth() / 2f * fogOfWar.getTileSize(); // AI debugging for coordinates
         float offsetY = -fogOfWar.getHeight() / 2f * fogOfWar.getTileSize();
 
         for (int x = 0; x < width; x++) {

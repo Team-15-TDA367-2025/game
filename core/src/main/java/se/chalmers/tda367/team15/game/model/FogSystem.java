@@ -20,7 +20,7 @@ public class FogSystem {
         for (Entity e : entities) {
             if (e instanceof VisionProvider vp) {
                 Vector2 position = e.getPosition();
-                int tileX = centerX + (int) Math.floor(position.x / fogOfWar.getTileSize());
+                int tileX = centerX + (int) Math.floor(position.x / fogOfWar.getTileSize()); // AI debugging for coordinates
                 int tileY = centerY + (int) Math.floor(position.y / fogOfWar.getTileSize());
 
                 fogOfWar.reveal(tileX, tileY, vp.getVisionRadius());
