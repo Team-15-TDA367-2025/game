@@ -21,6 +21,10 @@ import se.chalmers.tda367.team15.game.view.ViewportListener;
 public class GameScreen extends ScreenAdapter {
     private static final float WORLD_SIZE = 200f;
     private static final float WORLD_VIEWPORT_WIDTH = 30f;
+    private static final int MAP_WIDTH = 40;
+    private static final int MAP_HEIGHT = 40;
+    private static final float TILE_SIZE = 5f;
+
 
     private static final float MIN_ZOOM = 0.15f;
     private static final float MAX_ZOOM = 4.0f;
@@ -46,7 +50,7 @@ public class GameScreen extends ScreenAdapter {
         CameraConstraints constraints = new CameraConstraints(worldBounds, MIN_ZOOM, MAX_ZOOM);
 
         cameraModel = new CameraModel(constraints);
-        gameModel = new GameModel();
+        gameModel = new GameModel(MAP_WIDTH, MAP_HEIGHT, TILE_SIZE);
 
         // TODO: Should be a factory or something, this is just for testing!
         gameModel.spawnAnt(new Vector2(0, 0));
@@ -70,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
 
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry);
-        gridView = new GridView(worldCameraView, 5f);
+        gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
 
         viewportListener = new ViewportListener();
@@ -87,7 +91,7 @@ public class GameScreen extends ScreenAdapter {
 
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        sceneView.render(gameModel.getDrawables());
+        sceneView.render(gameModel.getDrawables(), gameModel.getFog());
         gridView.render();
         hudView.render();
     }

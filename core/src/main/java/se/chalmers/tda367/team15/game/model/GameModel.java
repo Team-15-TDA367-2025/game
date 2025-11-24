@@ -7,8 +7,8 @@ import se.chalmers.tda367.team15.game.model.entity.Ant;
 public class GameModel {
     private final GameWorld world;
 
-    public GameModel() {
-        this.world = new GameWorld();
+    public GameModel(int mapWidth, int mapHeight, float tileSize) {
+        this.world = new GameWorld(mapWidth, mapHeight, tileSize);
     }
 
     // --- FACADE METHODS (Actions) ---
@@ -27,5 +27,8 @@ public class GameModel {
     public Iterable<Drawable> getDrawables() {
         return world.getDrawables();
     }
-}
 
+    public FogOfWar getFog() {
+        return world.getFog();
+    }
+}

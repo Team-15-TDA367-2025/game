@@ -3,10 +3,12 @@ package se.chalmers.tda367.team15.game.model.entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Ant extends Entity {
-    private Vector2 velocity;
+public class Ant extends Entity implements VisionProvider {
+    private final Vector2 velocity;
+    private final int visionRadius = 3;
+
     public Ant(Vector2 position) {
-        super(position, "libgdx");
+        super(position, "Ant");
         float randomAngle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
         velocity = new Vector2(MathUtils.cos(randomAngle), MathUtils.sin(randomAngle));
     }
@@ -14,6 +16,11 @@ public class Ant extends Entity {
     @Override
     public void update(float deltaTime) {
         position.mulAdd(velocity, deltaTime);
+    }
+
+    @Override
+    public int getVisionRadius() {
+        return visionRadius;
     }
 
     @Override
