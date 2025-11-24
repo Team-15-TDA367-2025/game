@@ -24,7 +24,7 @@ public class GridView {
         shapeRenderer.setColor(Color.GRAY);
 
         Vector2 effectiveViewportSize = cameraView.getEffectiveViewportSize();
-        Vector2 cameraPosition = cameraView.getCameraPosition();
+        Vector2 cameraPosition = cameraView.getPosition();
         float startX = (float) Math
                 .floor((cameraPosition.x - effectiveViewportSize.x / 2f) / gridSize) * gridSize;
         float endX = (float) Math

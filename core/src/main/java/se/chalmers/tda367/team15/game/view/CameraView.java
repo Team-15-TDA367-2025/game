@@ -53,8 +53,8 @@ public class CameraView implements CoordinateConverter, ViewportObserver {
     return viewportSize.cpy().scl(1f / model.getZoom());
   }
 
-  public Vector2 getCameraPosition() {
-    return new Vector2(camera.position.x, camera.position.y);
+  public Vector2 getPosition() {
+    return model.getPosition();
   }
 
   @Override
