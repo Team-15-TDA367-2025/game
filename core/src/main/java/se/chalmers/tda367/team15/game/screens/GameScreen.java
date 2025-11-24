@@ -21,10 +21,9 @@ import se.chalmers.tda367.team15.game.view.ViewportListener;
 public class GameScreen extends ScreenAdapter {
     private static final float WORLD_SIZE = 200f;
     private static final float WORLD_VIEWPORT_WIDTH = 30f;
-    private static final int MAP_WIDTH = 40;
-    private static final int MAP_HEIGHT = 40;
-    private static final float TILE_SIZE = 5f;
-
+    private static final int MAP_WIDTH = 200;
+    private static final int MAP_HEIGHT = 200;
+    private static final float TILE_SIZE = 1f;
 
     private static final float MIN_ZOOM = 0.15f;
     private static final float MAX_ZOOM = 4.0f;
@@ -65,10 +64,10 @@ public class GameScreen extends ScreenAdapter {
 
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
-        
+
         hudCamera = new OrthographicCamera(screenWidth, screenHeight);
         hudCamera.setToOrtho(false, screenWidth, screenHeight);
-        
+
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 

@@ -19,15 +19,19 @@ public class FogRenderer {
         float tileSize = fogOfWar.getTileSize();
 
         batch.setColor(0, 0.2f, 0, 0.75f);
+        float offsetX = -fogOfWar.getWidth() / 2f * fogOfWar.getTileSize();
+        float offsetY = -fogOfWar.getHeight() / 2f * fogOfWar.getTileSize();
+
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (!fogOfWar.isDiscovered(x, y)) {
-                    float worldX = x * tileSize;
-                    float worldY = y * tileSize;
+                    float worldX = x * tileSize + offsetX;
+                    float worldY = y * tileSize + offsetY;
                     batch.draw(pixelTexture, worldX, worldY, tileSize, tileSize);
                 }
             }
         }
+
         batch.setColor(1, 1, 1, 1);
 
     }

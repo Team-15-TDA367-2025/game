@@ -14,11 +14,14 @@ public class FogSystem {
     }
 
     public void updateFog(List<Entity> entities) {
+        int centerX = fogOfWar.getWidth() / 2;
+        int centerY = fogOfWar.getHeight() / 2;
+
         for (Entity e : entities) {
             if (e instanceof VisionProvider vp) {
                 Vector2 position = e.getPosition();
-                int tileX = (int) Math.floor(position.x / fogOfWar.getTileSize());
-                int tileY = (int) Math.floor(position.y / fogOfWar.getTileSize());
+                int tileX = centerX + (int) Math.floor(position.x / fogOfWar.getTileSize());
+                int tileY = centerY + (int) Math.floor(position.y / fogOfWar.getTileSize());
 
                 fogOfWar.reveal(tileX, tileY, vp.getVisionRadius());
             }
