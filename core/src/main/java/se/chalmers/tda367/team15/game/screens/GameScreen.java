@@ -19,7 +19,6 @@ import se.chalmers.tda367.team15.game.view.SceneView;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 
 public class GameScreen extends ScreenAdapter {
-    // World bounds - adjust these to match your game world size
     private static final float WORLD_SIZE = 200f;
     private static final float WORLD_VIEWPORT_WIDTH = 30f;
 
@@ -46,39 +45,34 @@ public class GameScreen extends ScreenAdapter {
         Rectangle worldBounds = new Rectangle(-WORLD_SIZE / 2f, -WORLD_SIZE / 2f, WORLD_SIZE, WORLD_SIZE);
         CameraConstraints constraints = new CameraConstraints(worldBounds, MIN_ZOOM, MAX_ZOOM);
 
-        // Initialize model
         cameraModel = new CameraModel(constraints);
         gameModel = new GameModel();
+
+        // TODO: Should be a factory or something, this is just for testing!
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
 
-        // Initialize cameras
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float aspectRatio = screenHeight / screenWidth;
 
-        // World camera
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
         
-        // HUD camera
         hudCamera = new OrthographicCamera(screenWidth, screenHeight);
         hudCamera.setToOrtho(false, screenWidth, screenHeight);
         
-        // Input System
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 
-        // Setup Rendering System
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry);
         gridView = new GridView(worldCameraView, 5f);
         hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
 
-        // Setup Viewport Listener (Now simple and concrete)
         viewportListener = new ViewportListener(worldCameraView, hudCamera, hudView, WORLD_VIEWPORT_WIDTH);
     }
 
@@ -89,16 +83,10 @@ public class GameScreen extends ScreenAdapter {
         worldCameraView.updateCamera();
         gameModel.update(delta);
 
-        // Render
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
 
-        // World Render
         sceneView.render(gameModel.getDrawables());
-
-        // Debug Grid
         gridView.render();
-
-        // HUD Render
         hudView.render();
     }
 

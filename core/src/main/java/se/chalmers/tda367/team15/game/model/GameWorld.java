@@ -16,7 +16,7 @@ public class GameWorld {
         return entities;
     }
 
-    public List<IDrawable> getDrawables() {
+    public List<Drawable> getDrawables() {
         // We just have entities right now, we might need to change this in the future.
         return new ArrayList<>(entities);
     }

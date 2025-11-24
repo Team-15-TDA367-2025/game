@@ -2,7 +2,7 @@ package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.Vector2;
 
-public interface IDrawable {
+public interface Drawable {
     /** The name of the texture file to use for the object */
     public String getTextureName();
 

@@ -5,9 +5,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import se.chalmers.tda367.team15.game.controller.CoordinateConverter;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
-public class CameraView {
+// Implements the CoordinateConverter interface, so we can use it in the CameraController without depending on the view code.
+public class CameraView implements CoordinateConverter {
   private OrthographicCamera camera;
   private CameraModel model;
   private Vector2 viewportSize;
@@ -37,6 +39,7 @@ public class CameraView {
     return camera.combined;
   }
 
+  @Override
   public Vector2 getViewportSize() {
     return viewportSize.cpy();
   }
@@ -49,31 +52,17 @@ public class CameraView {
     return viewportSize.cpy().scl(1f / model.getZoom());
   }
 
-  /**
-   * Gets the camera position in world coordinates.
-   * @return Camera position as Vector2
-   */
   public Vector2 getCameraPosition() {
     return new Vector2(camera.position.x, camera.position.y);
   }
 
-  /**
-   * Converts screen coordinates to world coordinates using LibGDX's camera unproject.
-   * @param screenPos Screen position in pixels
-   * @return World coordinates
-   */
+  @Override
   public Vector2 screenToWorld(Vector2 screenPos) {
     Vector3 worldPos = camera.unproject(new Vector3(screenPos, 0));
     return new Vector2(worldPos.x, worldPos.y);
   }
 
-  /**
-   * Converts a screen delta (pixel movement) to world delta (world unit movement).
-   * 
-   * @param screenDelta Screen delta in pixels (typically from mouse movement)
-   * @param screenSize Screen size in pixels
-   * @return World delta in world units
-   */
+  @Override
   public Vector2 screenDeltaToWorldDelta(Vector2 screenDelta, Vector2 screenSize) {
     Vector2 effectiveViewportSize = getEffectiveViewportSize();
     Vector2 worldDelta = screenDelta.cpy();

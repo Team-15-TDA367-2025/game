@@ -22,8 +22,9 @@ public class GameModel {
         world.update(deltaTime);
     }
 
-    // --- GETTERS (For Rendering) ---
-    public Iterable<IDrawable> getDrawables() {
+    // --- GETTERS (For View) ---
+
+    public Iterable<Drawable> getDrawables() {
         return world.getDrawables();
     }
 }

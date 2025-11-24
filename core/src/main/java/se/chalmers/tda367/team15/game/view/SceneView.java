@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
-import se.chalmers.tda367.team15.game.model.IDrawable;
+import se.chalmers.tda367.team15.game.model.Drawable;
 
 public class SceneView {
     private final SpriteBatch batch;
@@ -17,7 +17,7 @@ public class SceneView {
         this.batch = new SpriteBatch();
     }
 
-    public void render(Iterable<IDrawable> drawables) {
+    public void render(Iterable<Drawable> drawables) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
@@ -26,7 +26,7 @@ public class SceneView {
         batch.end();
     }
 
-    private void draw(IDrawable drawable) {
+    private void draw(Drawable drawable) {
         TextureRegion region = textureRegistry.get(drawable.getTextureName());
 
         float width = drawable.getSize().x;
