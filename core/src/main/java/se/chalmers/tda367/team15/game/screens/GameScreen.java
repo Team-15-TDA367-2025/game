@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
-import se.chalmers.tda367.team15.game.controller.ViewportListener;
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
@@ -17,6 +16,7 @@ import se.chalmers.tda367.team15.game.view.GridView;
 import se.chalmers.tda367.team15.game.view.HUDView;
 import se.chalmers.tda367.team15.game.view.SceneView;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.ViewportListener;
 
 public class GameScreen extends ScreenAdapter {
     private static final float WORLD_SIZE = 200f;
@@ -73,7 +73,9 @@ public class GameScreen extends ScreenAdapter {
         gridView = new GridView(worldCameraView, 5f);
         hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
 
-        viewportListener = new ViewportListener(worldCameraView, hudCamera, hudView, WORLD_VIEWPORT_WIDTH);
+        viewportListener = new ViewportListener();
+        viewportListener.addObserver(worldCameraView);
+        viewportListener.addObserver(hudView);
     }
 
     @Override

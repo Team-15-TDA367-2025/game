@@ -13,7 +13,7 @@ public class GameWorld {
     }
 
     public List<Entity> getEntities() {
-        return entities;
+        return new ArrayList<>(entities);
     }
 
     public List<Drawable> getDrawables() {

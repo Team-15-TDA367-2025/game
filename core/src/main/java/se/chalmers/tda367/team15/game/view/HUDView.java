@@ -8,15 +8,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
-public class HUDView {
+public class HUDView implements ViewportObserver {
     private final SpriteBatch batch;
     private final BitmapFont font;
     private final CameraModel cameraModel;
     private final CameraView cameraView;
+    private final OrthographicCamera hudCamera;
 
     public HUDView(CameraModel cameraModel, CameraView cameraView, OrthographicCamera hudCamera) {
         this.cameraModel = cameraModel;
         this.cameraView = cameraView;
+        this.hudCamera = hudCamera;
         this.batch = new SpriteBatch();
         this.batch.setProjectionMatrix(hudCamera.combined);
         this.font = new BitmapFont();
@@ -48,13 +50,16 @@ public class HUDView {
         batch.end();
     }
 
-    public void updateProjectionMatrix(OrthographicCamera hudCamera) {
-        batch.setProjectionMatrix(hudCamera.combined);
-    }
-
     public void dispose() {
         batch.dispose();
         font.dispose();
+    }
+
+    @Override
+    public void onViewportResize(int width, int height) {
+        hudCamera.setToOrtho(false, width, height);
+        hudCamera.update();
+        batch.setProjectionMatrix(hudCamera.combined);
     }
 }
 

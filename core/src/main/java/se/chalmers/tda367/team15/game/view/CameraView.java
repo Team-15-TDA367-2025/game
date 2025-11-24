@@ -9,15 +9,16 @@ import se.chalmers.tda367.team15.game.controller.CoordinateConverter;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
 // Implements the CoordinateConverter interface, so we can use it in the CameraController without depending on the view code.
-public class CameraView implements CoordinateConverter {
+public class CameraView implements CoordinateConverter, ViewportObserver {
   private OrthographicCamera camera;
   private CameraModel model;
   private Vector2 viewportSize;
+  private final float worldViewportWidth;
 
   public CameraView(CameraModel model, float viewportWidth, float viewportHeight) {
     this.model = model;
+    this.worldViewportWidth = viewportWidth;
 
-    // Create camera with aspect ratio consideration
     this.camera = new OrthographicCamera(0, 0);
     this.setViewport(viewportWidth, viewportHeight);
   }
@@ -69,5 +70,11 @@ public class CameraView implements CoordinateConverter {
     worldDelta.scl(effectiveViewportSize.x / screenSize.x,
             effectiveViewportSize.y / screenSize.y);
     return worldDelta;
+  }
+
+  @Override
+  public void onViewportResize(int width, int height) {
+    float aspectRatio = (float) height / (float) width;
+    setViewport(worldViewportWidth, worldViewportWidth * aspectRatio);
   }
 }
