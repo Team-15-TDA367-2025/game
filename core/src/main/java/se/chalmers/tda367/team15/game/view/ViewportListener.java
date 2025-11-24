@@ -1,22 +1,20 @@
 package se.chalmers.tda367.team15.game.view;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
 /**
  * Listener that notifies observers when the viewport is resized.
  */
 public class ViewportListener {
-    private final List<ViewportObserver> observers;
+    // We want to keep the order of the observers
+    private final LinkedHashSet<ViewportObserver> observers;
 
     public ViewportListener() {
-        this.observers = new ArrayList<>();
+        this.observers = new LinkedHashSet<>();
     }
 
     public void addObserver(ViewportObserver observer) {
-        if (observer != null && !observers.contains(observer)) {
-            observers.add(observer);
-        }
+        observers.add(observer);
     }
 
     public void removeObserver(ViewportObserver observer) {
@@ -25,7 +23,8 @@ public class ViewportListener {
 
     /**
      * Notifies all registered observers of a viewport resize event.
-     * @param width The new width of the viewport
+     * 
+     * @param width  The new width of the viewport
      * @param height The new height of the viewport
      */
     public void resize(int width, int height) {
@@ -34,4 +33,3 @@ public class ViewportListener {
         }
     }
 }
-
