@@ -1,18 +1,18 @@
 package se.chalmers.tda367.team15.game.controller;
 
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.PheromoneType;
-import se.chalmers.tda367.team15.game.model.Vec2i;
 
 public class PheromoneController extends InputAdapter {
     private final GameModel gameModel;
     private final CoordinateConverter converter;
     private PheromoneType currentType;
     private boolean deleteMode;
-    private Vec2i lastGridPos; // Track last drawn position for line interpolation
+    private GridPoint2 lastGridPos; // Track last drawn position for line interpolation
 
     public PheromoneController(GameModel gameModel, CoordinateConverter converter) {
         this.gameModel = gameModel;
@@ -77,8 +77,8 @@ public class PheromoneController extends InputAdapter {
         Vector2 screenPos = new Vector2(screenX, screenY);
         Vector2 worldPos = converter.screenToWorld(screenPos);
         
-        // Convert world coordinates to grid coordinates (Vec2i)
-        Vec2i gridPos = worldToGrid(worldPos);
+        // Convert world coordinates to grid coordinates (GridPoint2)
+        GridPoint2 gridPos = worldToGrid(worldPos);
 
         if (deleteMode) {
             if (lastGridPos != null && !gridPos.equals(lastGridPos)) {
@@ -110,7 +110,7 @@ public class PheromoneController extends InputAdapter {
      * Skips the start point since it's already been drawn.
      * Returns the last successfully processed position.
      */
-    private Vec2i fillLine(Vec2i start, Vec2i end, boolean isDelete) {
+    private GridPoint2 fillLine(GridPoint2 start, GridPoint2 end, boolean isDelete) {
         // Handle edge case where start and end are the same
         if (start.equals(end)) {
             return start;
@@ -118,8 +118,8 @@ public class PheromoneController extends InputAdapter {
 
         // Use a simple path-finding approach that only moves in strictly adjacent directions
         // This ensures each step is valid for pheromone placement
-        Vec2i current = start;
-        Vec2i lastSuccessful = start;
+        GridPoint2 current = start;
+        GridPoint2 lastSuccessful = start;
         
         // Move step by step towards the end, only using adjacent moves
         while (!current.equals(end)) {
@@ -127,13 +127,13 @@ public class PheromoneController extends InputAdapter {
             int dy = end.y - current.y;
             
             // Determine the next step (prefer the direction with larger distance)
-            Vec2i next = null;
+            GridPoint2 next = null;
             if (Math.abs(dx) > Math.abs(dy)) {
                 // Move horizontally
-                next = new Vec2i(current.x + (dx > 0 ? 1 : -1), current.y);
+                next = new GridPoint2(current.x + (dx > 0 ? 1 : -1), current.y);
             } else if (dy != 0) {
                 // Move vertically
-                next = new Vec2i(current.x, current.y + (dy > 0 ? 1 : -1));
+                next = new GridPoint2(current.x, current.y + (dy > 0 ? 1 : -1));
             } else {
                 // Already at end (shouldn't happen due to while condition)
                 break;
@@ -181,8 +181,8 @@ public class PheromoneController extends InputAdapter {
      * Converts world coordinates to grid coordinates.
      * Uses 1:1 mapping (1 world unit = 1 grid cell).
      */
-    private Vec2i worldToGrid(Vector2 worldPos) {
-        return new Vec2i((int) Math.floor(worldPos.x), (int) Math.floor(worldPos.y));
+    private GridPoint2 worldToGrid(Vector2 worldPos) {
+        return new GridPoint2((int) Math.floor(worldPos.x), (int) Math.floor(worldPos.y));
     }
 }
 

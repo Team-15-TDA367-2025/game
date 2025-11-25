@@ -1,9 +1,9 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
-import se.chalmers.tda367.team15.game.model.Vec2i;
+import com.badlogic.gdx.math.GridPoint2;
 
 public class Colony extends Structure{
-    public Colony(Vec2i position) {
+    public Colony(GridPoint2 position) {
         super(position, "libgdx",5);
     }
 }

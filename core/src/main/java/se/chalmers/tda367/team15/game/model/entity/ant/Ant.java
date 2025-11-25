@@ -1,10 +1,10 @@
 package se.chalmers.tda367.team15.game.model.entity.ant;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.Vec2i;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
@@ -62,8 +62,8 @@ public class Ant extends Entity {
         return SPEED;
     }
     
-    public Vec2i getGridPosition() {
-        return new Vec2i((int) Math.floor(position.x), (int) Math.floor(position.y));
+    public GridPoint2 getGridPosition() {
+        return new GridPoint2((int) Math.floor(position.x), (int) Math.floor(position.y));
     }
 
     @Override

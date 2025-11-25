@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.view;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
@@ -48,7 +49,8 @@ public class PheromoneView {
             );
             shapeRenderer.setColor(color);
             
-            Vector2 pos = pheromone.getPosition().toVector2();
+            GridPoint2 gridPos = pheromone.getPosition();
+            Vector2 pos = new Vector2(gridPos.x, gridPos.y);
             // Draw a 1x1 square centered at the grid position
             shapeRenderer.rect(pos.x, pos.y, 1f, 1f);
         }

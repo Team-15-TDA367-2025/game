@@ -171,7 +171,8 @@ public class HUDView implements ViewportObserver {
         GlyphLayout layout = new GlyphLayout();
         for (Pheromone pheromone : pheromoneSystem.getPheromones()) {
             // Get world position (center of 1x1 square)
-            com.badlogic.gdx.math.Vector2 worldPos = pheromone.getPosition().toVector2().add(0.5f, 0.5f);
+            com.badlogic.gdx.math.GridPoint2 gridPos = pheromone.getPosition();
+            com.badlogic.gdx.math.Vector2 worldPos = new com.badlogic.gdx.math.Vector2(gridPos.x + 0.5f, gridPos.y + 0.5f);
             
             // Convert world position to screen coordinates (already in screen space with Y=0 at top)
             com.badlogic.gdx.math.Vector2 screenPos = cameraView.worldToScreen(worldPos);

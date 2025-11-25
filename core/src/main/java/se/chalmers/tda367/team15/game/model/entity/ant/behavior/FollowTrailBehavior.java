@@ -3,12 +3,12 @@ package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.Pheromone;
 import se.chalmers.tda367.team15.game.model.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.Vec2i;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 
 public class FollowTrailBehavior implements AntBehavior {
@@ -18,7 +18,7 @@ public class FollowTrailBehavior implements AntBehavior {
 
     @Override
     public void update(Ant ant, PheromoneSystem system, float deltaTime) {
-        Vec2i gridPos = ant.getGridPosition();
+        GridPoint2 gridPos = ant.getGridPosition();
         List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos);
 
         if (neighbors.isEmpty()) {
@@ -42,7 +42,8 @@ public class FollowTrailBehavior implements AntBehavior {
             if (targetPos == null) {
                 if (currentDist <= 1) {
                     // We are next to colony. Move towards colony center.
-                    Vector2 colonyCenter = system.getColonyPosition().toVector2().add(0.5f, 0.5f);
+                    GridPoint2 colonyGridPos = system.getColonyPosition();
+                    Vector2 colonyCenter = new Vector2(colonyGridPos.x + 0.5f, colonyGridPos.y + 0.5f);
                     if (ant.getPosition().dst(colonyCenter) < TURN_RADIUS) {
                         returningToColony = false; // Turn around
                     } else {
@@ -63,10 +64,12 @@ public class FollowTrailBehavior implements AntBehavior {
             // If we can't see any higher distance, but we are at 1, we might be at the colony looking at 1.
             if (targetPos == null && currentDist == 1) {
                  // Check if we are NOT on top of P1 yet
-                 float distToP1 = ant.getPosition().dst(closest.getPosition().toVector2().add(0.5f, 0.5f));
+                 GridPoint2 p1GridPos = closest.getPosition();
+                 Vector2 p1WorldPos = new Vector2(p1GridPos.x + 0.5f, p1GridPos.y + 0.5f);
+                 float distToP1 = ant.getPosition().dst(p1WorldPos);
                  if (distToP1 > 0.5f) {
                      // We are likely at colony, trying to reach P1.
-                     targetPos = closest.getPosition().toVector2().add(0.5f, 0.5f);
+                     targetPos = p1WorldPos;
                  }
             }
 
@@ -91,7 +94,9 @@ public class FollowTrailBehavior implements AntBehavior {
             seek(ant, targetPos, deltaTime);
         } else {
             // If waiting for turn around or stuck, orbit closest to stay on trail
-            seek(ant, closest.getPosition().toVector2().add(0.5f, 0.5f), deltaTime);
+            GridPoint2 closestGridPos = closest.getPosition();
+            Vector2 closestWorldPos = new Vector2(closestGridPos.x + 0.5f, closestGridPos.y + 0.5f);
+            seek(ant, closestWorldPos, deltaTime);
         }
         
         ant.updateRotation();
@@ -108,7 +113,8 @@ public class FollowTrailBehavior implements AntBehavior {
         
         // Uniformly choose randomly from all valid candidates with higher distance
         Pheromone chosen = candidates.get(MathUtils.random.nextInt(candidates.size()));
-        return chosen.getPosition().toVector2().add(0.5f, 0.5f);
+        GridPoint2 chosenGridPos = chosen.getPosition();
+        return new Vector2(chosenGridPos.x + 0.5f, chosenGridPos.y + 0.5f);
     }
     
     private Vector2 findLowerDistancePosition(List<Pheromone> neighbors, int currentDist) {
@@ -122,7 +128,8 @@ public class FollowTrailBehavior implements AntBehavior {
         
         // Uniformly choose randomly from all valid candidates with lower distance
         Pheromone chosen = candidates.get(MathUtils.random.nextInt(candidates.size()));
-        return chosen.getPosition().toVector2().add(0.5f, 0.5f);
+        GridPoint2 chosenGridPos = chosen.getPosition();
+        return new Vector2(chosenGridPos.x + 0.5f, chosenGridPos.y + 0.5f);
     }
     
 
@@ -131,7 +138,9 @@ public class FollowTrailBehavior implements AntBehavior {
         float minDst = Float.MAX_VALUE;
         Vector2 antPos = ant.getPosition();
         for (Pheromone p : pheromones) {
-            float dst = antPos.dst2(p.getPosition().toVector2().add(0.5f, 0.5f));
+            GridPoint2 pGridPos = p.getPosition();
+            Vector2 pWorldPos = new Vector2(pGridPos.x + 0.5f, pGridPos.y + 0.5f);
+            float dst = antPos.dst2(pWorldPos);
             if (dst < minDst) {
                 minDst = dst;
                 closest = p;

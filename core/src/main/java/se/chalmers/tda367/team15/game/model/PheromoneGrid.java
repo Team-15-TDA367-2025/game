@@ -6,18 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 public class PheromoneGrid {
-    private final Map<Vec2i, Pheromone> pheromones;
+    private final Map<GridPoint2, Pheromone> pheromones;
 
     public PheromoneGrid() {
         this.pheromones = new HashMap<>();
     }
 
-    public boolean hasPheromoneAt(Vec2i pos) {
+    public boolean hasPheromoneAt(GridPoint2 pos) {
         return pheromones.containsKey(pos);
     }
 
-    public Pheromone getPheromoneAt(Vec2i pos) {
+    public Pheromone getPheromoneAt(GridPoint2 pos) {
         return pheromones.get(pos);
     }
 
@@ -25,7 +27,7 @@ public class PheromoneGrid {
         pheromones.put(pheromone.getPosition(), pheromone);
     }
 
-    public void removePheromone(Vec2i pos) {
+    public void removePheromone(GridPoint2 pos) {
         pheromones.remove(pos);
     }
 
@@ -36,13 +38,13 @@ public class PheromoneGrid {
     /**
      * Gets all pheromones in the 3x3 area around the center (including diagonals and center).
      */
-    public List<Pheromone> getPheromonesIn3x3(Vec2i centerGridPos) {
+    public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
         List<Pheromone> pheromonesInArea = new ArrayList<>();
         
         // Check all 9 cells in 3x3 grid (including center and all 8 neighbors)
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                Vec2i pos = new Vec2i(centerGridPos.x + dx, centerGridPos.y + dy);
+                GridPoint2 pos = new GridPoint2(centerGridPos.x + dx, centerGridPos.y + dy);
                 Pheromone pheromone = pheromones.get(pos);
                 if (pheromone != null) {
                     pheromonesInArea.add(pheromone);

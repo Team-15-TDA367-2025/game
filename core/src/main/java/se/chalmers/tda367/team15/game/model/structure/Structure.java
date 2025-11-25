@@ -1,16 +1,16 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.Drawable;
-import se.chalmers.tda367.team15.game.model.Vec2i;
 
 public class Structure implements Drawable {
-    private Vec2i position;
+    private GridPoint2 position;
     private String textureName;
     private int radius;
 
-    public Structure(Vec2i position, String textureName, int radius) {
+    public Structure(GridPoint2 position, String textureName, int radius) {
         this.position = position;
         this.textureName = textureName;
         this.radius = radius;
@@ -18,7 +18,7 @@ public class Structure implements Drawable {
     
     @Override
     public Vector2 getPosition() {
-        return position.toVector2();
+        return new Vector2(position.x, position.y);
     }
 
     @Override

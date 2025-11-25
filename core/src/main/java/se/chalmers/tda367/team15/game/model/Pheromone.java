@@ -1,17 +1,19 @@
 package se.chalmers.tda367.team15.game.model;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 public class Pheromone {
-    private final Vec2i position;
+    private final GridPoint2 position;
     private final PheromoneType type;
     private final int distance;
 
-    public Pheromone(Vec2i position, PheromoneType type, int distance) {
+    public Pheromone(GridPoint2 position, PheromoneType type, int distance) {
         this.position = position;
         this.type = type;
         this.distance = distance;
     }
 
-    public Vec2i getPosition() {
+    public GridPoint2 getPosition() {
         return position;
     }
 

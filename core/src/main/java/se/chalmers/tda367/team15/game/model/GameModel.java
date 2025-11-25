@@ -1,5 +1,6 @@
 package se.chalmers.tda367.team15.game.model;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -11,7 +12,7 @@ public class GameModel {
 
     public GameModel() {
         this.world = new GameWorld();
-        Vec2i colonyPosition = new Vec2i(0, 0);
+        GridPoint2 colonyPosition = new GridPoint2(0, 0);
         this.world.addStructure(new Colony(colonyPosition));
         this.pheromoneSystem = new PheromoneSystem(colonyPosition);
     }

@@ -3,11 +3,13 @@ package se.chalmers.tda367.team15.game.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 public class PheromoneSystem {
     private final PheromoneGrid pheromoneGrid;
-    private final Vec2i colonyPosition;
+    private final GridPoint2 colonyPosition;
 
-    public PheromoneSystem(Vec2i colonyPosition) {
+    public PheromoneSystem(GridPoint2 colonyPosition) {
         this.pheromoneGrid = new PheromoneGrid();
         this.colonyPosition = colonyPosition;
     }
@@ -20,7 +22,7 @@ public class PheromoneSystem {
      * @param type The type of pheromone
      * @return true if the pheromone was added, false if the position was invalid
      */
-    public boolean addPheromone(Vec2i pos, PheromoneType type) {
+    public boolean addPheromone(GridPoint2 pos, PheromoneType type) {
         // Check if position already has a pheromone
         if (pheromoneGrid.hasPheromoneAt(pos)) {
             return false;
@@ -45,7 +47,7 @@ public class PheromoneSystem {
      * @param centerPos The center position
      * @return The lowest distance found, or -1 if no valid parent exists
      */
-    private int findLowestDistanceIn3x3(Vec2i centerPos) {
+    private int findLowestDistanceIn3x3(GridPoint2 centerPos) {
         int minDistance = Integer.MAX_VALUE;
         boolean foundValidParent = false;
 
@@ -53,7 +55,7 @@ public class PheromoneSystem {
         int[][] offsets = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         
         for (int[] offset : offsets) {
-            Vec2i neighborPos = new Vec2i(centerPos.x + offset[0], centerPos.y + offset[1]);
+            GridPoint2 neighborPos = new GridPoint2(centerPos.x + offset[0], centerPos.y + offset[1]);
             
             // Check if this is the colony position
             if (neighborPos.equals(colonyPosition)) {
@@ -77,7 +79,7 @@ public class PheromoneSystem {
      * The pheromone at the clicked position is not removed, only those after it.
      * @param pos The position where deletion starts
      */
-    public void removePheromone(Vec2i pos) {
+    public void removePheromone(GridPoint2 pos) {
         Pheromone pheromone = pheromoneGrid.getPheromoneAt(pos);
         if (pheromone == null) {
             return;
@@ -88,7 +90,7 @@ public class PheromoneSystem {
         // Start from strict neighbors
         int[][] offsets = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         for (int[] offset : offsets) {
-            Vec2i neighbor = new Vec2i(pos.x + offset[0], pos.y + offset[1]);
+            GridPoint2 neighbor = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
             removeConnectedPheromones(neighbor, targetDistance);
         }
     }
@@ -96,7 +98,7 @@ public class PheromoneSystem {
     /**
      * Recursively removes connected pheromones with distance > targetDistance.
      */
-    private void removeConnectedPheromones(Vec2i pos, int targetDistance) {
+    private void removeConnectedPheromones(GridPoint2 pos, int targetDistance) {
         Pheromone pheromone = pheromoneGrid.getPheromoneAt(pos);
         if (pheromone == null || pheromone.getDistance() <= targetDistance) {
             return;
@@ -107,7 +109,7 @@ public class PheromoneSystem {
         // Check strict neighbors
         int[][] offsets = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         for (int[] offset : offsets) {
-            Vec2i neighbor = new Vec2i(pos.x + offset[0], pos.y + offset[1]);
+            GridPoint2 neighbor = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
             removeConnectedPheromones(neighbor, targetDistance);
         }
     }
@@ -123,26 +125,26 @@ public class PheromoneSystem {
     /**
      * Gets the pheromone at the specified grid position, or null if none exists.
      */
-    public Pheromone getPheromoneAt(Vec2i gridPos) {
+    public Pheromone getPheromoneAt(GridPoint2 gridPos) {
         return pheromoneGrid.getPheromoneAt(gridPos);
     }
 
     /**
      * Gets the colony position.
      */
-    public Vec2i getColonyPosition() {
+    public GridPoint2 getColonyPosition() {
         return colonyPosition;
     }
 
     /**
      * Gets all pheromones adjacent (strictly non-diagonal) to the specified position.
      */
-    public java.util.List<Pheromone> getAdjacentPheromones(Vec2i gridPos) {
+    public java.util.List<Pheromone> getAdjacentPheromones(GridPoint2 gridPos) {
         java.util.List<Pheromone> adjacent = new ArrayList<>();
         int[][] offsets = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
         
         for (int[] offset : offsets) {
-            Vec2i neighbor = new Vec2i(gridPos.x + offset[0], gridPos.y + offset[1]);
+            GridPoint2 neighbor = new GridPoint2(gridPos.x + offset[0], gridPos.y + offset[1]);
             Pheromone pheromone = pheromoneGrid.getPheromoneAt(neighbor);
             if (pheromone != null) {
                 adjacent.add(pheromone);
@@ -154,7 +156,7 @@ public class PheromoneSystem {
     /**
      * Gets all pheromones in the 3x3 area around the center (including diagonals and center).
      */
-    public java.util.List<Pheromone> getPheromonesIn3x3(Vec2i centerGridPos) {
+    public java.util.List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
         return pheromoneGrid.getPheromonesIn3x3(centerGridPos);
     }
 }
