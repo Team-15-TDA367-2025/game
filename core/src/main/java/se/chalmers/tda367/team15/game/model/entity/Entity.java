@@ -2,9 +2,10 @@ package se.chalmers.tda367.team15.game.model.entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
-public abstract class Entity implements Drawable {
+public abstract class Entity implements Drawable, Updatable {
     protected Vector2 position;
     protected float rotation;
     private String textureName;
