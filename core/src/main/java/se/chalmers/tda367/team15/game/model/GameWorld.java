@@ -7,9 +7,11 @@ import se.chalmers.tda367.team15.game.model.entity.Entity;
 
 public class GameWorld {
     private List<Entity> entities;
+    private Colony colony;
 
     public GameWorld() {
         this.entities = new ArrayList<>();
+        this.colony = new Colony(0, 0); 
     }
 
     public List<Entity> getEntities() {
@@ -18,7 +20,10 @@ public class GameWorld {
 
     public List<Drawable> getDrawables() {
         // We just have entities right now, we might need to change this in the future.
-        return new ArrayList<>(entities);
+        List<Drawable> drawables = new ArrayList<>();
+        drawables.add(colony);
+        drawables.addAll(entities);
+        return drawables;
     }
 
     public void update(float deltaTime) {
