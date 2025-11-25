@@ -35,9 +35,6 @@ public class PheromoneGrid {
         return new ArrayList<>(pheromones.values());
     }
 
-    /**
-     * Gets all pheromones in the 3x3 area around the center (including diagonals and center).
-     */
     public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
         List<Pheromone> pheromonesInArea = new ArrayList<>();
         
