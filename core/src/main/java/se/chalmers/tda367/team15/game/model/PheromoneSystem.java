@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -29,7 +30,7 @@ public class PheromoneSystem {
         }
 
         // Find the lowest distance in a 3x3 area around the position (excluding center)
-        int minDistance = findLowestDistanceIn3x3(pos);
+        int minDistance = findLowestNeighbor(pos);
         if (minDistance == -1) {
             // No valid parent found (not adjacent to colony or any pheromone)
             return false;
@@ -47,7 +48,7 @@ public class PheromoneSystem {
      * @param centerPos The center position
      * @return The lowest distance found, or -1 if no valid parent exists
      */
-    private int findLowestDistanceIn3x3(GridPoint2 centerPos) {
+    private int findLowestNeighbor(GridPoint2 centerPos) {
         int minDistance = Integer.MAX_VALUE;
         boolean foundValidParent = false;
 
@@ -137,26 +138,9 @@ public class PheromoneSystem {
     }
 
     /**
-     * Gets all pheromones adjacent (strictly non-diagonal) to the specified position.
-     */
-    public java.util.List<Pheromone> getAdjacentPheromones(GridPoint2 gridPos) {
-        java.util.List<Pheromone> adjacent = new ArrayList<>();
-        int[][] offsets = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-        
-        for (int[] offset : offsets) {
-            GridPoint2 neighbor = new GridPoint2(gridPos.x + offset[0], gridPos.y + offset[1]);
-            Pheromone pheromone = pheromoneGrid.getPheromoneAt(neighbor);
-            if (pheromone != null) {
-                adjacent.add(pheromone);
-            }
-        }
-        return adjacent;
-    }
-
-    /**
      * Gets all pheromones in the 3x3 area around the center (including diagonals and center).
      */
-    public java.util.List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
+    public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
         return pheromoneGrid.getPheromonesIn3x3(centerGridPos);
     }
 }

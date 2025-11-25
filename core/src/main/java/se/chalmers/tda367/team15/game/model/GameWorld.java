@@ -26,13 +26,9 @@ public class GameWorld {
         return drawables;
     }
 
-    public void update(float deltaTime, PheromoneSystem pheromoneSystem) {
+    public void update(float deltaTime) {
         for (Entity entity : entities) {
-            if (entity instanceof se.chalmers.tda367.team15.game.model.entity.ant.Ant) {
-                ((se.chalmers.tda367.team15.game.model.entity.ant.Ant) entity).update(deltaTime, pheromoneSystem);
-            } else {
-                entity.update(deltaTime);
-            }
+            entity.update(deltaTime);
         }
     }
 

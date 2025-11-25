@@ -12,12 +12,13 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 public class Ant extends Entity {
     private static final float SPEED = 5f;
     
-    private Vector2 velocity;
     private AntBehavior behavior;
+    private PheromoneSystem system;
 
-    public Ant(Vector2 position) {
+    public Ant(Vector2 position, PheromoneSystem system) {
         super(position, "libgdx");
         this.behavior = new WanderBehavior();
+        this.system = system;
         pickRandomDirection();
     }
 
@@ -28,33 +29,18 @@ public class Ant extends Entity {
 
     @Override
     public void update(float deltaTime) {
-        // Update with no system awareness
-        behavior.update(this, null, deltaTime);
-    }
-
-    public void update(float deltaTime, PheromoneSystem system) {
         behavior.update(this, system, deltaTime);
+        super.update(deltaTime);
+        updateRotation();
     }
 
     public void setBehavior(AntBehavior behavior) {
         this.behavior = behavior;
     }
 
-    public Vector2 getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Vector2 velocity) {
-        this.velocity.set(velocity);
-    }
-    
-    public void move(Vector2 delta) {
-        position.add(delta);
-    }
-
     public void updateRotation() {
-        if (velocity.len2() > 0.1f) {
-            rotation = velocity.angleRad();
+        if (getVelocity().len2() > 0.1f) {
+            rotation = getVelocity().angleRad();
         }
     }
 

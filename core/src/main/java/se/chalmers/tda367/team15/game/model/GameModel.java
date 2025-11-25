@@ -20,13 +20,12 @@ public class GameModel {
     // --- FACADE METHODS (Actions) ---
 
     public void spawnAnt(Vector2 position) {
-        Ant ant = new Ant(position);
+        Ant ant = new Ant(position, pheromoneSystem);
         world.addEntity(ant);
     }
 
     public void update(float deltaTime) {
-        // Update entities with access to pheromone system
-        world.update(deltaTime, pheromoneSystem);
+        world.update(deltaTime);
     }
 
     // --- GETTERS (For View) ---
@@ -39,4 +38,3 @@ public class GameModel {
         return pheromoneSystem;
     }
 }
-
