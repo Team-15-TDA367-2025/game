@@ -3,12 +3,10 @@ package se.chalmers.tda367.team15.game.model;
 public class TimeCycle {
     private int ticks;
     private int ticksPerMinute;
-    private boolean isDay;
 
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
         this.ticks = 0;
-        this.isDay = true;
     }
 
     public void tick() {
@@ -32,11 +30,7 @@ public class TimeCycle {
     }
 
     public boolean getIsDay() {
-        return isDay;
+        int h = getHour();
+        return h >= 6 && h < 22;
     }
-
-    public void setisDay(boolean isDay) {
-        this.isDay = isDay;
-    }
-
 }
