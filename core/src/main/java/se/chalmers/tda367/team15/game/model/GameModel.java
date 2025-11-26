@@ -12,8 +12,8 @@ public class GameModel {
     private final GameWorld world;
     private final PheromoneSystem pheromoneSystem;
 
-    public GameModel() {
-        this.world = new GameWorld();
+    public GameModel(int mapWidth, int mapHeight, float tileSize) {
+        this.world = new GameWorld(mapWidth, mapHeight, tileSize);
         GridPoint2 colonyPosition = new GridPoint2(0, 0);
         this.world.addStructure(new Colony(colonyPosition));
         this.pheromoneSystem = new PheromoneSystem(colonyPosition);
@@ -34,6 +34,10 @@ public class GameModel {
 
     public Iterable<Drawable> getDrawables() {
         return world.getDrawables();
+    }
+
+    public FogOfWar getFog() {
+        return world.getFog();
     }
 
     public PheromoneSystem getPheromoneSystem() {

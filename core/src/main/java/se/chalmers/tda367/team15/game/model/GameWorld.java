@@ -11,8 +11,12 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
 public class GameWorld {
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
+    private final FogSystem fogSystem;
+    private final FogOfWar fogOfWar;
 
-    public GameWorld() {
+    public GameWorld(int mapWidth, int mapHeight, float tileSize) {
+        fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
+        fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
     }
@@ -31,14 +35,20 @@ public class GameWorld {
         return Collections.unmodifiableList(allDrawables);
     }
 
+    public FogOfWar getFog() {
+        return fogOfWar;
+    }
+
     public void update(float deltaTime) {
-        for (Entity entity : entities) {
-            entity.update(deltaTime);
+        for (Entity e : entities) {
+            e.update(deltaTime);
         }
 
         for (Structure structure : structures) {
             structure.update(deltaTime);
         }
+        // Update fog after movement
+        fogSystem.updateFog(entities);
     }
 
     public void addEntity(Entity entity) {
