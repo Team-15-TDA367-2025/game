@@ -8,12 +8,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
+import se.chalmers.tda367.team15.game.controller.PheromoneController;
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.view.CameraView;
 import se.chalmers.tda367.team15.game.view.GridView;
 import se.chalmers.tda367.team15.game.view.HUDView;
+import se.chalmers.tda367.team15.game.view.PheromoneView;
 import se.chalmers.tda367.team15.game.view.SceneView;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.ViewportListener;
@@ -33,12 +35,14 @@ public class GameScreen extends ScreenAdapter {
     private final CameraView worldCameraView;
     private final OrthographicCamera hudCamera;
     private final CameraController cameraController;
+    private final PheromoneController pheromoneController;
     private final ViewportListener viewportListener;
     private final InputManager inputManager;
 
     // Views
     private final SceneView sceneView;
     private final GridView gridView;
+    private final PheromoneView pheromoneView;
     private final HUDView hudView;
     private final TextureRegistry textureRegistry;
 
@@ -74,6 +78,16 @@ public class GameScreen extends ScreenAdapter {
         sceneView = new SceneView(worldCameraView, textureRegistry);
         gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
+        
+        pheromoneController = new PheromoneController(gameModel, worldCameraView);
+        hudView.setPheromoneController(pheromoneController);
+        hudView.setPheromoneSystem(gameModel.getPheromoneSystem());
+        
+        // Add Stage first so it can handle button clicks before other processors
+        inputManager.addProcessor(hudView.getStage());
+        inputManager.addProcessor(pheromoneController);
+        
+        pheromoneView = new PheromoneView(worldCameraView, gameModel.getPheromoneSystem());
 
         viewportListener = new ViewportListener();
         viewportListener.addObserver(worldCameraView);
@@ -86,9 +100,10 @@ public class GameScreen extends ScreenAdapter {
         cameraController.update(delta);
         worldCameraView.updateCamera();
         gameModel.update(delta);
-
+        
         ScreenUtils.clear(0.227f, 0.643f, 0.239f,1f);
-
+        
+        pheromoneView.render();
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
         gridView.render();
         hudView.render();
@@ -103,6 +118,7 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         sceneView.dispose();
         gridView.dispose();
+        pheromoneView.dispose();
         hudView.dispose();
         textureRegistry.dispose();
     }
