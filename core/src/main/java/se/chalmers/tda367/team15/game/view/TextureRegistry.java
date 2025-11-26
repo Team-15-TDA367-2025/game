@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -11,6 +12,7 @@ public class TextureRegistry {
 
     public TextureRegistry() {
         loadAll();
+        createPixelTexture();
     }
 
     /** Scans the assets directory and loads all `.png` files */
@@ -41,4 +43,15 @@ public class TextureRegistry {
         }
         textures.clear();
     }
+    // AI generated
+    private void createPixelTexture() {
+    if (!textures.containsKey("pixel")) {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1f, 1f, 1f, 1f); // white
+        pixmap.fill();
+        Texture texture = new Texture(pixmap);
+        textures.put("pixel", new TextureRegion(texture));
+        pixmap.dispose();
+    }
+}
 }

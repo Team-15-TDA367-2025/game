@@ -57,10 +57,31 @@ public class CameraView implements CoordinateConverter, ViewportObserver {
     return model.getPosition();
   }
 
+  public float getZoom() {
+    return model.getZoom();
+  }
+
   @Override
   public Vector2 screenToWorld(Vector2 screenPos) {
     Vector3 worldPos = camera.unproject(new Vector3(screenPos, 0));
     return new Vector2(worldPos.x, worldPos.y);
+  }
+
+  /**
+   * Converts world coordinates to screen coordinates.
+   * @param worldPos World position
+   * @return Screen coordinates in pixels (Y=0 at top, matching LibGDX screen input)
+   */
+  public Vector2 worldToScreen(Vector2 worldPos) {
+    // Use the actual screen viewport size for projection
+    float screenWidth = com.badlogic.gdx.Gdx.graphics.getWidth();
+    float screenHeight = com.badlogic.gdx.Gdx.graphics.getHeight();
+    
+    // Project to screen coordinates (camera.project returns Y=0 at bottom, OpenGL convention)
+    Vector3 screenPos = camera.project(new Vector3(worldPos, 0), 0, 0, screenWidth, screenHeight);
+    
+    // Convert from OpenGL coordinates (Y=0 at bottom) to LibGDX screen coordinates (Y=0 at top)
+    return new Vector2(screenPos.x, screenHeight - screenPos.y);
   }
 
   @Override
