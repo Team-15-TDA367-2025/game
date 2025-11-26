@@ -2,9 +2,7 @@ package se.chalmers.tda367.team15.game.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,31 +17,25 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 public class HUDView implements ViewportObserver {
-    private final SpriteBatch batch;
     private final BitmapFont font;
     private final CameraModel cameraModel;
     private final CameraView cameraView;
-    private final OrthographicCamera hudCamera;
     private final Stage stage;
     private final Skin skin;
     private PheromoneController pheromoneController;
     private PheromoneSystem pheromoneSystem;
     private static final float MIN_ZOOM_FOR_TEXT = 1.5f;
 
-    public HUDView(CameraModel cameraModel, CameraView cameraView, OrthographicCamera hudCamera) {
+    public HUDView(CameraModel cameraModel, CameraView cameraView) {
         this.cameraModel = cameraModel;
         this.cameraView = cameraView;
-        this.hudCamera = hudCamera;
-        this.batch = new SpriteBatch();
-        this.batch.setProjectionMatrix(hudCamera.combined);
         this.font = new BitmapFont();
         
-        // Create stage with viewport matching screen coordinates
-        // Stage uses ScreenViewport by default which handles screen coordinates
-        this.stage = new Stage();
-        // Update viewport to match current screen size
-        stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        // Create stage with ScreenViewport to ensure 1:1 pixel mapping (no scaling)
+        this.stage = new Stage(new ScreenViewport());
         this.skin = new Skin();
         this.skin.add("default", font);
         
@@ -69,7 +61,7 @@ public class HUDView implements ViewportObserver {
         float buttonHeight = 40f;
         float spacing = 10f;
         float startX = 10f;
-        float startY = Gdx.graphics.getHeight() - buttonHeight - 10f;
+        float startY = 10f;
 
         // Gather button
         TextButton gatherButton = new TextButton("Gather", skin);
@@ -129,6 +121,12 @@ public class HUDView implements ViewportObserver {
     }
 
     public void render() {
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
+        // Use the stage's batch for custom drawing
+        com.badlogic.gdx.graphics.g2d.Batch batch = stage.getBatch();
+        batch.setProjectionMatrix(stage.getCamera().combined);
         batch.begin();
         
         font.setColor(Color.WHITE);
@@ -151,20 +149,15 @@ public class HUDView implements ViewportObserver {
         y -= lineHeight;
         // end of debug info
         
-        batch.end();
-        
         // Render pheromone distance labels if zoom is high enough
         if (pheromoneSystem != null && cameraModel.getZoom() > MIN_ZOOM_FOR_TEXT) {
-            renderPheromoneLabels();
+            renderPheromoneLabels(batch);
         }
         
-        // Render buttons
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
+        batch.end();
     }
 
-    private void renderPheromoneLabels() {
-        batch.begin();
+    private void renderPheromoneLabels(com.badlogic.gdx.graphics.g2d.Batch batch) {
         font.setColor(Color.WHITE);
         
         float screenHeight = Gdx.graphics.getHeight();
@@ -188,8 +181,6 @@ public class HUDView implements ViewportObserver {
             float textY = hudY + layout.height / 2f;
             font.draw(batch, distanceText, textX, textY);
         }
-        
-        batch.end();
     }
 
     public Stage getStage() {
@@ -197,7 +188,6 @@ public class HUDView implements ViewportObserver {
     }
 
     public void dispose() {
-        batch.dispose();
         font.dispose();
         stage.dispose();
         skin.dispose();
@@ -205,9 +195,6 @@ public class HUDView implements ViewportObserver {
 
     @Override
     public void onViewportResize(int width, int height) {
-        hudCamera.setToOrtho(false, width, height);
-        hudCamera.update();
-        batch.setProjectionMatrix(hudCamera.combined);
         stage.getViewport().update(width, height, true);
         if (pheromoneController != null) {
             setupButtons();

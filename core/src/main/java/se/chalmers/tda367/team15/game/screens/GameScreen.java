@@ -2,7 +2,6 @@ package se.chalmers.tda367.team15.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -31,7 +30,6 @@ public class GameScreen extends ScreenAdapter {
     private final GameModel gameModel;
     private final CameraModel cameraModel;
     private final CameraView worldCameraView;
-    private final OrthographicCamera hudCamera;
     private final CameraController cameraController;
     private final PheromoneController pheromoneController;
     private final ViewportListener viewportListener;
@@ -66,16 +64,13 @@ public class GameScreen extends ScreenAdapter {
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
         
-        hudCamera = new OrthographicCamera(screenWidth, screenHeight);
-        hudCamera.setToOrtho(false, screenWidth, screenHeight);
-        
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry);
         gridView = new GridView(worldCameraView, 5f);
-        hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
+        hudView = new HUDView(cameraModel, worldCameraView);
         
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
         hudView.setPheromoneController(pheromoneController);
