@@ -5,25 +5,30 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.FogOfWar;
 
 public class SceneView {
     private final SpriteBatch batch;
     private final CameraView cameraView;
     private final TextureRegistry textureRegistry;
+    private final FogRenderer fogRenderer;
 
     public SceneView(CameraView cameraView, TextureRegistry textureRegistry) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
+        this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"));
     }
 
-    public void render(Iterable<Drawable> drawables) {
+    public void render(Iterable<Drawable> drawables, FogOfWar fog) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
         drawables.forEach(this::draw);
+        fogRenderer.render(batch, fog);
 
         batch.end();
+
     }
 
     private void draw(Drawable drawable) {

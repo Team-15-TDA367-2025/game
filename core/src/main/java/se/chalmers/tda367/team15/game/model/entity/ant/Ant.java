@@ -6,17 +6,19 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 
-public class Ant extends Entity {
+public class Ant extends Entity implements VisionProvider {
     private static final float SPEED = 5f;
-    
+    private final int visionRadius = 4;
+
     private AntBehavior behavior;
     private PheromoneSystem system;
 
     public Ant(Vector2 position, PheromoneSystem system) {
-        super(position, "libgdx");
+        super(position, "Ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
         pickRandomDirection();
@@ -47,7 +49,7 @@ public class Ant extends Entity {
     public float getSpeed() {
         return SPEED;
     }
-    
+
     public GridPoint2 getGridPosition() {
         return new GridPoint2((int) Math.floor(position.x), (int) Math.floor(position.y));
     }
@@ -56,4 +58,10 @@ public class Ant extends Entity {
     public Vector2 getSize() {
         return new Vector2(3f, 0.5f); // Adjusted size
     }
+
+    @Override
+    public int getVisionRadius() {
+        return visionRadius;
+    }
+
 }
