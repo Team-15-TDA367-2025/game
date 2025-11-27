@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
+
 
 public class GameWorld {
     private List<Entity> entities; // Floating positions and can move around.
@@ -14,11 +17,17 @@ public class GameWorld {
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
 
+
     public GameWorld(int mapWidth, int mapHeight, float tileSize) {
         fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
+
+    }
+
+    public List<Structure> getStructures(){
+        return new ArrayList<>(structures);
     }
 
     public List<Entity> getEntities() {

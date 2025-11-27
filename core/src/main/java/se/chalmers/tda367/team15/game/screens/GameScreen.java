@@ -61,6 +61,12 @@ public class GameScreen extends ScreenAdapter {
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
 
+
+        gameModel.spawnTermite(new Vector2(50,50));
+        gameModel.spawnTermite(new Vector2(50,50));
+        gameModel.spawnTermite(new Vector2(50,50));
+        gameModel.spawnTermite(new Vector2(50,50));
+
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float aspectRatio = screenHeight / screenWidth;
@@ -78,15 +84,15 @@ public class GameScreen extends ScreenAdapter {
         sceneView = new SceneView(worldCameraView, textureRegistry);
         gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView, hudCamera);
-        
+
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
         hudView.setPheromoneController(pheromoneController);
         hudView.setPheromoneSystem(gameModel.getPheromoneSystem());
-        
+
         // Add Stage first so it can handle button clicks before other processors
         inputManager.addProcessor(hudView.getStage());
         inputManager.addProcessor(pheromoneController);
-        
+
         pheromoneView = new PheromoneView(worldCameraView, gameModel.getPheromoneSystem());
 
         viewportListener = new ViewportListener();
@@ -100,9 +106,9 @@ public class GameScreen extends ScreenAdapter {
         cameraController.update(delta);
         worldCameraView.updateCamera();
         gameModel.update(delta);
-        
+
         ScreenUtils.clear(0.227f, 0.643f, 0.239f,1f);
-        
+
         pheromoneView.render();
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
         gridView.render();
