@@ -16,7 +16,7 @@ import java.util.List;
 
 public class Termite extends Entity {
     Faction faction = Faction.TERMITE_PROTECTORATE;
-    private static final float SPEED = 6f;
+    private static final float SPEED = 5f;
     //HealthComponent healthComponent;
     //TermiteBehaviour termiteBehaviour;
     //AttackComponent attackComponent;
@@ -27,25 +27,18 @@ public class Termite extends Entity {
 
     @Override
     public void update(float deltaTime){
-        Vector2 targetV = new Vector2(0,0);
+        Vector2 targetV = new Vector2(50,50);
 
         List<Entity> entities = getGameWorld().getEntities();
 
         // check for hostile entities.there might be ants we can eat! *licks lips with devious smile* >:)
         List<Entity> targetEntities = hostileEntities(entities);
-        if(targetEntities.isEmpty()) {
-            List<Structure> structures = getGameWorld().getStructures();
-            for(Structure s: structures) {
-                // TODO, TOO BAD!!!
-                if(s.getClass().isInstance(new Colony(new GridPoint2(0,0)))) {
-                    targetV = s.getPosition().sub(position);
-                }
-            }
-        }
-        else{
+        if(!targetEntities.isEmpty()) {
             Entity closestEntity= targetEntities.getFirst();
+
             for(Entity e : targetEntities) {
-                if(e.getPosition().dst(position) > closestEntity.getPosition().dst(position) ) {
+                float dst = e.getPosition().dst(position);
+                if(dst < closestEntity.getPosition().dst(position) ) {
                     closestEntity = e;
                 }
             }
@@ -53,13 +46,11 @@ public class Termite extends Entity {
         }
 
 
+
         // move to target
         // TODO might overshoot, TOO BAD!
         if(targetV.len() > 0.01f) {
             velocity.set(targetV.nor().scl(SPEED));
-        }
-        else {
-            velocity.set(0,0);
         }
         super.update(deltaTime);
     }
@@ -68,13 +59,19 @@ public class Termite extends Entity {
     List<Entity> hostileEntities(List<Entity> entities) {
         List<Entity> targetEntities = new ArrayList<>();
         for (Entity e : entities) {
-            if (!(e.getFaction() == faction)) {
+            if (e.getFaction() != this.faction) {
                 targetEntities.add(e);
             }
         }
-
         return targetEntities;
     }
 
-
 }
+
+ /*List<Structure> structures = getGameWorld().getStructures();
+            for(Structure s: structures) {
+                // TODO, TOO BAD!!!
+                if(s.getClass().isInstance(new Colony(new GridPoint2(0,0)))) {
+                    targetV = s.getPosition().sub(position);
+                }
+            }*/
