@@ -16,7 +16,6 @@ public class GameWorld {
     private List<Structure> structures; // Integer positions and fixed in place.
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
-    private Colony colony;
     private TimeCycle timeCycle;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
@@ -24,7 +23,6 @@ public class GameWorld {
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
-        this.colony = new Colony(new GridPoint2(mapWidth / 2, mapHeight / 2));
         this.timeCycle = timeCycle;
     }
 
