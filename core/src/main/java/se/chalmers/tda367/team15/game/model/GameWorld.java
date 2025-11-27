@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.objects.Colony;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 public class GameWorld {
@@ -15,16 +17,14 @@ public class GameWorld {
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
     private Colony colony;
-    private Map map;
     private TimeCycle timeCycle;
 
-    public GameWorld(Map map, TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
+    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
         fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
-        this.colony = new Colony(0, 0);
-        this.map = map;
+        this.colony = new Colony(new GridPoint2(mapWidth / 2, mapHeight / 2));
         this.timeCycle = timeCycle;
     }
 

@@ -12,8 +12,8 @@ public class GameModel {
     private final GameWorld world;
     private final PheromoneSystem pheromoneSystem;
 
-    public GameModel(int mapWidth, int mapHeight, float tileSize) {
-        this.world = new GameWorld(mapWidth, mapHeight, tileSize);
+    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
+        this.world = new GameWorld(timeCycle, mapWidth, mapHeight, tileSize);
         GridPoint2 colonyPosition = new GridPoint2(0, 0);
         this.world.addStructure(new Colony(colonyPosition));
         this.pheromoneSystem = new PheromoneSystem(colonyPosition);

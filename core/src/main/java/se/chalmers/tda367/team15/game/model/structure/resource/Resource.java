@@ -1,11 +1,15 @@
-package se.chalmers.tda367.team15.game.model.objects;
+package se.chalmers.tda367.team15.game.model.structure.resource;
 
-public class Resource extends WorldObject {
+import com.badlogic.gdx.math.GridPoint2;
+
+import se.chalmers.tda367.team15.game.model.structure.Structure;
+
+public class Resource extends Structure {
     private ResourceType type;
     private int quantity;
 
-    public Resource(int x, int y, ResourceType type, int quantity) {
-        super(x, y);
+    public Resource(GridPoint2 position, String textureName, int radius, ResourceType type, int quantity) {
+        super(position, textureName, radius);
         this.type = type;
         this.quantity = quantity;
     }
