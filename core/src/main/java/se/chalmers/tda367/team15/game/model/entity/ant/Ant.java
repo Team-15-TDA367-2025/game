@@ -80,7 +80,7 @@ public class Ant extends Entity implements VisionProvider, HasHealth {
     @Override
     public void takeDamage(float amount) {
         health = Math.max(0f,health-amount);
-        if(health == 0) {
+        if(health == 0f) {
             die();
         }
     }

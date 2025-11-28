@@ -21,12 +21,13 @@ public class GameWorld implements EntityDeathObserver{
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
-        destructionListener=DestructionListener.getInstance();
+        destructionListener =DestructionListener.getInstance();
+        destructionListener.addEntityDeathObserver(this);
 
     }
 
     public List<Structure> getStructures(){
-        return new ArrayList<>(structures);
+        return Collections.unmodifiableList(new ArrayList<>(structures));
     }
 
     public List<Entity> getEntities() {
@@ -34,7 +35,7 @@ public class GameWorld implements EntityDeathObserver{
         for (Structure structure : structures) {
             allEntities.addAll(structure.getSubEntities());
         }
-        return Collections.unmodifiableList(allEntities);
+        return  Collections.unmodifiableList(allEntities);
     }
 
     public Iterable<Drawable> getDrawables() {
@@ -48,14 +49,37 @@ public class GameWorld implements EntityDeathObserver{
     }
 
     public void update(float deltaTime) {
+
+
+        ArrayList<Entity> updateTheseEntities = new ArrayList<>(getEntities());
+        Entity spotlightedEntity;
+        while(!updateTheseEntities.isEmpty()) {
+            spotlightedEntity = updateTheseEntities.removeFirst();
+            if(getEntities().contains(spotlightedEntity)) {
+                spotlightedEntity.update(deltaTime);
+            }
+
+        }
+
+        ArrayList<Structure> updateTheseStructures = new ArrayList<>(getStructures());
+        Structure spotlightedStructure;
+        while(!updateTheseStructures.isEmpty()) {
+            spotlightedStructure = updateTheseStructures.removeFirst();
+            if(getStructures().contains(spotlightedStructure)) {
+                spotlightedStructure.update(deltaTime);
+            }
+        }
+        /*
         for (Entity e : entities) {
             e.update(deltaTime);
         }
 
-        for (Structure structure : structures) {
-            structure.update(deltaTime);
+        for (Structure s : structures) {
+            s.update(deltaTime);
         }
         // Update fog after movement
+        */
+
         fogSystem.updateFog(entities);
     }
 

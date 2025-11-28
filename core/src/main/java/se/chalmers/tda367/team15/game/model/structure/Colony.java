@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.faction.Faction;
 
 public class Colony extends Structure {
     private List<Ant> ants;
@@ -16,6 +17,7 @@ public class Colony extends Structure {
     public Colony(GridPoint2 position) {
         super(position, "AntColony", 5);
         this.ants = new ArrayList<>();
+        faction= Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
     }
 
     public void addAnt(Ant ant) {
@@ -32,9 +34,13 @@ public class Colony extends Structure {
             ant.update(deltaTime);
         }
     }
-
     @Override
     public Collection<Entity> getSubEntities() {
         return Collections.unmodifiableCollection(ants);
+    }
+
+    @Override
+    public Faction getFaction() {
+        return faction;
     }
 }
