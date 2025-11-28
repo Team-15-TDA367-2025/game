@@ -38,6 +38,10 @@ public abstract class Entity implements Drawable, Updatable {
         return textureName;
     }
 
+    public void setTextureName(String textureName) {
+        this.textureName = textureName;
+    }
+
     public Vector2 getVelocity() {
         return velocity.cpy();
     }

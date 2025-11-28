@@ -21,7 +21,11 @@ public abstract class Structure implements Drawable, Updatable {
         this.textureName = textureName;
         this.radius = radius;
     }
-    
+
+    public GridPoint2 getGridPosition() {
+        return position;
+    }
+
     @Override
     public Vector2 getPosition() {
         return new Vector2(position.x, position.y);

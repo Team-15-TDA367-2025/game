@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
@@ -13,14 +14,18 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 public class Ant extends Entity implements VisionProvider {
     private static final float SPEED = 5f;
     private final int visionRadius = 4;
+    private final int capacity;
 
     private AntBehavior behavior;
     private PheromoneSystem system;
+    private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system) {
+    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
         super(position, "Ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
+        this.capacity = capacity;
+        this.inventory = new Inventory(capacity);
         pickRandomDirection();
     }
 
@@ -34,6 +39,15 @@ public class Ant extends Entity implements VisionProvider {
         behavior.update(system, deltaTime);
         super.update(deltaTime);
         updateRotation();
+        updateTexture();
+    }
+
+    private void updateTexture() {
+        if (inventory.isEmpty()) {
+            setTextureName("Ant");
+        } else {
+            setTextureName("AntCarryingFood");
+        }
     }
 
     public void setBehavior(AntBehavior behavior) {
@@ -52,6 +66,22 @@ public class Ant extends Entity implements VisionProvider {
 
     public GridPoint2 getGridPosition() {
         return new GridPoint2((int) Math.floor(position.x), (int) Math.floor(position.y));
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public boolean leaveResources(Colony colony) {
+        if (inventory.isEmpty()) {
+            return false;
+        }
+        boolean deposited = colony.depositResources(inventory);
+        if (deposited) {
+            inventory.clear();
+            updateTexture();
+        }
+        return deposited;
     }
 
     @Override
