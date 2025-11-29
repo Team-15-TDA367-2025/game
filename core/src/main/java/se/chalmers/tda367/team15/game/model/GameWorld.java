@@ -11,11 +11,13 @@ import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
-public class GameWorld {
+
+public class GameWorld implements EntityDeathObserver{
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
+    private DestructionListener destructionListener;
     private TimeCycle timeCycle;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
@@ -24,6 +26,13 @@ public class GameWorld {
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
         this.timeCycle = timeCycle;
+        destructionListener = DestructionListener.getInstance();
+        destructionListener.addEntityDeathObserver(this);
+
+    }
+
+    public List<Structure> getStructures(){
+        return Collections.unmodifiableList(new ArrayList<>(structures));
     }
 
     public List<Entity> getEntities() {
@@ -31,7 +40,7 @@ public class GameWorld {
         for (Structure structure : structures) {
             allEntities.addAll(structure.getSubEntities());
         }
-        return Collections.unmodifiableList(allEntities);
+        return  Collections.unmodifiableList(allEntities);
     }
 
     public Iterable<Drawable> getDrawables() {
@@ -45,12 +54,25 @@ public class GameWorld {
     }
 
     public void update(float deltaTime) {
-        for (Entity e : entities) {
-            e.update(deltaTime);
+
+        // Looks complicated, but if we want things in the game world to be able to update the game world
+        // we cannot iterate through a list that might be updated.
+        ArrayList<Entity> updateTheseEntities = new ArrayList<>(getEntities());
+        Entity spotlightedEntity;
+        while(!updateTheseEntities.isEmpty()) {
+            spotlightedEntity = updateTheseEntities.removeFirst();
+            if(getEntities().contains(spotlightedEntity)) {
+                spotlightedEntity.update(deltaTime);
+            }
         }
 
-        for (Structure structure : structures) {
-            structure.update(deltaTime);
+        ArrayList<Structure> updateTheseStructures = new ArrayList<>(getStructures());
+        Structure spotlightedStructure;
+        while(!updateTheseStructures.isEmpty()) {
+            spotlightedStructure = updateTheseStructures.removeFirst();
+            if(getStructures().contains(spotlightedStructure)) {
+                spotlightedStructure.update(deltaTime);
+            }
         }
         // Update fog after movement
         fogSystem.updateFog(entities);
@@ -59,7 +81,9 @@ public class GameWorld {
     public void addEntity(Entity entity) {
         entities.add(entity);
     }
-
+    public void removeEntity(Entity e){entities.remove(e);}
+    @Override
+    public void onEntityDeath(Entity e) {removeEntity(e);}
     public void addStructure(Structure structure) {
         structures.add(structure);
     }
