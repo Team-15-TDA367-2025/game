@@ -14,12 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * Component that handles the behaviour of {@link Termite}
+ */
 public class TermiteBehaviour {
     Termite termite;
     TermiteBehaviour(Termite termite){
         this.termite = termite;
     }
 
+    /**
+     * Updates the behaviour of the Termite.
+     * @param entities list of entities in the {@link se.chalmers.tda367.team15.game.model.GameWorld}
+     * @param structures the list of structures in the {@link se.chalmers.tda367.team15.game.model.GameWorld}
+     * @return the target {@link HasHealth} or {@code null} if there are no attack targets.
+     */
     public HasHealth update(List<Entity> entities,List<Structure> structures) {
 
         Vector2 targetV = termite.getPosition();

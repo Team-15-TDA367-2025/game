@@ -12,6 +12,10 @@ import se.chalmers.tda367.team15.game.model.entity.Entity;
 
 import java.util.List;
 
+/**
+ * Termites are hostile to anything not in their {@link Faction}, termites {@link Faction} is "TERMITE_PROTECTORATE". Termites will pursue enemy entities
+ *  then structures, then stand still. Perfect vision of map.
+ */
 public class Termite extends Entity implements HasHealth{
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
     private final float SPEED = 6f;
@@ -26,6 +30,10 @@ public class Termite extends Entity implements HasHealth{
         health = MAX_HEALTH;
     }
 
+    /**
+     * Updates the termite
+     * @param deltaTime the real time change between frames
+     */
     @Override
     public void update(float deltaTime){
         List<Entity> entities = getGameWorld().getEntities();
@@ -38,18 +46,23 @@ public class Termite extends Entity implements HasHealth{
 
     }
 
+    /**
+     *
+     * @return returns termites speed.
+     */
     public float getSpeed() {
         return SPEED;
     }
 
+    /**
+     *
+     * @return the termites {@link Faction}
+     */
     @Override
     public Faction getFaction(){
         return faction;
     }
 
-    public AttackComponent getAttackComponent() {
-        return attackComponent;
-    }
 
     @Override
     public void takeDamage(float amount) {
@@ -59,8 +72,10 @@ public class Termite extends Entity implements HasHealth{
         }
     }
 
+
     @Override
     public void die() {
+        health = 0f;
         DestructionListener.getInstance().notifyEntityDeathObservers(this);
     }
 }

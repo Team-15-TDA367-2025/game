@@ -50,7 +50,8 @@ public class GameWorld implements EntityDeathObserver{
 
     public void update(float deltaTime) {
 
-
+        // Looks complicated, but if we want things in the game world to be able to update the game world
+        // we cannot iterate through a list that might be updated.
         ArrayList<Entity> updateTheseEntities = new ArrayList<>(getEntities());
         Entity spotlightedEntity;
         while(!updateTheseEntities.isEmpty()) {
@@ -68,17 +69,8 @@ public class GameWorld implements EntityDeathObserver{
                 spotlightedStructure.update(deltaTime);
             }
         }
-        /*
-        for (Entity e : entities) {
-            e.update(deltaTime);
-        }
 
-        for (Structure s : structures) {
-            s.update(deltaTime);
-        }
         // Update fog after movement
-        */
-
         fogSystem.updateFog(entities);
     }
 
