@@ -25,11 +25,11 @@ public class TermiteBehaviour {
         Vector2 targetV = termite.getPosition();
         Object tmp = null;
 
-        // check for hostile entities.there might be ants we can eat! *licks lips with devious smile* >:)
+        //check for hostile entities.there might be ants we can eat! *licks lips with devious smile* >:)
         Entity tE = determineTargetE(entities);
         Structure tS = determineTargetS(structures);
 
-        // determine target, entities first, then structures,  then stand still.
+        //determine target, entities first, then structures,  then stand still.
         if(tE != null) {
             targetV.set(tE.getPosition());
             tmp = tE;
@@ -42,11 +42,9 @@ public class TermiteBehaviour {
         }
 
         Vector2 diff = targetV.sub(termite.getPosition());
-        // set velocity
-        if(targetV.len() > 0.01f) {
-            termite.setVelocity(diff.nor().scl(termite.getSpeed()));
-        }
+        termite.setVelocity(diff.nor().scl(termite.getSpeed()));
 
+        // We know what we are doing.
         // https://www.youtube.com/watch?v=pOp3hJz6ROY
         return (HasHealth) tmp;
     }
