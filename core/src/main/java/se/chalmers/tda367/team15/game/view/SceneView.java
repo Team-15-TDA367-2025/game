@@ -25,10 +25,15 @@ public class SceneView {
         batch.begin();
 
         drawables.forEach(this::draw);
-        fogRenderer.render(batch, fog);
 
         batch.end();
-
+        
+        // Render fog with shader (handles its own batch)
+        fogRenderer.render(fog, cameraView.getCombinedMatrix(), cameraView);
+    }
+    
+    public void resize(int width, int height) {
+        fogRenderer.resize(width, height);
     }
 
     private void draw(Drawable drawable) {
@@ -56,5 +61,6 @@ public class SceneView {
 
     public void dispose() {
         batch.dispose();
+        fogRenderer.dispose();
     }
 }

@@ -104,13 +104,14 @@ public class GameScreen extends ScreenAdapter {
 
         pheromoneView.render();
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
-        gridView.render();
+        // gridView.render();
         hudView.render();
     }
 
     @Override
     public void resize(int width, int height) {
         viewportListener.resize(width, height);
+        sceneView.resize(width, height);
     }
 
     @Override
