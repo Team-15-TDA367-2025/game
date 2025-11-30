@@ -18,7 +18,7 @@ public class Ant extends Entity implements VisionProvider {
     private PheromoneSystem system;
 
     public Ant(Vector2 position, PheromoneSystem system) {
-        super(position, "Ant");
+        super(position, "ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
         pickRandomDirection();
@@ -42,7 +42,7 @@ public class Ant extends Entity implements VisionProvider {
 
     public void updateRotation() {
         if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad();
+            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
         }
     }
 
@@ -56,7 +56,7 @@ public class Ant extends Entity implements VisionProvider {
 
     @Override
     public Vector2 getSize() {
-        return new Vector2(3f, 0.5f); // Adjusted size
+        return new Vector2(3.2f, 4.8f); // Adjusted size
     }
 
     @Override

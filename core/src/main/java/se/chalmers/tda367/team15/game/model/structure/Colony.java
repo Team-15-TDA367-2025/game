@@ -14,7 +14,7 @@ public class Colony extends Structure {
     private List<Ant> ants;
 
     public Colony(GridPoint2 position) {
-        super(position, "AntColony", 5);
+        super(position, "colony", 6);
         this.ants = new ArrayList<>();
     }
 
