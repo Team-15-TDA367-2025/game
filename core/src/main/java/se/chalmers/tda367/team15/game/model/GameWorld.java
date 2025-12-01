@@ -13,7 +13,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceSystem;
 
 public class GameWorld {
     private final Colony colony;
-    private List<Entity> entities; // Floating positions and can move around.
+    private List<Entity> worldEntities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
     private List<Resource> resources;
     private final FogSystem fogSystem;
@@ -25,7 +25,7 @@ public class GameWorld {
         this.colony = colony;
         fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
         fogSystem = new FogSystem(fogOfWar);
-        this.entities = new ArrayList<>();
+        this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
         this.resources = new ArrayList<>();
         this.timeCycle = timeCycle;
@@ -33,7 +33,7 @@ public class GameWorld {
     }
 
     public List<Entity> getEntities() {
-        List<Entity> allEntities = new ArrayList<>(entities);
+        List<Entity> allEntities = new ArrayList<>(worldEntities);
         for (Structure structure : structures) {
             allEntities.addAll(structure.getSubEntities());
         }
@@ -52,6 +52,7 @@ public class GameWorld {
     }
 
     public void update(float deltaTime) {
+        List<Entity> entities = getEntities();
         for (Entity e : entities) {
             e.update(deltaTime);
         }
@@ -70,7 +71,7 @@ public class GameWorld {
     }
 
     public void addEntity(Entity entity) {
-        entities.add(entity);
+        worldEntities.add(entity);
     }
 
     public void addStructure(Structure structure) {
