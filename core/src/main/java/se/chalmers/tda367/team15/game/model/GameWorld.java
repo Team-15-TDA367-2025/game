@@ -20,6 +20,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private final FogOfWar fogOfWar;
     private DestructionListener destructionListener;
     private TimeCycle timeCycle;
+    private WaveManager waveManager;
     private List<TimeObserver> timeObservers;
     private float tickAccumulator = 0f;
     private float secondsPerTick;
@@ -36,6 +37,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
+        waveManager = new WaveManager(this);
 
     }
 
@@ -49,6 +51,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
             throw new IllegalStateException("GameWorld must be created with createInstance() before used");
         }
         return gameWorld;
+
     }
 
     public List<Structure> getStructures() {
