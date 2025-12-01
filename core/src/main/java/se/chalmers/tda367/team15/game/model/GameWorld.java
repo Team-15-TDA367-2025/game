@@ -30,7 +30,7 @@ public class GameWorld {
         this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
-        
+
     }
 
     public List<Entity> getEntities() {
@@ -59,7 +59,7 @@ public class GameWorld {
         timeObservers.remove(observer);
     }
 
-    public void notifyTimeObservers() {
+    private void notifyTimeObservers() {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
         }
@@ -68,10 +68,10 @@ public class GameWorld {
     public void update(float deltaTime) {
         tickAccumulator += deltaTime; // add real seconds
         while (tickAccumulator >= secondsPerTick) {
-            timeCycle.tick();      
-            notifyTimeObservers();    
+            timeCycle.tick();
+            notifyTimeObservers();
             tickAccumulator -= secondsPerTick; // remove the processed time
-}
+        }
         for (Entity e : entities) {
             e.update(deltaTime);
         }
