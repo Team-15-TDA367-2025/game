@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,10 +13,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import se.chalmers.tda367.team15.game.controller.CameraController;
+import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.controller.ViewportListener;
 import se.chalmers.tda367.team15.game.model.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.CameraModel;
 import se.chalmers.tda367.team15.game.view.CameraView;
+import se.chalmers.tda367.team15.game.view.HudView;
 import se.chalmers.tda367.team15.game.view.SceneView;
 
 public class Main extends ApplicationAdapter {
@@ -33,6 +36,8 @@ public class Main extends ApplicationAdapter {
     private CameraController cameraController;
     private ViewportListener viewportListener;
     private SceneView sceneView;
+    private HudView hudView;
+    private HudController hudController;
 
     // Rendering
     private SpriteBatch hudBatch;
@@ -86,6 +91,15 @@ public class Main extends ApplicationAdapter {
         image = new Texture(Gdx.files.internal("libgdx.png"));
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
+
+        hudView = new HudView(hudBatch);
+        hudController = new HudController(hudView);
+
+        InputMultiplexer mux = new InputMultiplexer();
+        mux.addProcessor(hudView.getTopStage());
+        mux.addProcessor(hudView.getBottomStage());
+        mux.addProcessor(cameraController);
+        Gdx.input.setInputProcessor(mux);
     }
 
     @Override
@@ -103,6 +117,9 @@ public class Main extends ApplicationAdapter {
             // Render world entities here
             sceneView.getBatch().draw(image, 0, 0, 12f, 2f);
         });
+
+        hudController.update(Gdx.graphics.getDeltaTime());
+        hudView.render(Gdx.graphics.getDeltaTime());
 
         hudBatch.begin();
         drawHUD();
@@ -163,6 +180,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         viewportListener.resize(width, height);
+        hudView.resize(width, height);
     }
 
     @Override
