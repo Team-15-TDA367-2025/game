@@ -66,7 +66,6 @@ public class ResourceSystem {
                     if (nearbyResources != null && !nearbyResources.isEmpty()) {
                         for (Resource resource : new ArrayList<>(nearbyResources)) {
                             if (tryPickupResource(ant, resource)) {
-                                System.out.println("Ant picked up " + resource.getType());
                                 if (isResourceDepleted(resource)) {
                                     removeResource(resource);
                                 }
