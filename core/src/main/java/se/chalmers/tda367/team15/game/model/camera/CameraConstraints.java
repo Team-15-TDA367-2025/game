@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model;
+package se.chalmers.tda367.team15.game.model.camera;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -43,8 +43,9 @@ public class CameraConstraints {
     /**
      * Constrains a camera position considering the viewport size and zoom.
      * Ensures that the camera viewport corners stay within bounds when possible.
-     * @param position The current camera position
-     * @param zoom The current zoom level
+     * 
+     * @param position     The current camera position
+     * @param zoom         The current zoom level
      * @param viewportSize The viewport size in world units (before zoom)
      * @return A new Vector2 with the constrained position
      */
@@ -55,15 +56,13 @@ public class CameraConstraints {
         float availableHeight = Math.max(0, bounds.height - scaledViewport.y);
 
         Rectangle movementArea = new Rectangle(
-            bounds.x + (bounds.width - availableWidth) / 2f,
-            bounds.y + (bounds.height - availableHeight) / 2f,
-            availableWidth,
-            availableHeight
-        );
+                bounds.x + (bounds.width - availableWidth) / 2f,
+                bounds.y + (bounds.height - availableHeight) / 2f,
+                availableWidth,
+                availableHeight);
 
         return new Vector2(
-            MathUtils.clamp(position.x, movementArea.x, movementArea.x + movementArea.width),
-            MathUtils.clamp(position.y, movementArea.y, movementArea.y + movementArea.height)
-        );
+                MathUtils.clamp(position.x, movementArea.x, movementArea.x + movementArea.width),
+                MathUtils.clamp(position.y, movementArea.y, movementArea.y + movementArea.height));
     }
 }

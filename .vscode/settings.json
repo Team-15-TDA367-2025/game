@@ -1,5 +1,8 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
+  // We'll use 4 spaces for indentation
   "editor.tabSize": 4,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  // To make windows work the same as linux and macos
+  "files.eol": "\n",
 }
