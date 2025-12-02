@@ -17,7 +17,6 @@ import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.world.PerlinNoiseTerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.view.CameraView;
-import se.chalmers.tda367.team15.game.view.GridView;
 import se.chalmers.tda367.team15.game.view.HUDView;
 import se.chalmers.tda367.team15.game.view.PheromoneView;
 import se.chalmers.tda367.team15.game.view.SceneView;
@@ -46,7 +45,6 @@ public class GameScreen extends ScreenAdapter {
 
     // Views
     private final SceneView sceneView;
-    private final GridView gridView;
     private final PheromoneView pheromoneView;
     private final HUDView hudView;
     private final TextureRegistry textureRegistry;
@@ -83,7 +81,6 @@ public class GameScreen extends ScreenAdapter {
 
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry, gameModel);
-        gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView);
         
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
@@ -124,7 +121,6 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void dispose() {
         sceneView.dispose();
-        gridView.dispose();
         pheromoneView.dispose();
         hudView.dispose();
         textureRegistry.dispose();
