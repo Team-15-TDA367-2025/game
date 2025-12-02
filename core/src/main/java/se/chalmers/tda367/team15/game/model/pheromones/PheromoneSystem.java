@@ -1,6 +1,8 @@
 package se.chalmers.tda367.team15.game.model.pheromones;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
@@ -46,25 +48,58 @@ public class PheromoneSystem {
     }
 
     /**
-     * Propagates shorter distances to neighboring pheromones.
-     * If a neighbor has a distance greater than sourceDistance + 1, it means
-     * there's now a shorter path through the source position, so we update it.
+     * Propagates shorter distances to all reachable pheromones using BFS.
+     * Each node is processed at most once.
      * 
-     * @param sourcePos      The position from which to propagate
-     * @param sourceDistance The distance at the source position
+     * @param startPos      The position from which to start propagation
+     * @param startDistance The distance at the starting position
      */
-    private void propagateShorterDistances(GridPoint2 sourcePos, int sourceDistance) {
-        for (int[] offset : NEIGHBOR_OFFSETS) {
-            GridPoint2 neighborPos = new GridPoint2(sourcePos.x + offset[0], sourcePos.y + offset[1]);
-            Pheromone neighbor = pheromoneGrid.getPheromoneAt(neighborPos);
+    private void propagateShorterDistances(GridPoint2 startPos, int startDistance) {
+        Deque<GridPoint2> queue = new ArrayDeque<>();
+        queue.add(startPos);
 
-            if (neighbor != null && neighbor.getDistance() > sourceDistance + 1) {
-                // This neighbor has a longer path than necessary, update it
-                Pheromone updated = new Pheromone(neighborPos, neighbor.getType(), sourceDistance + 1);
-                pheromoneGrid.addPheromone(updated);
+        while (!queue.isEmpty()) {
+            GridPoint2 pos = queue.poll();
+            Pheromone current = pheromoneGrid.getPheromoneAt(pos);
+            if (current == null) {
+                continue;
+            }
+            int currentDistance = current.getDistance();
 
-                // Recursively propagate from the updated neighbor
-                propagateShorterDistances(neighborPos, updated.getDistance());
+            for (int[] offset : NEIGHBOR_OFFSETS) {
+                GridPoint2 neighborPos = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
+                Pheromone neighbor = pheromoneGrid.getPheromoneAt(neighborPos);
+
+                if (neighbor != null && neighbor.getDistance() > currentDistance + 1) {
+                    Pheromone updated = new Pheromone(neighborPos, neighbor.getType(), currentDistance + 1);
+                    pheromoneGrid.addPheromone(updated);
+                    queue.add(neighborPos);
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes all pheromones downstream of the given position using BFS.
+     * 
+     * @param startPos    The position from which to start removal
+     * @param minDistance Pheromones with distance > minDistance will be removed
+     */
+    private void propagateRemoval(GridPoint2 startPos, int minDistance) {
+        Deque<GridPoint2> queue = new ArrayDeque<>();
+        queue.add(startPos);
+
+        while (!queue.isEmpty()) {
+            GridPoint2 pos = queue.poll();
+
+            for (int[] offset : NEIGHBOR_OFFSETS) {
+                GridPoint2 neighborPos = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
+                Pheromone neighbor = pheromoneGrid.getPheromoneAt(neighborPos);
+
+                if (neighbor != null && neighbor.getDistance() > minDistance) {
+                    pheromoneGrid.removePheromone(neighborPos);
+                    queue.add(neighborPos);
+                }
             }
         }
     }
@@ -112,21 +147,7 @@ public class PheromoneSystem {
         }
         int targetDistance = pheromone.getDistance();
         pheromoneGrid.removePheromone(pos);
-        removePheromone(pos, targetDistance);
-    }
-
-    /** Recurse and remove all pheromones with distance greater than minDistance. */
-    private void removePheromone(GridPoint2 pos, int minDistance) {
-        for (int[] offset : NEIGHBOR_OFFSETS) {
-            GridPoint2 neighbor = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
-
-            Pheromone pheromone = pheromoneGrid.getPheromoneAt(neighbor);
-
-            if (pheromone != null && pheromone.getDistance() > minDistance) {
-                pheromoneGrid.removePheromone(neighbor);
-                removePheromone(neighbor, minDistance);
-            }
-        }
+        propagateRemoval(pos, targetDistance);
     }
 
     public Collection<Pheromone> getPheromones() {
