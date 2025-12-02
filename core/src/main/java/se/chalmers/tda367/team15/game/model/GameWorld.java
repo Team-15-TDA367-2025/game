@@ -23,6 +23,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private List<TimeObserver> timeObservers;
     private float tickAccumulator = 0f;
     private float secondsPerTick;
+    private final WaveManager waveManager;
     private static GameWorld gameWorld;
 
     private GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
@@ -36,6 +37,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
+        waveManager = new WaveManager();
 
     }
 
