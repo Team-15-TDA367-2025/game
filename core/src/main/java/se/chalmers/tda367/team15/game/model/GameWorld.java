@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 
@@ -17,20 +20,28 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
     private final FogOfWar fogOfWar;
     private DestructionListener destructionListener;
     private TimeCycle timeCycle;
+    private List<TimeObserver> timeObservers;
+    private float tickAccumulator = 0f;
+    private float secondsPerTick;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
         fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
+        this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
+        this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
+
 
     }
 
     public List<Structure> getStructures(){
         return Collections.unmodifiableList(structures);
+
+
     }
 
     public List<Entity> getEntities() {
@@ -38,7 +49,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
         for (Structure structure : structures) {
             allEntities.addAll(structure.getSubEntities());
         }
-        return  Collections.unmodifiableList(allEntities);
+        return Collections.unmodifiableList(allEntities);
     }
 
     public Iterable<Drawable> getDrawables() {
@@ -51,6 +62,20 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
         return fogOfWar;
     }
 
+    public void addTimeObserver(TimeObserver observer) {
+        timeObservers.add(observer);
+    }
+
+    public void removeTimeObserver(TimeObserver observer) {
+        timeObservers.remove(observer);
+    }
+
+    private void notifyTimeObservers() {
+        for (TimeObserver observer : timeObservers) {
+            observer.onTimeUpdate(timeCycle);
+        }
+    }
+
     private List<Updatable> getUpdatables() {
         List<Updatable> updatables = new ArrayList<>();
         updatables.addAll(entities);
@@ -59,6 +84,15 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
     }
 
     public void update(float deltaTime) {
+        tickAccumulator += deltaTime; // add real seconds
+        while (tickAccumulator >= secondsPerTick) {
+            timeCycle.tick();
+            notifyTimeObservers();
+            tickAccumulator -= secondsPerTick; // remove the processed time
+        }
+        for (Entity e : entities) {
+            e.update(deltaTime);
+        }
 
         List<Updatable> updateTheseEntities = getUpdatables();
         Updatable spotlightedUpdateable;
@@ -66,7 +100,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
             spotlightedUpdateable = updateTheseEntities.removeFirst();
             spotlightedUpdateable.update(deltaTime);
         }
-
         // Update fog after movement
         fogSystem.updateFog(entities);
     }
