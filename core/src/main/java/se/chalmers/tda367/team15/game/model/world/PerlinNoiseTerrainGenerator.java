@@ -16,17 +16,10 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
     private final double scale;
     private final int octaves;
     private final double persistence;
+    private final double lacunarity;
+    private final double redistribution;
 
     private static final int PERMUTATION_SIZE = 256;
-
-    /**
-     * Creates a Perlin noise terrain generator with default parameters.
-     *
-     * @param texturePool the list of texture names to use
-     */
-    public PerlinNoiseTerrainGenerator(List<String> texturePool) {
-        this(texturePool, System.currentTimeMillis(), 0.1, 4, 0.5);
-    }
 
     /**
      * Creates a Perlin noise terrain generator with a specific seed.
@@ -35,23 +28,28 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
      * @param seed        the random seed for reproducible generation
      */
     public PerlinNoiseTerrainGenerator(List<String> texturePool, long seed) {
-        this(texturePool, seed, 0.1, 4, 0.5);
+        this(texturePool, seed, 0.07, 4, 0.4, 2.0, 1.2);
     }
 
     /**
      * Creates a Perlin noise terrain generator with full control over parameters.
      *
-     * @param texturePool the list of texture names to use
-     * @param seed        the random seed for reproducible generation
-     * @param scale       controls the "zoom" level of the noise (smaller = more zoomed in)
-     * @param octaves     number of noise layers to combine (more = more detail)
-     * @param persistence how much each octave contributes (0-1, higher = rougher terrain)
+     * @param texturePool    the list of texture names to use
+     * @param seed           the random seed for reproducible generation
+     * @param scale          controls the "zoom" level of the noise (smaller = larger features)
+     * @param octaves        number of noise layers to combine (more = more detail, 4-8 recommended)
+     * @param persistence    amplitude multiplier per octave (0-1, higher = rougher terrain)
+     * @param lacunarity     frequency multiplier per octave (typically 2.0, higher = more detail variation)
+     * @param redistribution power curve for terrain distribution (1.0 = linear, >1 = more low areas, <1 = more high areas)
      */
-    public PerlinNoiseTerrainGenerator(List<String> texturePool, long seed, double scale, int octaves, double persistence) {
+    public PerlinNoiseTerrainGenerator(List<String> texturePool, long seed, double scale, int octaves, 
+                                        double persistence, double lacunarity, double redistribution) {
         this.texturePool = texturePool;
         this.scale = scale;
         this.octaves = octaves;
         this.persistence = persistence;
+        this.lacunarity = lacunarity;
+        this.redistribution = redistribution;
         this.permutation = generatePermutation(seed);
     }
 
@@ -107,6 +105,7 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
                 double frequency = 1.0;
                 double noiseValue = 0.0;
 
+                // Combine multiple octaves (fractal Brownian motion)
                 for (int o = 0; o < octaves; o++) {
                     double sampleX = x * scale * frequency;
                     double sampleY = y * scale * frequency;
@@ -114,8 +113,8 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
                     double perlinValue = perlin(sampleX, sampleY);
                     noiseValue += perlinValue * amplitude;
 
-                    amplitude *= persistence;
-                    frequency *= 2.0;
+                    amplitude *= persistence;  // Each octave contributes less
+                    frequency *= lacunarity;   // Each octave has higher frequency (more detail)
                 }
 
                 noiseMap[x][y] = noiseValue;
@@ -124,10 +123,15 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
             }
         }
 
-        // Normalize to 0-1 range
+        // Normalize to 0-1 range and apply redistribution curve
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                noiseMap[x][y] = (noiseMap[x][y] - minNoise) / (maxNoise - minNoise);
+                // Normalize
+                double normalized = (noiseMap[x][y] - minNoise) / (maxNoise - minNoise);
+                
+                // Apply redistribution curve for more natural terrain distribution
+                // redistribution > 1 creates more lowlands, < 1 creates more highlands
+                noiseMap[x][y] = Math.pow(normalized, redistribution);
             }
         }
 
