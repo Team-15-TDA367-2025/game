@@ -1,6 +1,6 @@
 package se.chalmers.tda367.team15.game.screens;
 
-import java.util.Map;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -14,6 +14,8 @@ import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
+import se.chalmers.tda367.team15.game.model.world.PerlinNoiseTerrainGenerator;
+import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.view.CameraView;
 import se.chalmers.tda367.team15.game.view.GridView;
 import se.chalmers.tda367.team15.game.view.HUDView;
@@ -23,10 +25,12 @@ import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.ViewportListener;
 
 public class GameScreen extends ScreenAdapter {
-    private static final float WORLD_VIEWPORT_WIDTH = 30f;
-    private static final int MAP_WIDTH = 200;
-    private static final int MAP_HEIGHT = 200;
+    // With TILE_SIZE = 1, world units ARE tile units (1 unit = 1 tile)
     private static final float TILE_SIZE = 1f;
+    private static final float WORLD_VIEWPORT_WIDTH = 15f; // Show ~15 tiles across
+    private static final int MAP_WIDTH = 200;  // 200 tiles wide
+    private static final int MAP_HEIGHT = 200; // 200 tiles tall
+    private static final int PHEROMONES_PER_TILE = 4; // 4 pheromones per tile = denser grid
 
     private static final float MIN_ZOOM = 0.15f;
     private static final float MAX_ZOOM = 4.0f;
@@ -54,7 +58,11 @@ public class GameScreen extends ScreenAdapter {
         TimeCycle timeCycle = new TimeCycle(60);
 
         cameraModel = new CameraModel(constraints);
-        gameModel = new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, TILE_SIZE);
+        
+        TerrainGenerator terrainGenerator = new PerlinNoiseTerrainGenerator(
+            List.of("grass1", "grass2", "grass3")
+        );
+        gameModel = new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, TILE_SIZE, PHEROMONES_PER_TILE, terrainGenerator);
 
         // TODO: Should be a factory or something, this is just for testing!
         gameModel.spawnAnt(new Vector2(0, 0));
@@ -74,7 +82,7 @@ public class GameScreen extends ScreenAdapter {
         inputManager.addProcessor(cameraController);
 
         textureRegistry = new TextureRegistry();
-        sceneView = new SceneView(worldCameraView, textureRegistry);
+        sceneView = new SceneView(worldCameraView, textureRegistry, gameModel);
         gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView);
         
@@ -102,9 +110,9 @@ public class GameScreen extends ScreenAdapter {
 
         ScreenUtils.clear(0.227f, 0.643f, 0.239f, 1f);
 
-        pheromoneView.render();
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
-        gridView.render();
+        pheromoneView.render();
+        // gridView.render();
         hudView.render();
     }
 

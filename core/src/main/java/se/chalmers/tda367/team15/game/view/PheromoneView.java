@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
@@ -15,10 +16,12 @@ public class PheromoneView {
     private final ShapeRenderer shapeRenderer;
     private final CameraView cameraView;
     private final PheromoneSystem pheromoneSystem;
+    private final PheromoneGridConverter converter;
 
     public PheromoneView(CameraView cameraView, PheromoneSystem pheromoneSystem) {
         this.cameraView = cameraView;
         this.pheromoneSystem = pheromoneSystem;
+        this.converter = pheromoneSystem.getConverter();
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -51,9 +54,10 @@ public class PheromoneView {
             shapeRenderer.setColor(color);
             
             GridPoint2 gridPos = pheromone.getPosition();
-            Vector2 pos = new Vector2(gridPos.x, gridPos.y);
-            // Draw a 1x1 square centered at the grid position
-            shapeRenderer.rect(pos.x, pos.y, 1f, 1f);
+            Vector2 worldPos = converter.pheromoneGridToWorld(gridPos);
+            float cellSize = converter.getPheromoneCellSize();
+            // Draw a square at the pheromone cell size, centered at the world position
+            shapeRenderer.rect(worldPos.x - cellSize / 2f, worldPos.y - cellSize / 2f, cellSize, cellSize);
         }
 
         shapeRenderer.end();

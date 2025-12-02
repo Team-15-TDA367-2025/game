@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.view;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.FogOfWar;
 
@@ -14,16 +15,15 @@ public class FogRenderer {
     }
 
     public void render(SpriteBatch batch, FogOfWar fogOfWar) {
-        int width = fogOfWar.getWidth();
-        int height = fogOfWar.getHeight();
+        GridPoint2 size = fogOfWar.getSize();
         float tileSize = fogOfWar.getTileSize();
 
         batch.setColor(0.09f, 0.188f, 0.11f, 0.7f);
-        float offsetX = -fogOfWar.getWidth() / 2f * fogOfWar.getTileSize(); // AI debugging for coordinates
-        float offsetY = -fogOfWar.getHeight() / 2f * fogOfWar.getTileSize();
+        float offsetX = -size.x / 2f * fogOfWar.getTileSize(); // AI debugging for coordinates
+        float offsetY = -size.y / 2f * fogOfWar.getTileSize();
 
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
+        for (int x = 0; x < size.x; x++) {
+            for (int y = 0; y < size.y; y++) {
                 if (!fogOfWar.isDiscovered(x, y)) {
                     float worldX = x * tileSize + offsetX;
                     float worldY = y * tileSize + offsetY;

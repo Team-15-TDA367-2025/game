@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
@@ -11,7 +12,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 
 public class Ant extends Entity implements VisionProvider {
-    private static final float SPEED = 5f;
+    private static final float SPEED = 2f;
     private final int visionRadius = 4;
 
     private AntBehavior behavior;
@@ -51,12 +52,17 @@ public class Ant extends Entity implements VisionProvider {
     }
 
     public GridPoint2 getGridPosition() {
-        return new GridPoint2((int) Math.floor(position.x), (int) Math.floor(position.y));
+        PheromoneGridConverter converter = system.getConverter();
+        return converter.worldToPheromoneGrid(position);
+    }
+
+    public PheromoneSystem getSystem() {
+        return system;
     }
 
     @Override
     public Vector2 getSize() {
-        return new Vector2(3.2f, 4.8f); // Adjusted size
+        return new Vector2(1f, 1.5f); // 1 tile wide, 1.5 tiles tall
     }
 
     @Override

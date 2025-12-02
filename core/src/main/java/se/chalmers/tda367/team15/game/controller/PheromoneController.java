@@ -6,11 +6,13 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 public class PheromoneController extends InputAdapter {
     private final GameModel gameModel;
     private final CoordinateConverter converter;
+    private final PheromoneGridConverter pheromoneGridConverter;
     private PheromoneType currentType = PheromoneType.GATHER; // null = delete mode
     private GridPoint2 lastGridPos; // Track last drawn position for line interpolation
     private boolean isDragging = false;
@@ -18,6 +20,7 @@ public class PheromoneController extends InputAdapter {
     public PheromoneController(GameModel gameModel, CoordinateConverter converter) {
         this.gameModel = gameModel;
         this.converter = converter;
+        this.pheromoneGridConverter = gameModel.getPheromoneGridConverter();
         this.lastGridPos = null;
     }
 
@@ -105,10 +108,10 @@ public class PheromoneController extends InputAdapter {
     }
 
     /**
-     * Converts world coordinates to grid coordinates.
-     * Uses 1:1 mapping (1 world unit = 1 grid cell).
+     * Converts world coordinates to pheromone grid coordinates.
+     * Uses the denser pheromone grid (multiple cells per tile).
      */
     private GridPoint2 worldToGrid(Vector2 worldPos) {
-        return new GridPoint2((int) Math.floor(worldPos.x), (int) Math.floor(worldPos.y));
+        return pheromoneGridConverter.worldToPheromoneGrid(worldPos);
     }
 }

@@ -14,7 +14,7 @@ public interface Drawable {
         return 0f;
     }
 
-    /** The size of the object in world units. Defaults to 1x1. */
+    /** The size of the object in tiles (1 = 1 tile). Defaults to 1x1 tile. */
     default Vector2 getSize() {
         return new Vector2(1f, 1f);
     }

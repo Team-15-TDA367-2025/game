@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.badlogic.gdx.math.GridPoint2;
-
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
+import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
+import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
 public class GameWorld {
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
+    private final WorldMap worldMap;
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
     private TimeCycle timeCycle;
@@ -22,9 +22,10 @@ public class GameWorld {
     private float tickAccumulator = 0f;
     private float secondsPerTick;
 
-    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
-        fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
-        fogSystem = new FogSystem(fogOfWar);
+    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize, TerrainGenerator generator) {
+        this.worldMap = new WorldMap(mapWidth, mapHeight, tileSize, generator);
+        this.fogOfWar = new FogOfWar(worldMap);
+        this.fogSystem = new FogSystem(fogOfWar, worldMap);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
         this.timeObservers = new ArrayList<>();
@@ -49,6 +50,10 @@ public class GameWorld {
 
     public FogOfWar getFog() {
         return fogOfWar;
+    }
+
+    public WorldMap getWorldMap() {
+        return worldMap;
     }
 
     public void addTimeObserver(TimeObserver observer) {
