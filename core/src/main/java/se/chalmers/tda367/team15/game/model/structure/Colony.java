@@ -16,9 +16,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 public class Colony extends Structure {
     private List<Ant> ants;
-    private int consumption;
     private int capacity;
-
     private Inventory inventory;
 
     public Colony(GridPoint2 position) {
@@ -36,11 +34,11 @@ public class Colony extends Structure {
         ants.remove(ant);
     }
 
-    public boolean depositResources(Inventory amount) {
+    public boolean depositResources(Inventory otherInventory) {
         boolean deposited = false;
 
         for (ResourceType type : ResourceType.values()) {
-            int total = amount.getAmount(type);
+            int total = otherInventory.getAmount(type);
             if (total > 0) {
                 inventory.addResource(type, total);
                 deposited = true;
@@ -71,10 +69,9 @@ public class Colony extends Structure {
     public void update(float deltaTime) {
         for (Ant ant : ants) {
             ant.update(deltaTime);
-            
+
         }
-        consumption = calculateConsumption();
-        applyConsumption(consumption);
+        applyConsumption(calculateConsumption());
     }
 
     @Override
