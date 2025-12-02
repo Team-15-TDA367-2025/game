@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.badlogic.gdx.math.GridPoint2;
-
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 
-public class GameWorld implements EntityDeathObserver{
+public class GameWorld implements EntityDeathObserver, StructureDeathObserver{
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
     private final FogSystem fogSystem;
@@ -32,7 +30,7 @@ public class GameWorld implements EntityDeathObserver{
     }
 
     public List<Structure> getStructures(){
-        return Collections.unmodifiableList(new ArrayList<>(structures));
+        return Collections.unmodifiableList(structures);
     }
 
     public List<Entity> getEntities() {
@@ -53,27 +51,22 @@ public class GameWorld implements EntityDeathObserver{
         return fogOfWar;
     }
 
+    private List<Updatable> getUpdatables() {
+        List<Updatable> updatables = new ArrayList<>();
+        updatables.addAll(entities);
+        updatables.addAll(structures);
+        return updatables;
+    }
+
     public void update(float deltaTime) {
 
-        // Looks complicated, but if we want things in the game world to be able to update the game world
-        // we cannot iterate through a list that might be updated.
-        ArrayList<Entity> updateTheseEntities = new ArrayList<>(getEntities());
-        Entity spotlightedEntity;
+        List<Updatable> updateTheseEntities = getUpdatables();
+        Updatable spotlightedUpdateable;
         while(!updateTheseEntities.isEmpty()) {
-            spotlightedEntity = updateTheseEntities.removeFirst();
-            if(getEntities().contains(spotlightedEntity)) {
-                spotlightedEntity.update(deltaTime);
-            }
+            spotlightedUpdateable = updateTheseEntities.removeFirst();
+            spotlightedUpdateable.update(deltaTime);
         }
 
-        ArrayList<Structure> updateTheseStructures = new ArrayList<>(getStructures());
-        Structure spotlightedStructure;
-        while(!updateTheseStructures.isEmpty()) {
-            spotlightedStructure = updateTheseStructures.removeFirst();
-            if(getStructures().contains(spotlightedStructure)) {
-                spotlightedStructure.update(deltaTime);
-            }
-        }
         // Update fog after movement
         fogSystem.updateFog(entities);
     }
@@ -86,5 +79,13 @@ public class GameWorld implements EntityDeathObserver{
     public void onEntityDeath(Entity e) {removeEntity(e);}
     public void addStructure(Structure structure) {
         structures.add(structure);
+    }
+    public void removeStructure(Structure s) {
+        structures.remove(s);
+    }
+
+    @Override
+    public void onStructureDeath(Structure s) {
+        removeStructure(s);
     }
 }
