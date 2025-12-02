@@ -16,14 +16,12 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 public class Colony extends Structure {
     private List<Ant> ants;
-    private int capacity;
     private Inventory inventory;
 
     public Colony(GridPoint2 position) {
         super(position, "AntColony", 5);
         this.ants = new ArrayList<>();
-        this.capacity = 1000; // test value for now, expandable
-        this.inventory = new Inventory(capacity);
+        this.inventory = new Inventory(1000); // test value for now
     }
 
     public void addAnt(Ant ant) {
