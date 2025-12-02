@@ -19,36 +19,35 @@ public class ResourceSystem {
     private static final int PICKUP_RADIUS = 2;
     private static final int DEPOSIT_RADIUS = 2;
 
-    private Map<GridPoint2, List<Resource>> resourceGrid;
+    private Map<GridPoint2, Resource> resourceGrid;
 
     public ResourceSystem() {
         this.resourceGrid = new HashMap<>();
     }
 
-    public void update(Colony colony, List<Entity> entities) {
+    public void update(Colony colony, List<Entity> entities, List<Resource> resources) {
         List<Ant> ants = filterAnts(entities);
-
         handleResourcePickup(ants);
         handleResourceDeposit(ants, colony);
+        resources.removeIf(resource -> resource.getAmount() <= 0);
     }
 
     public void addResource(Resource resource) {
         GridPoint2 pos = resource.getGridPosition();
-        resourceGrid.computeIfAbsent(pos, k -> new ArrayList<>()).add(resource);
+        resourceGrid.put(pos, resource);
     }
 
     public void removeResource(Resource resource) {
         GridPoint2 pos = resource.getGridPosition();
-        List<Resource> cellResources = resourceGrid.get(pos);
-        if (cellResources != null) {
-            cellResources.remove(resource);
-            if (cellResources.isEmpty()) {
-                resourceGrid.remove(pos);
-            }
+        Resource cellResource = resourceGrid.get(pos);
+        if (cellResource != null && cellResource.equals(resource)) {
+            resourceGrid.remove(pos);
         }
     }
 
     private void handleResourcePickup(List<Ant> ants) {
+        GridPoint2 checkCell = new GridPoint2();
+
         for (Ant ant : ants) {
             if (ant.getInventory().isFull()) {
                 continue;
@@ -60,19 +59,12 @@ public class ResourceSystem {
             for (int dx = -PICKUP_RADIUS; dx <= PICKUP_RADIUS && !pickedUp; dx++) {
                 for (int dy = -PICKUP_RADIUS; dy <= PICKUP_RADIUS && !pickedUp; dy++) {
 
-                    GridPoint2 checkCell = new GridPoint2(antGrid.x + dx, antGrid.y + dy);
-                    List<Resource> nearbyResources = resourceGrid.get(checkCell);
+                    checkCell.set(antGrid.x + dx, antGrid.y + dy);
+                    Resource nearbyResource = resourceGrid.get(checkCell);
 
-                    if (nearbyResources != null && !nearbyResources.isEmpty()) {
-                        for (Resource resource : new ArrayList<>(nearbyResources)) {
-                            if (tryPickupResource(ant, resource)) {
-                                System.out.println("Ant picked up " + resource.getType());
-                                if (isResourceDepleted(resource)) {
-                                    removeResource(resource);
-                                }
-                                pickedUp = true;
-                                break;
-                            }
+                    if (nearbyResource != null) {
+                        if (tryPickupResource(ant, nearbyResource)) {
+                            pickedUp = true;
                         }
                     }
                 }
@@ -108,14 +100,13 @@ public class ResourceSystem {
 
         if (amountToPickup > 0 && ant.getInventory().addResource(resource.getType(), amountToPickup)) {
             resource.setAmount(resource.getAmount() - amountToPickup);
+            if (resource.getAmount() <= 0) {
+                removeResource(resource);
+            }
             return true;
         }
 
         return false;
-    }
-
-    public boolean isResourceDepleted(Resource resource) {
-        return resource.getAmount() <= 0;
     }
 
     private List<Ant> filterAnts(List<Entity> entities) {

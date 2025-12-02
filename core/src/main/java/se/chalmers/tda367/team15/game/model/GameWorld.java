@@ -61,12 +61,7 @@ public class GameWorld {
         }
         // Update fog after movement
         fogSystem.updateFog(entities);
-        resourceSystem.update(colony, entities);
-        removeDepletedResources();
-    }
-
-    private void removeDepletedResources() {
-        resources.removeIf(resource -> resource.getAmount() <= 0);
+        resourceSystem.update(colony, entities, resources);
     }
 
     public void addEntity(Entity entity) {
