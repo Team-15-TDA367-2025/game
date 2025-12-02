@@ -34,30 +34,20 @@ public class TerrainRenderer {
         GridPoint2 startTile = worldMap.worldToTile(leftBottom);
         GridPoint2 endTile = worldMap.worldToTile(rightTop);
 
-        int startX = Math.max(0, startTile.x);
-        int endX = Math.min(size.x, endTile.x + 1);
-        int startY = Math.max(0, startTile.y);
-        int endY = Math.min(size.y, endTile.y + 1);
-
         for (String textureName : textureNames) {
             TextureRegion texture = textureRegistry.get(textureName);
-            renderTilesOfTexture(batch, worldMap, startX, endX, startY, endY, offsetX, offsetY, textureName, texture);
+            renderTilesOfTexture(batch, worldMap, startTile, endTile, new Vector2(offsetX, offsetY), textureName,
+                    texture);
         }
     }
 
-    private void renderTilesOfTexture(SpriteBatch batch, WorldMap worldMap, int startX, int endX, int startY, int endY,
-            float offsetX, float offsetY, String textureName, TextureRegion texture) {
-        GridPoint2 tilePos = new GridPoint2();
-
-        for (int y = startY; y < endY; y++) {
-            tilePos.y = y;
-            float worldY = y + offsetY;
-            for (int x = startX; x < endX; x++) {
-                tilePos.x = x;
-                Tile tile = worldMap.getTile(tilePos);
+    private void renderTilesOfTexture(SpriteBatch batch, WorldMap worldMap, GridPoint2 startTile, GridPoint2 endTile,
+            Vector2 offset, String textureName, TextureRegion texture) {
+        for (int y = startTile.y; y < endTile.y; y++) {
+            for (int x = startTile.x; x < endTile.x; x++) {
+                Tile tile = worldMap.getTile(new GridPoint2(x, y));
                 if (tile != null && textureName.equals(tile.getTextureName())) {
-                    float worldX = x + offsetX;
-                    batch.draw(texture, worldX, worldY, 1, 1);
+                    batch.draw(texture, x + offset.x, y + offset.y, 1, 1);
                 }
             }
         }
