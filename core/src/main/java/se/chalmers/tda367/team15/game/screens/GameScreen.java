@@ -109,13 +109,14 @@ public class GameScreen extends ScreenAdapter {
         cameraController.update(delta);
         worldCameraView.updateCamera();
         gameModel.update(delta);
+        hudView.updateData(gameModel.getGameTime());
 
         ScreenUtils.clear(0.227f, 0.643f, 0.239f, 1f);
 
         pheromoneView.render();
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
         gridView.render();
-        hudController.update(Gdx.graphics.getDeltaTime());
+        //hudController.update(Gdx.graphics.getDeltaTime());
         hudView.render(Gdx.graphics.getDeltaTime());
     }
 

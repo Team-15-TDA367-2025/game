@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-
 public class GameModel {
     private final GameWorld world;
     private final PheromoneSystem pheromoneSystem;
@@ -33,6 +33,10 @@ public class GameModel {
 
     public void update(float deltaTime) {
         world.update(deltaTime);
+    }
+
+    public TimeCycle.GameTime getGameTime() {
+        return world.getTimeCycle().getGameTime();
     }
 
     // --- GETTERS (For View) ---

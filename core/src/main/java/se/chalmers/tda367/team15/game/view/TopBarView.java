@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 
 public class TopBarView {
     private static final float BAR_WIDTH = 770f;
@@ -122,11 +123,9 @@ public class TopBarView {
         return t;
     }
 
-    public void update(int day, int time, int antCount, int resourceCount) {
-        dayLabel.setText("Day " + day);
-        int hour = time / 60;
-        int min = time % 60;
-        timeLabel.setText(String.format("%02d:%02d", hour, min));
+    public void update(TimeCycle.GameTime gameTime, int antCount, int resourceCount) {
+        dayLabel.setText("Day " + gameTime.totalDays());
+        timeLabel.setText(String.format("%02d:%02d", gameTime.currentHour(), gameTime.currentMinute()));
         resource1Value.setText(antCount + "");
         resource2Value.setText(resourceCount + "");
     }

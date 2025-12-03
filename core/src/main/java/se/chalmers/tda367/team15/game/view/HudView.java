@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.view;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 
 public class HudView {
     private final TopBarView topBar;
@@ -22,8 +23,9 @@ public class HudView {
         bottomBar.resize(w, h);
     }
 
-    public void updateData(int day, int time, int antCount, int resourceCount) {
-        topBar.update(day, time,  antCount, resourceCount);
+    public void updateData(TimeCycle.GameTime gameTime) {
+
+        topBar.update(gameTime, 0, 0);
     }
 
     public Stage getTopStage() { return topBar.getStage(); }
