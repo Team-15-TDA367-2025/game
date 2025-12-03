@@ -118,13 +118,14 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
             tickAccumulator -= secondsPerTick; // remove the processed time
         }
 
-        List<Updatable> updateTheseEntities = getUpdatables();
-        Updatable spotlightedUpdateable;
-        while (!updateTheseEntities.isEmpty()) {
-            // Update fog after movement
-            fogSystem.updateFog(entities);
-            resourceSystem.update(colony, entities, resources);
+        // Update all entities and structures
+        for (Updatable updatable : getUpdatables()) {
+            updatable.update(deltaTime);
         }
+
+        // Update fog after movement
+        fogSystem.updateFog(entities);
+        resourceSystem.update(colony, entities, resources);
     }
 
     public void addEntity(Entity entity) {

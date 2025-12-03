@@ -1,5 +1,5 @@
 {
-  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.configuration.updateBuildConfiguration": "automatic",
   // We'll use 4 spaces for indentation
   "editor.tabSize": 4,
   "editor.detectIndentation": false,
