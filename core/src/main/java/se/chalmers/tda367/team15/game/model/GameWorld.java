@@ -8,13 +8,17 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceSystem;
+import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
+import se.chalmers.tda367.team15.game.model.world.WorldMap;
+
 
 public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private Colony colony = new Colony(new GridPoint2(0, 0));
@@ -23,6 +27,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private List<Structure> structures; // Integer positions and fixed in place.
     private List<Resource> resources;
     private ResourceSystem resourceSystem;
+    private final WorldMap worldMap;
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
     private DestructionListener destructionListener;
@@ -32,9 +37,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private float secondsPerTick;
     private static GameWorld gameWorld;
 
-    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
-        fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
-        fogSystem = new FogSystem(fogOfWar);
+    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+        this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
+        this.fogOfWar = new FogOfWar(worldMap);
+        this.fogSystem = new FogSystem(fogOfWar, worldMap);
         this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
         structures.add(colony);
@@ -46,12 +52,12 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
-        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0));
+        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
 
     }
 
-    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
-        gameWorld = new GameWorld(timeCycle, mapWidth, mapHeight, tileSize);
+    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator terrainGenerator) {
+        gameWorld = new GameWorld(timeCycle, mapWidth, mapHeight,  terrainGenerator);
         return gameWorld;
     }
 
@@ -93,6 +99,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
 
     public FogOfWar getFog() {
         return fogOfWar;
+    }
+
+    public WorldMap getWorldMap() {
+        return worldMap;
     }
 
     public TimeCycle getTimeCycle() {

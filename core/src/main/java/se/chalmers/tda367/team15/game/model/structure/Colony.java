@@ -12,13 +12,14 @@ import com.badlogic.gdx.math.GridPoint2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked {
+public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver {
     private List<Ant> ants;
     private Inventory inventory;
 
@@ -26,10 +27,13 @@ public class Colony extends Structure implements CanBeAttacked {
     private float MAX_HEALTH = 60;
 
     public Colony(GridPoint2 position) {
-        super(position, "AntColony", 5);
+        super(position, "colony", 2);
         this.ants = new ArrayList<>();
+        this.health = MAX_HEALTH;
         faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000); // test value for now
+        // Register to receive ant death notifications
+        DestructionListener.getInstance().addEntityDeathObserver(this);
     }
 
     public void addAnt(Ant ant) {
@@ -73,10 +77,7 @@ public class Colony extends Structure implements CanBeAttacked {
 
     @Override
     public void update(float deltaTime) {
-        for (Ant ant : ants) {
-            ant.update(deltaTime);
-
-        }
+        // Note: Ants are updated by GameWorld via getSubEntities(), not here
         applyConsumption(calculateConsumption());
     }
 
@@ -106,5 +107,13 @@ public class Colony extends Structure implements CanBeAttacked {
     @Override
     public AttackCategory getAttackCategory() {
         return AttackCategory.ANT_COLONY;
+    }
+
+    @Override
+    public void onEntityDeath(Entity e) {
+        // Remove dead ants from our list
+        if (e instanceof Ant) {
+            ants.remove(e);
+        }
     }
 }

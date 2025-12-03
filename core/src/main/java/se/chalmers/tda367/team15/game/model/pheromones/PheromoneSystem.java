@@ -12,10 +12,16 @@ public class PheromoneSystem {
 
     private final PheromoneGrid pheromoneGrid;
     private final GridPoint2 colonyPosition;
+    private final PheromoneGridConverter converter;
 
-    public PheromoneSystem(GridPoint2 colonyPosition) {
+    public PheromoneSystem(GridPoint2 colonyPosition, PheromoneGridConverter converter) {
         this.pheromoneGrid = new PheromoneGrid();
         this.colonyPosition = colonyPosition;
+        this.converter = converter;
+    }
+
+    public PheromoneGridConverter getConverter() {
+        return converter;
     }
 
     /**

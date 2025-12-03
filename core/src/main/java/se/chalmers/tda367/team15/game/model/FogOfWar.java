@@ -1,42 +1,36 @@
 package se.chalmers.tda367.team15.game.model;
 
+import com.badlogic.gdx.math.GridPoint2;
+import se.chalmers.tda367.team15.game.model.world.WorldMap;
+
 public class FogOfWar {
     private final boolean[][] discovered;
-    private final int width;
-    private final int height;
-    private final float tileSize;
+    private final WorldMap worldMap;
 
-    public FogOfWar(int width, int height, float tileSize) {
-        this.width = width;
-        this.height = height;
-        this.tileSize = tileSize;
-        discovered = new boolean[width][height];
-    }
-    
-    public int getWidth() {
-        return width;
+    public FogOfWar(WorldMap worldMap) {
+        this.worldMap = worldMap;
+        GridPoint2 size = worldMap.getSize();
+        discovered = new boolean[size.x][size.y];
     }
 
-    public int getHeight() {
-        return height;
+    public GridPoint2 getSize() {
+        return worldMap.getSize();
     }
 
-    public float getTileSize() {
-        return tileSize;
+    public boolean isDiscovered(GridPoint2 pos) {
+        if (!worldMap.isInBounds(pos)) {
+            return false;
+        }
+        return discovered[pos.x][pos.y];
     }
 
-    public boolean isDiscovered(int x, int y) {
-        return discovered[x][y];
-    }
-
-    void reveal(int cx, int cy, int radius) {
+    void reveal(GridPoint2 center, int radius) {
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -radius; dy <= radius; dy++) {
-                int x = cx + dx;
-                int y = cy + dy;
+                GridPoint2 pos = new GridPoint2(center.x + dx, center.y + dy);
                 boolean insideCircle = dx * dx + dy * dy <= radius * radius;
-                if (x >= 0 && y >= 0 && x < width && y < height && insideCircle) {
-                    discovered[x][y] = true;    
+                if (worldMap.isInBounds(pos) && insideCircle) {
+                    discovered[pos.x][pos.y] = true;    
                 }
             }
         }

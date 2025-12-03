@@ -50,6 +50,51 @@ run {
   if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
 }
 
+// Task to run the game with Java Flight Recorder profiling enabled (AI Generated function, very useful though :)
+tasks.register('runWithProfiling', JavaExec) {
+  group = 'application'
+  description = 'Runs the game with Java Flight Recorder profiling enabled. Recording saved to profile.jfr'
+  
+  dependsOn classes
+  classpath = sourceSets.main.runtimeClasspath
+  mainClass = mainClassName
+  workingDir = rootProject.file('assets').path
+  
+  // JFR configuration - records until game closes
+  def jfrFile = new File(rootProject.projectDir, "profile-${System.currentTimeMillis()}.jfr")
+  jvmArgs = [
+    "-XX:+FlightRecorder",
+    "-XX:StartFlightRecording=filename=${jfrFile.absolutePath},dumponexit=true"
+  ]
+  
+  if (os.contains('mac')) {
+    jvmArgs += "-XstartOnFirstThread"
+  }
+  
+  doFirst {
+    println "=========================================="
+    println "Starting game with JFR profiling enabled"
+    println "=========================================="
+    println "Recording will be saved to: ${jfrFile.absolutePath}"
+    println "Recording will continue until the game closes"
+    println ""
+  }
+  
+  doLast {
+    println ""
+    println "=========================================="
+    println "Profiling complete!"
+    println "=========================================="
+    println "Recording saved to: ${jfrFile.absolutePath}"
+    println ""
+    println "To view the recording:"
+    println "  1. Open VisualVM: jvisualvm"
+    println "  2. File -> Load -> Select the .jfr file"
+    println "  OR use JDK Mission Control: jmc"
+    println ""
+  }
+}
+
 jar {
 // sets the name of the .jar file this produces to the name of the game or app, with the version after.
   archiveFileName.set("${appName}-${projectVersion}.jar")
