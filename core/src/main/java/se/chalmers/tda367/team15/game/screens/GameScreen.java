@@ -131,6 +131,7 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         sceneView.dispose();
         gridView.dispose();
+        hudBatch.dispose();
         pheromoneView.dispose();
         hudView.dispose();
         textureRegistry.dispose();
