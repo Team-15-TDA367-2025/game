@@ -13,7 +13,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 public class GameModel {
     private final GameWorld world;
 
-    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
+    public GameModel(int mapWidth, int mapHeight, float tileSize) {
         this.world = GameWorld.createInstance(mapWidth, mapHeight, tileSize);
         this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));

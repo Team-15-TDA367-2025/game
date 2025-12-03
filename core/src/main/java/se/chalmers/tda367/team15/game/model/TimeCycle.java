@@ -8,7 +8,7 @@ public class TimeCycle {
     private long timeUntilNextPhaseMs = 0;
 
     /**
-     * Responsible for keeping track whether or not the world is in combat phase or standard phase.
+     * Responsible for keeping track whether the world is in combat phase or standard phase.
      * use {@code getTimeUntilNextPhaseMs()} and {@code isCombatPhaseCurrent()} to get info on world phase.
      */
     public TimeCycle() {
