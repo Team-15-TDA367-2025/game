@@ -4,8 +4,7 @@ public class TimeCycle {
     private long combatPhaseMs = 1000;
     private long standardPhaseMs =1000 ;
     private boolean combatPhaseCurrent;
-//1000*60*4
- //   1000*60
+
     private long timeUntilNextPhaseMs = 0;
 
     /**
