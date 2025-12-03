@@ -1,8 +1,8 @@
 package se.chalmers.tda367.team15.game.model;
 
 public class TimeCycle {
-    private long combatPhaseMs = 5 * 1000;
-    private long standardPhaseMs = 1 * 1000;
+    private long combatPhaseMs = 1000*60;
+    private long standardPhaseMs =1000*60*4 ;
     private boolean combatPhaseCurrent;
 
     private long timeUntilNextPhaseMs = 0;
@@ -28,7 +28,7 @@ public class TimeCycle {
         } else {
             timeUntilNextPhaseMs -= msDeltaTime;
         }
-        System.out.println(timeUntilNextPhaseMs / 1000);
+       System.out.println(timeUntilNextPhaseMs / 1000);
 
     }
 

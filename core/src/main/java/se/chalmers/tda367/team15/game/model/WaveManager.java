@@ -1,10 +1,11 @@
 package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector2;import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -12,7 +13,6 @@ import java.util.Random;
  */
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
-    private int termiteDifficultyCost = 1;
 
     WaveManager() {
 
@@ -26,11 +26,11 @@ public class WaveManager implements TimeObserver {
      * spawns a wave of termites according to a scaling difficulty, the termites will have scattered positions from a random direction.
      */
     private void spawnWave() {
-        //determine budget
-        int nightBudget = nightNumber * 3;
 
-        // determine # enemies
-        int nEnemies = nightBudget / termiteDifficultyCost;
+        List<Entity> e = GameWorld.getInstance().getEntities();
+        System.out.println(e.size());
+
+        int nEnemies = nightNumber*2;
 
         // spawn location
         Vector2 spawnLocation = scatter(new Vector2(0,0),75);
