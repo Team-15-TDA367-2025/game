@@ -37,4 +37,8 @@ public class TimeCycle {
         int h = getHour();
         return h >= 6 && h < 22;
     }
+
+    public int getTicks() {
+        return ticks;
+    }
 }

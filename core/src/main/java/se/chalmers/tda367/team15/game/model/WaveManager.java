@@ -1,11 +1,14 @@
 package se.chalmers.tda367.team15.game.model;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+
 import java.util.Random;
 
-public class WaveManager {
+public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
-    private float nightDifficultyDeviation = 0.15f;
-
     private int termiteDifficultyCost = 1;
 
     WaveManager() {
@@ -16,39 +19,48 @@ public class WaveManager {
         return nightNumber;
     }
 
+
+
     void spawnWave() {
         //determine budget
-        double difficultyMin = nightNumber * 3;
-        double difficultyMax = difficultyMin * (1 + nightDifficultyDeviation);
+        int nightBudget = nightNumber * 3;
 
+        // determine # enemies
+        int nEnemies = nightBudget / termiteDifficultyCost;
 
+        // spawn location
+        Vector2 spawnLocation = scatter(new Vector2(0,0),40);
+        // spawn enemies
+        for(int i = 0 ; i< nEnemies; i++) {
+            Termite termite = new Termite(scatter(spawnLocation,3));
+            GameWorld.getInstance().addEntity(termite);
+        }
 
+    }
+
+    Vector2 scatter(Vector2 origin,float distance) {
         Random r = new Random();
-        double random = difficultyMin + r.nextDouble() * (difficultyMax - difficultyMin);
-        int nightBudget = (int) random;
-
-
-
-
-        // Determine amount of waves.
-        double waveBudgetMin = (nightBudget*0.15);
-        double waveBudgetMax= waveBudgetMin + nightBudget * 0.15;
-
-
-        double waveBudget = waveBudgetMin + r.nextDouble() * (waveBudgetMax - waveBudgetMin);
-
-        // find colony
-
-
-        // determine spawn locations
-
-        //
-
-    }
-
-    void scatter() {
-
+        float direction = r.nextFloat()*((float) Math.PI * 2);
+        float x = MathUtils.cos(direction);
+        float y = MathUtils.sin(direction);
+        Vector2 directionV = new Vector2(x,y);
+        return origin.add(directionV.scl(distance));
     }
 
 
+    @Override
+    public void onTimeUpdate(TimeCycle timeCycle) {
+
+    }
+
+    @Override
+    public void onDayStart(TimeCycle timeCycle) {
+
+    }
+
+    @Override
+    public void onNightStart(TimeCycle timeCycle) {
+        nightNumber++;
+        spawnWave();
+    }
 }

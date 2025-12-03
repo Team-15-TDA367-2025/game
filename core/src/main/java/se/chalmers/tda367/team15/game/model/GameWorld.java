@@ -38,7 +38,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
         waveManager = new WaveManager();
-
+        addTimeObserver(waveManager);
     }
 
     public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
@@ -101,8 +101,35 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     public void update(float deltaTime) {
         tickAccumulator += deltaTime; // add real seconds
         while (tickAccumulator >= secondsPerTick) {
+            boolean checkForStartOfDay;
+            // we should check for night
+            if(timeCycle.getIsDay()) {
+                checkForStartOfDay = false;
+            }
+            // we should check for day
+            else{
+                checkForStartOfDay = true;
+            }
+
             timeCycle.tick();
             notifyTimeObservers();
+            // check day
+            if(checkForStartOfDay) {
+                if(timeCycle.getIsDay()) {
+                    for(TimeObserver observer : timeObservers) {
+                        observer.onDayStart(timeCycle);
+                    }
+                }
+            }
+            // check night
+            else{
+                if(!timeCycle.getIsDay()) {
+                    for(TimeObserver observer : timeObservers) {
+                        observer.onNightStart(timeCycle);
+                    }
+                }
+            }
+
             tickAccumulator -= secondsPerTick; // remove the processed time
         }
 
