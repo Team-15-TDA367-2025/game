@@ -29,6 +29,10 @@ public class TimeCycle {
         this.ticksPerMinute = ticksPerMinute;
     }
 
+    public int getTicksPerMinute() {
+        return ticksPerMinute;
+    }
+
     public boolean getIsDay() {
         int h = getHour();
         return h >= 6 && h < 22;

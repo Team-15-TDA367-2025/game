@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -63,13 +64,15 @@ public class GameScreen extends ScreenAdapter {
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
 
+        gameModel.spawnTermite(new Vector2(0, 0));
+
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float aspectRatio = screenHeight / screenWidth;
 
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
-        
+
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 
@@ -77,7 +80,7 @@ public class GameScreen extends ScreenAdapter {
         sceneView = new SceneView(worldCameraView, textureRegistry);
         gridView = new GridView(worldCameraView, TILE_SIZE);
         hudView = new HUDView(cameraModel, worldCameraView);
-        
+
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
         hudView.setPheromoneController(pheromoneController);
         hudView.setPheromoneSystem(gameModel.getPheromoneSystem());
