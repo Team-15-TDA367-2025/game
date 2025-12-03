@@ -1,7 +1,9 @@
 package se.chalmers.tda367.team15.game.view;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,11 +14,9 @@ import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
 public class TerrainRenderer {
     private final TextureRegistry textureRegistry;
-    private final List<String> textureNames;
 
     public TerrainRenderer(TextureRegistry textureRegistry) {
         this.textureRegistry = textureRegistry;
-        this.textureNames = new ArrayList<>(List.of("grass1", "grass2", "grass3"));
     }
 
     public void render(SpriteBatch batch, WorldMap worldMap, CameraView cameraView) {
@@ -33,6 +33,15 @@ public class TerrainRenderer {
 
         GridPoint2 startTile = worldMap.worldToTile(leftBottom);
         GridPoint2 endTile = worldMap.worldToTile(rightTop);
+
+
+        // TODO: This might be very slow
+        Set<String> textureNames = new HashSet<>();
+        for (Tile[] row : worldMap.getTiles()) {
+            for (Tile tile : row) {
+                textureNames.add(tile.getTextureName());
+            }
+        }
 
         for (String textureName : textureNames) {
             TextureRegion texture = textureRegistry.get(textureName);

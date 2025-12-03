@@ -43,4 +43,11 @@ public class WorldMap {
     public GridPoint2 getSize() {
         return new GridPoint2(width, height);
     }
+
+    /** Returns a reference to the tiles array. DO NOT MODIFY THE RETURNED ARRAY.
+     *  We do not copy the array because we'll need to do this each frame.
+    */
+    public Tile[][] getTiles() {
+        return tiles;
+    }
 }
