@@ -92,9 +92,9 @@ public class GameScreen extends ScreenAdapter {
         hudView.setPheromoneSelectionListener(type -> pheromoneController.setCurrentType(type));
 
         // Add Stage first so it can handle button clicks before other processors
-        inputManager.addProcessor(pheromoneController);
         inputManager.addProcessor(hudView.getTopStage());
         inputManager.addProcessor(hudView.getBottomStage());
+        inputManager.addProcessor(pheromoneController);
 
         pheromoneView = new PheromoneView(worldCameraView, gameModel.getPheromoneSystem());
 
