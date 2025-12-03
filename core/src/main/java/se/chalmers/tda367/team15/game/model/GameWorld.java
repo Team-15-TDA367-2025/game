@@ -37,6 +37,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
+        structures.add(colony);
         this.resources = new ArrayList<>();
         this.resourceSystem = new ResourceSystem();
         this.timeObservers = new ArrayList<>();
