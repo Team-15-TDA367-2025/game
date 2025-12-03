@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
@@ -17,6 +18,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceSystem;
 
 public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private Colony colony = new Colony(new GridPoint2(0, 0));
+    private final PheromoneSystem pheromoneSystem;
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
     private List<Resource> resources;
@@ -43,6 +45,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
+        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0));
 
     }
 
@@ -76,6 +79,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         allDrawables.addAll(resources);
         allDrawables.addAll(getEntities());
         return Collections.unmodifiableList(allDrawables);
+    }
+
+    public PheromoneSystem getPheromoneSystem() {
+        return pheromoneSystem;
     }
 
     public FogOfWar getFog() {

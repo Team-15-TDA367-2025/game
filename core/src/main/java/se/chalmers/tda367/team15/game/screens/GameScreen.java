@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter {
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
 
-        gameModel.spawnTermite(new Vector2(0,0));
+        gameModel.spawnTermite(new Vector2(0, 0));
 
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
