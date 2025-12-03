@@ -12,9 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 
-/**
- * Factory for creating common UI components.
- */
 public class UiFactory {
     private final TextureRegistry textures;
     private final BitmapFont defaultFont;

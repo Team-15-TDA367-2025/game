@@ -13,10 +13,6 @@ import com.badlogic.gdx.utils.Align;
 
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
-/**
- * View for the bottom bar HUD showing pheromone controls and action buttons.
- * Manages its own layout actors but adds them to the shared HUD stage.
- */
 public class BottomBarView {
     private final UiFactory uiFactory;
 

@@ -7,9 +7,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 
-/**
- * Main HUD view that manages the shared Stage and sub-components.
- */
 public class HudView {
     private final Stage stage;
     private final TopBarView topBar;

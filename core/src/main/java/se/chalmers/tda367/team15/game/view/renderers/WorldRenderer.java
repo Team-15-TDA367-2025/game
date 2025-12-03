@@ -42,7 +42,6 @@ public class WorldRenderer {
     private void draw(Drawable drawable) {
         TextureRegion region = textureRegistry.get(drawable.getTextureName());
 
-        // With TILE_SIZE = 1, world units ARE tile units, no conversion needed
         float width = drawable.getSize().x;
         float height = drawable.getSize().y;
 

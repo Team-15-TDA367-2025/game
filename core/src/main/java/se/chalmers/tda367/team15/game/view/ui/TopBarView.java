@@ -8,14 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 
-/**
- * View for the top bar HUD showing day, time, resources, and controls.
- * Extends Table to be easily added to the main HUD stage.
- */
 public class TopBarView extends Table {
     private final UiFactory uiFactory;
 
-    // Updatable labels
     private final Label dayLabel;
     private final Label timeLabel;
     private final Label resource1Value;
@@ -24,23 +19,18 @@ public class TopBarView extends Table {
     public TopBarView(UiFactory uiFactory) {
         this.uiFactory = uiFactory;
 
-        // Setup the table itself
         setBackground(uiFactory.createDrawable("TopBar/topbar_bg"));
         
-        // Create label style
         Label.LabelStyle labelStyle = uiFactory.createLabelStyle(UiTheme.FONT_SCALE_LARGE, Color.BLACK);
 
         dayLabel = new Label("Day 1", labelStyle);
         timeLabel = new Label("07:59", labelStyle);
 
-        // Speed control buttons
         Table speedTable = createSpeedControls();
 
-        // Resource value labels
         resource1Value = new Label("1337", labelStyle);
         resource2Value = new Label("420", labelStyle);
 
-        // Resource bars
         Table resourceBar1 = createResourceBar("TopBar/ant", resource1Value);
         Table resourceBar2 = createResourceBar("TopBar/berry", resource2Value);
 
@@ -49,10 +39,8 @@ public class TopBarView extends Table {
         resourceStack.row();
         resourceStack.add(resourceBar2).growX().height(UiTheme.RESOURCE_BAR_HEIGHT);
 
-        // Right-side buttons
         Table rightButtons = createRightButtons();
 
-        // Assemble the bar content
         left();
         add(dayLabel).left().padLeft(UiTheme.PADDING_MEDIUM).padRight(UiTheme.PADDING_XLARGE).minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
         add(timeLabel).left().padRight(UiTheme.PADDING_XLARGE).minWidth(UiTheme.TIME_LABEL_MIN_WIDTH);
