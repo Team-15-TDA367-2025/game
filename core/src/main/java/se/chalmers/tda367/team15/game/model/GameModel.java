@@ -6,25 +6,26 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
+import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
 public class GameModel {
     private final GameWorld world;
-    private final PheromoneSystem pheromoneSystem;
 
-    public GameModel(int mapWidth, int mapHeight, float tileSize) {
+    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
         this.world = GameWorld.createInstance(mapWidth, mapHeight, tileSize);
-        GridPoint2 colonyPosition = new GridPoint2(0, 0);
-        this.world.addStructure(new Colony(colonyPosition));
-        this.pheromoneSystem = new PheromoneSystem(colonyPosition);
-        //this.world.night();
+        this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(20, 25), "food", 1, ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(-20, 10), "food", 1, ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -20), "food", 1, ResourceType.FOOD, 5));
     }
 
     // --- FACADE METHODS (Actions) ---
     public void spawnAnt(Vector2 position) {
-        Ant ant = new Ant(position, pheromoneSystem);
-        world.addEntity(ant);
+        Ant ant = new Ant(position, GameWorld.getInstance().getPheromoneSystem(), 5);
+        world.getColony().addAnt(ant);
     }
 
     public void spawnTermite(Vector2 position) {
@@ -36,8 +37,6 @@ public class GameModel {
         world.update(deltaTime);
     }
 
-    // --- GETTERS (For View) ---
-
     public Iterable<Drawable> getDrawables() {
         return world.getDrawables();
     }
@@ -47,6 +46,6 @@ public class GameModel {
     }
 
     public PheromoneSystem getPheromoneSystem() {
-        return pheromoneSystem;
+        return GameWorld.getInstance().getPheromoneSystem();
     }
 }

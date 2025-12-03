@@ -25,6 +25,10 @@ public abstract class Structure implements Drawable, Updatable, HasPosition {
         this.radius = radius;
     }
 
+    public GridPoint2 getGridPosition() {
+        return position;
+    }
+
     @Override
     public Vector2 getPosition() {
         return new Vector2(position.x, position.y);
