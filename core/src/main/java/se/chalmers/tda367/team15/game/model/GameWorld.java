@@ -6,6 +6,7 @@ import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
@@ -19,7 +20,9 @@ public class GameWorld {
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
     private TimeCycle timeCycle;
-    private ResourceSystem resourceSystem;
+    private List<TimeObserver> timeObservers;
+    private float tickAccumulator = 0f;
+    private float secondsPerTick;
 
     public GameWorld(Colony colony, TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
         this.colony = colony;
@@ -27,9 +30,10 @@ public class GameWorld {
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
-        this.resources = new ArrayList<>();
+        this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
-        this.resourceSystem = new ResourceSystem();
+        this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
+
     }
 
     public List<Entity> getEntities() {
@@ -51,7 +55,27 @@ public class GameWorld {
         return fogOfWar;
     }
 
+    public void addTimeObserver(TimeObserver observer) {
+        timeObservers.add(observer);
+    }
+
+    public void removeTimeObserver(TimeObserver observer) {
+        timeObservers.remove(observer);
+    }
+
+    private void notifyTimeObservers() {
+        for (TimeObserver observer : timeObservers) {
+            observer.onTimeUpdate(timeCycle);
+        }
+    }
+
     public void update(float deltaTime) {
+        tickAccumulator += deltaTime; // add real seconds
+        while (tickAccumulator >= secondsPerTick) {
+            timeCycle.tick();
+            notifyTimeObservers();
+            tickAccumulator -= secondsPerTick; // remove the processed time
+        }
         for (Entity e : entities) {
             e.update(deltaTime);
         }
