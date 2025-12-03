@@ -14,6 +14,8 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
+
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private static final float SPEED = 5f;
@@ -24,14 +26,16 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private PheromoneSystem system;
 
     private float health;
+    private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system) {
+    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
         super(position, "ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
+        this.inventory = new Inventory(capacity);
         pickRandomDirection();
-        this.faction=Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.health= MAX_HEALTH;
+        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.health = MAX_HEALTH;
     }
 
     private void pickRandomDirection() {
@@ -44,6 +48,15 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         behavior.update(system, deltaTime);
         super.update(deltaTime);
         updateRotation();
+        updateTexture();
+    }
+
+    private void updateTexture() {
+        if (inventory.isEmpty()) {
+            setTextureName("Ant");
+        } else {
+            setTextureName("AntCarryingFood");
+        }
     }
 
     public void setBehavior(AntBehavior behavior) {
@@ -69,6 +82,22 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return system;
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public boolean leaveResources(Colony colony) {
+        if (inventory.isEmpty()) {
+            return false;
+        }
+        boolean deposited = colony.depositResources(inventory);
+        if (deposited) {
+            inventory.clear();
+            updateTexture();
+        }
+        return deposited;
+    }
+
     @Override
     public Vector2 getSize() {
         return new Vector2(1f, 1.5f); // 1 tile wide, 1.5 tiles tall
@@ -80,17 +109,18 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     }
 
     @Override
-    public Faction getFaction(){
+    public Faction getFaction() {
         return faction;
     }
 
     @Override
     public void takeDamage(float amount) {
-        health = Math.max(0f,health-amount);
-        if(health == 0f) {
+        health = Math.max(0f, health - amount);
+        if (health == 0f) {
             die();
         }
     }
+
     @Override
     public void die() {
         DestructionListener.getInstance().notifyEntityDeathObservers(this);

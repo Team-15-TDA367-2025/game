@@ -6,12 +6,12 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 public class Resource extends Structure {
     private ResourceType type;
-    private int quantity;
+    private int amount;
 
-    public Resource(GridPoint2 position, String textureName, int radius, ResourceType type, int quantity) {
+    public Resource(GridPoint2 position, String textureName, int radius, ResourceType type, int amount) {
         super(position, textureName, radius);
         this.type = type;
-        this.quantity = quantity;
+        this.amount = amount;
     }
 
     public ResourceType getType() {
@@ -22,12 +22,11 @@ public class Resource extends Structure {
         this.type = type;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
-
 }
