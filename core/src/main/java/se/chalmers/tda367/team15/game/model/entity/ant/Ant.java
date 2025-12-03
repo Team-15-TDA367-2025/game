@@ -4,25 +4,34 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.AttackCategory;
+import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
+import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
-public class Ant extends Entity implements VisionProvider {
-    private static final float SPEED = 2f;
+public class Ant extends Entity implements VisionProvider, CanBeAttacked {
+    private static final float SPEED = 5f;
+    private final float MAX_HEALTH = 6;
     private final int visionRadius = 4;
-
+    Faction faction;
     private AntBehavior behavior;
     private PheromoneSystem system;
+
+    private float health;
 
     public Ant(Vector2 position, PheromoneSystem system) {
         super(position, "ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
         pickRandomDirection();
+        this.faction=Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.health= MAX_HEALTH;
     }
 
     private void pickRandomDirection() {
@@ -70,4 +79,25 @@ public class Ant extends Entity implements VisionProvider {
         return visionRadius;
     }
 
+    @Override
+    public Faction getFaction(){
+        return faction;
+    }
+
+    @Override
+    public void takeDamage(float amount) {
+        health = Math.max(0f,health-amount);
+        if(health == 0f) {
+            die();
+        }
+    }
+    @Override
+    public void die() {
+        DestructionListener.getInstance().notifyEntityDeathObservers(this);
+    }
+
+    @Override
+    public AttackCategory getAttackCategory() {
+        return AttackCategory.WORKER_ANT;
+    }
 }

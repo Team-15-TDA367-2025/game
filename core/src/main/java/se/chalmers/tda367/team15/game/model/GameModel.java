@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
@@ -17,7 +18,7 @@ public class GameModel {
     private final PheromoneGridConverter pheromoneGridConverter;
 
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, int pheromonesPerTile, TerrainGenerator generator) {
-        this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
+        this.world = GameWorld.createInstance(timeCycle, mapWidth, mapHeight, generator);
         this.pheromoneGridConverter = new PheromoneGridConverter(pheromonesPerTile);
         GridPoint2 colonyPosition = new GridPoint2(0, 0);
         this.world.addStructure(new Colony(colonyPosition));
@@ -29,10 +30,14 @@ public class GameModel {
     }
 
     // --- FACADE METHODS (Actions) ---
-
     public void spawnAnt(Vector2 position) {
         Ant ant = new Ant(position, pheromoneSystem);
         world.addEntity(ant);
+    }
+
+    public void spawnTermite(Vector2 position) {
+        Termite termite = new Termite(position);
+        world.addEntity(termite);
     }
 
     public void update(float deltaTime) {

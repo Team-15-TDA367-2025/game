@@ -6,23 +6,27 @@ import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
-public class GameWorld {
+
+public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private List<Entity> entities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
     private final WorldMap worldMap;
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
+    private DestructionListener destructionListener;
     private TimeCycle timeCycle;
     private List<TimeObserver> timeObservers;
     private float tickAccumulator = 0f;
     private float secondsPerTick;
+    private static GameWorld gameWorld;
 
-    public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+    private GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
@@ -31,6 +35,27 @@ public class GameWorld {
         this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
+        destructionListener = DestructionListener.getInstance();
+        destructionListener.addEntityDeathObserver(this);
+        destructionListener.addStructureDeathObserver(this);
+
+    }
+
+    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator terrainGenerator) {
+        gameWorld=new GameWorld(timeCycle,mapWidth,mapHeight, terrainGenerator);
+        return gameWorld;
+    }
+
+    public static GameWorld getInstance() {
+        if(gameWorld == null) {
+            throw new IllegalStateException("GameWorld must be created with createInstance() before used");
+        }
+        return gameWorld;
+    }
+
+    public List<Structure> getStructures() {
+        return Collections.unmodifiableList(structures);
+
 
     }
 
@@ -70,6 +95,13 @@ public class GameWorld {
         }
     }
 
+    private List<Updatable> getUpdatables() {
+        List<Updatable> updatables = new ArrayList<>();
+        updatables.addAll(entities);
+        updatables.addAll(structures);
+        return updatables;
+    }
+
     public void update(float deltaTime) {
         tickAccumulator += deltaTime; // add real seconds
         while (tickAccumulator >= secondsPerTick) {
@@ -77,12 +109,12 @@ public class GameWorld {
             notifyTimeObservers();
             tickAccumulator -= secondsPerTick; // remove the processed time
         }
-        for (Entity e : entities) {
-            e.update(deltaTime);
-        }
 
-        for (Structure structure : structures) {
-            structure.update(deltaTime);
+        List<Updatable> updateTheseEntities = getUpdatables();
+        Updatable spotlightedUpdateable;
+        while (!updateTheseEntities.isEmpty()) {
+            spotlightedUpdateable = updateTheseEntities.removeFirst();
+            spotlightedUpdateable.update(deltaTime);
         }
         // Update fog after movement
         fogSystem.updateFog(entities);
@@ -92,7 +124,25 @@ public class GameWorld {
         entities.add(entity);
     }
 
+    public void removeEntity(Entity e) {
+        entities.remove(e);
+    }
+
+    @Override
+    public void onEntityDeath(Entity e) {
+        removeEntity(e);
+    }
+
     public void addStructure(Structure structure) {
         structures.add(structure);
+    }
+
+    public void removeStructure(Structure s) {
+        structures.remove(s);
+    }
+
+    @Override
+    public void onStructureDeath(Structure s) {
+        removeStructure(s);
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
+
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
 import se.chalmers.tda367.team15.game.controller.PheromoneController;
@@ -68,20 +69,22 @@ public class GameScreen extends ScreenAdapter {
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
 
+        gameModel.spawnTermite(new Vector2(0,0));
+
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float aspectRatio = screenHeight / screenWidth;
 
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
-        
+
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry, gameModel);
         hudView = new HUDView(cameraModel, worldCameraView);
-        
+
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
         hudView.setPheromoneController(pheromoneController);
         hudView.setPheromoneSystem(gameModel.getPheromoneSystem());

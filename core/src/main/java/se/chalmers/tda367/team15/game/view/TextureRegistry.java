@@ -43,7 +43,7 @@ public class TextureRegistry {
         }
         textures.clear();
     }
-    // AI generated
+    // AI generated method
     private void createPixelTexture() {
     if (!textures.containsKey("pixel")) {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);

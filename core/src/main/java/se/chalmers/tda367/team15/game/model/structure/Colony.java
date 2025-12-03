@@ -7,15 +7,23 @@ import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+import se.chalmers.tda367.team15.game.model.AttackCategory;
+import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.faction.Faction;
 
-public class Colony extends Structure {
+public class Colony extends Structure implements CanBeAttacked {
     private List<Ant> ants;
 
+    private float health;
+    private float MAX_HEALTH = 60;
     public Colony(GridPoint2 position) {
         super(position, "colony", 2);
         this.ants = new ArrayList<>();
+        this.health = MAX_HEALTH;
+        faction= Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
     }
 
     public void addAnt(Ant ant) {
@@ -32,9 +40,31 @@ public class Colony extends Structure {
             ant.update(deltaTime);
         }
     }
-
     @Override
     public Collection<Entity> getSubEntities() {
         return Collections.unmodifiableCollection(ants);
+    }
+
+    @Override
+    public Faction getFaction() {
+        return faction;
+    }
+
+    @Override
+    public void takeDamage(float amount) {
+        health = Math.max(0f,health-amount);
+        if(health == 0f) {
+            die();
+        }
+    }
+
+    @Override
+    public void die() {
+        DestructionListener.getInstance().notifyStructureDeathObservers(this);
+    }
+
+    @Override
+    public AttackCategory getAttackCategory() {
+        return AttackCategory.ANT_COLONY;
     }
 }
