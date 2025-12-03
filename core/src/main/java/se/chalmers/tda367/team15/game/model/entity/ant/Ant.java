@@ -53,7 +53,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     private void updateTexture() {
         if (inventory.isEmpty()) {
-            setTextureName("Ant");
+            setTextureName("ant");
         } else {
             setTextureName("AntCarryingFood");
         }
