@@ -19,8 +19,6 @@ public class WaveManager implements TimeObserver {
         return nightNumber;
     }
 
-
-
     void spawnWave() {
         //determine budget
         int nightBudget = nightNumber * 3;
@@ -29,10 +27,10 @@ public class WaveManager implements TimeObserver {
         int nEnemies = nightBudget / termiteDifficultyCost;
 
         // spawn location
-        Vector2 spawnLocation = scatter(new Vector2(0,0),40);
+        Vector2 spawnLocation = scatter(new Vector2(0,0),0);
         // spawn enemies
-        for(int i = 0 ; i< nEnemies; i++) {
-            Termite termite = new Termite(scatter(spawnLocation,3));
+        for(int i = 0 ; i < nEnemies; i++) {
+            Termite termite = new Termite(scatter(spawnLocation,20));
             GameWorld.getInstance().addEntity(termite);
         }
 

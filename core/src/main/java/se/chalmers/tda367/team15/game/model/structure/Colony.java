@@ -18,11 +18,12 @@ public class Colony extends Structure implements CanBeAttacked {
     private List<Ant> ants;
 
     private float health;
-    private float MAX_HEALTH = 60;
+    private float MAX_HEALTH = 1000000000;
     public Colony(GridPoint2 position) {
         super(position, "AntColony", 5);
         this.ants = new ArrayList<>();
         faction= Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.health=MAX_HEALTH;
     }
 
     public void addAnt(Ant ant) {

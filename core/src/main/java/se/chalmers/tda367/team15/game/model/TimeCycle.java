@@ -1,44 +1,50 @@
 package se.chalmers.tda367.team15.game.model;
 
 public class TimeCycle {
-    private int ticks;
-    private int ticksPerMinute;
+    private long combatPhaseMs = 5 * 1000;
+    private long standardPhaseMs = 1 * 1000;
+    private boolean combatPhaseCurrent;
 
-    public TimeCycle(int ticksPerMinute) {
-        this.ticksPerMinute = ticksPerMinute;
-        this.ticks = 0;
+    private long timeUntilNextPhaseMs = 0;
+
+    public TimeCycle() {
+            combatPhaseCurrent = false;
+            timeUntilNextPhaseMs = standardPhaseMs ;
     }
 
-    public void tick() {
-        ticks++;
+    public void update(float deltaTime) {
+        long msDeltaTime = Math.round(deltaTime * 1000f);
+
+        if ((timeUntilNextPhaseMs - msDeltaTime) <= 0) {
+            nextPhase();
+        } else {
+            timeUntilNextPhaseMs -= msDeltaTime;
+        }
+        System.out.println(timeUntilNextPhaseMs / 1000);
+
     }
 
-    public int getTotalMinutes() {
-        return ticks / ticksPerMinute;
+
+    public long getTimeUntilNextPhaseMS() {
+        return timeUntilNextPhaseMs;
     }
 
-    public int getHour() {
-        return (getTotalMinutes() / 60) % 24;
+    public boolean isCombatPhaseCurrent(){
+        return combatPhaseCurrent;
     }
 
-    public int getMinute() {
-        return getTotalMinutes() % 60;
+
+    private void nextPhase() {
+        System.out.println("-----Next Phase!");
+        if (combatPhaseCurrent) {
+            timeUntilNextPhaseMs = standardPhaseMs;
+            combatPhaseCurrent = false;
+            GameWorld.getInstance().day();
+        } else {
+            timeUntilNextPhaseMs = combatPhaseMs;
+            combatPhaseCurrent = true;
+            GameWorld.getInstance().night();
+        }
     }
 
-    public void setTicksPerMinute(int ticksPerMinute) {
-        this.ticksPerMinute = ticksPerMinute;
-    }
-
-    public int getTicksPerMinute() {
-        return ticksPerMinute;
-    }
-
-    public boolean getIsDay() {
-        int h = getHour();
-        return h >= 6 && h < 22;
-    }
-
-    public int getTicks() {
-        return ticks;
-    }
 }

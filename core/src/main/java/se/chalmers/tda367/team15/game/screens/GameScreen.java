@@ -52,18 +52,18 @@ public class GameScreen extends ScreenAdapter {
         // Initialize world bounds and constraints
         Rectangle worldBounds = new Rectangle(-MAP_WIDTH / 2f, -MAP_HEIGHT / 2f, MAP_WIDTH, MAP_HEIGHT);
         CameraConstraints constraints = new CameraConstraints(worldBounds, MIN_ZOOM, MAX_ZOOM);
-        TimeCycle timeCycle = new TimeCycle(60);
 
         cameraModel = new CameraModel(constraints);
-        gameModel = new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, TILE_SIZE);
+        gameModel = new GameModel(MAP_WIDTH, MAP_HEIGHT, TILE_SIZE);
 
         // TODO: Should be a factory or something, this is just for testing!
+        /*
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
         gameModel.spawnAnt(new Vector2(0, 0));
-
+         */
         //gameModel.spawnTermite(new Vector2(0,0));
 
         float screenWidth = Gdx.graphics.getWidth();

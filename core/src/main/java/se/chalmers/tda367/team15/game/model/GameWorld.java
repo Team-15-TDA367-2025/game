@@ -21,19 +21,16 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private DestructionListener destructionListener;
     private TimeCycle timeCycle;
     private List<TimeObserver> timeObservers;
-    private float tickAccumulator = 0f;
-    private float secondsPerTick;
     private final WaveManager waveManager;
     private static GameWorld gameWorld;
 
-    private GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
+    private GameWorld( int mapWidth, int mapHeight, float tileSize) {
         fogOfWar = new FogOfWar(mapWidth, mapHeight, tileSize);
         fogSystem = new FogSystem(fogOfWar);
         this.entities = new ArrayList<>();
         this.structures = new ArrayList<>();
         this.timeObservers = new ArrayList<>();
-        this.timeCycle = timeCycle;
-        this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
+        this.timeCycle = new TimeCycle();
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
@@ -41,8 +38,8 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         addTimeObserver(waveManager);
     }
 
-    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
-        gameWorld=new GameWorld(timeCycle,mapWidth,mapHeight,tileSize);
+    public static GameWorld createInstance( int mapWidth, int mapHeight, float tileSize) {
+        gameWorld=new GameWorld(mapWidth,mapHeight,tileSize);
         return gameWorld;
     }
 
@@ -85,9 +82,21 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         timeObservers.remove(observer);
     }
 
-    private void notifyTimeObservers() {
+    public void notifyTimeObservers() {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
+        }
+    }
+
+    public void night() {
+        for (TimeObserver observer : timeObservers) {
+            observer.onNightStart(timeCycle);
+        }
+    }
+
+    public void day() {
+        for (TimeObserver observer : timeObservers) {
+            observer.onDayStart(timeCycle);
         }
     }
 
@@ -97,41 +106,8 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         updatables.addAll(structures);
         return updatables;
     }
-
     public void update(float deltaTime) {
-        tickAccumulator += deltaTime; // add real seconds
-        while (tickAccumulator >= secondsPerTick) {
-            boolean checkForStartOfDay;
-            // we should check for night
-            if(timeCycle.getIsDay()) {
-                checkForStartOfDay = false;
-            }
-            // we should check for day
-            else{
-                checkForStartOfDay = true;
-            }
-
-            timeCycle.tick();
-            notifyTimeObservers();
-            // check day
-            if(checkForStartOfDay) {
-                if(timeCycle.getIsDay()) {
-                    for(TimeObserver observer : timeObservers) {
-                        observer.onDayStart(timeCycle);
-                    }
-                }
-            }
-            // check night
-            else{
-                if(!timeCycle.getIsDay()) {
-                    for(TimeObserver observer : timeObservers) {
-                        observer.onNightStart(timeCycle);
-                    }
-                }
-            }
-
-            tickAccumulator -= secondsPerTick; // remove the processed time
-        }
+        timeCycle.update(deltaTime);
 
         List<Updatable> updateTheseEntities = getUpdatables();
         Updatable spotlightedUpdateable;

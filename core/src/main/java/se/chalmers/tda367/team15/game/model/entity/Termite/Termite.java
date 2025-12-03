@@ -20,9 +20,9 @@ import java.util.List;
  */
 public class Termite extends Entity implements CanBeAttacked {
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
-    private final float SPEED = 10f;
+    private final float SPEED = 1f;
     private final TermiteBehaviour  termiteBehaviour;
-    private AttackComponent attackComponent = new AttackComponent(100,1000,1,this);
+    private AttackComponent attackComponent = new AttackComponent(2,3000,1,this);
     private final float MAX_HEALTH = 6;
     private float health;
     public Termite(Vector2 position) {
