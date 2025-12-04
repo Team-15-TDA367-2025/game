@@ -1,66 +1,75 @@
 package se.chalmers.tda367.team15.game.model;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonWriter;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GameStats {
-    private static final String SAVE_FOLDER = "saves/";
-    private static final String STATS_FILE = SAVE_FOLDER + "gamestats.json";
+
+    private static final String SAVE_FOLDER = "saves";
+    private static final String STATS_FILE = "gamestats.json";
     private static final String DAYS_KEY = "daysSurvived";
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private int daysSurvived;
 
-    private static final Json JSON = new Json();
-
     public GameStats(int daysSurvived) {
-        this.daysSurvived = daysSurvived;
-        JSON.setOutputType(JsonWriter.OutputType.json);
+        this.daysSurvived = 5;
     }
 
     public void saveIfNewHighScore() {
         int currentHighScore = loadHighScore();
-
-        if (this.daysSurvived > currentHighScore) {
-            save(this.daysSurvived);
+        if (daysSurvived > currentHighScore) {
+            save(daysSurvived);
         }
     }
 
     public static int loadHighScore() {
-        FileHandle file = Gdx.files.local(STATS_FILE);
+        Path filePath = getFilePath();
 
-        if (!file.exists()) {
+        if (!Files.exists(filePath)) {
             return 0;
         }
 
         try {
-            JsonReader reader = new JsonReader();
-            JsonValue root = reader.parse(file.readString());
+            String json = Files.readString(filePath);
+            JsonObject root = GSON.fromJson(json, JsonObject.class);
 
             if (root != null && root.has(DAYS_KEY)) {
-                return root.getInt(DAYS_KEY);
+                return root.get(DAYS_KEY).getAsInt();
             }
-        } catch (Exception e) {
-            Gdx.app.error("GameStats", "Error loading high score from file: " + STATS_FILE, e);
+
+        } catch (IOException e) {
+            System.err.println("Failed to load high score: " + e.getMessage());
         }
+
         return 0;
     }
 
     private void save(int highScore) {
+        Path folderPath = Paths.get(SAVE_FOLDER);
+        Path filePath = getFilePath();
 
-        Gdx.files.local(SAVE_FOLDER).mkdirs();
+        try {
+            Files.createDirectories(folderPath);
 
-        FileHandle file = Gdx.files.local(STATS_FILE);
+            JsonObject json = new JsonObject();
+            json.addProperty(DAYS_KEY, highScore);
 
-        Map<String, Integer> data = new HashMap<>();
-        data.put(DAYS_KEY, highScore);
+            Files.writeString(filePath, GSON.toJson(json));
 
-        String jsonString = JSON.toJson(data);
-        file.writeString(jsonString, false);
+        } catch (IOException e) {
+            System.err.println("Failed to save high score: " + e.getMessage());
+        }
+    }
+
+    private static Path getFilePath() {
+        return Paths.get(SAVE_FOLDER, STATS_FILE);
     }
 }
