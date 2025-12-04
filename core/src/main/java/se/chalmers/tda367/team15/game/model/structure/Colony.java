@@ -9,17 +9,20 @@ import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver {
+public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver, TimeObserver {
     private List<Ant> ants;
     private Inventory inventory;
 
@@ -34,6 +37,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         this.inventory = new Inventory(1000); // test value for now
         // Register to receive ant death notifications
         DestructionListener.getInstance().addEntityDeathObserver(this);
+        GameWorld.getInstance().addTimeObserver(this);
     }
 
     public void addAnt(Ant ant) {
@@ -76,8 +80,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     }
 
     @Override
-    public void update(float deltaTime) {
-        // Note: Ants are updated by GameWorld via getSubEntities(), not here
+    public void onDayStart(TimeCycle timeCycle) {
         applyConsumption(calculateConsumption());
     }
 

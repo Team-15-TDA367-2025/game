@@ -116,11 +116,19 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         timeObservers.remove(observer);
     }
 
-    private void notifyTimeObservers() {
+    private void notifyTimeObservers(boolean nightJustStarted, boolean dayJustStarted) {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
+        
+        if (nightJustStarted) {
+                observer.onNightStart(timeCycle);
+            }
+        else if (dayJustStarted) {
+                observer.onDayStart(timeCycle);
+                }
+            }
         }
-    }
+    
 
     private List<Updatable> getUpdatables() {
         List<Updatable> updatables = new ArrayList<>();
@@ -133,8 +141,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         List<Entity> entities = getEntities();
         tickAccumulator += deltaTime; // add real seconds
         while (tickAccumulator >= secondsPerTick) {
+            boolean wasDay = timeCycle.getIsDay();
             timeCycle.tick();
-            notifyTimeObservers();
+            boolean isDay = timeCycle.getIsDay();
+            notifyTimeObservers(wasDay && !isDay, !wasDay && isDay);
             tickAccumulator -= secondsPerTick; // remove the processed time
         }
 
