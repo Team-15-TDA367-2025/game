@@ -21,7 +21,6 @@ public class GameModel {
 
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
         this.waveManager = new WaveManager(world,this);
-        world.addTimeObserver(waveManager);
 
         this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));

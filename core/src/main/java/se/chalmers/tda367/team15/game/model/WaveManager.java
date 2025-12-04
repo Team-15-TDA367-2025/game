@@ -20,6 +20,7 @@ public class WaveManager implements TimeObserver {
     WaveManager(GameWorld gameWorld, GameModel gameModel) {
         this.gameWorld = gameWorld;
         this.gameModel = gameModel;
+        gameWorld.addTimeObserver(this);
     }
 
     public int getNightNumber() {
