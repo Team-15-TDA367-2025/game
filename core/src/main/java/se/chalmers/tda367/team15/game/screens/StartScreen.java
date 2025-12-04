@@ -21,6 +21,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import se.chalmers.tda367.team15.game.model.GameEndReason;
 import se.chalmers.tda367.team15.game.model.GameStats;
 
+import se.chalmers.tda367.team15.game.screens.game.GameFactory;
+
 public class StartScreen extends ScreenAdapter {
     private final Game game;
     private BitmapFont font;
@@ -50,7 +52,7 @@ public class StartScreen extends ScreenAdapter {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new GameScreen(game));
+                game.setScreen(GameFactory.createGameScreen(game));
                 dispose();
             }
         });

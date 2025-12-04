@@ -1,14 +1,16 @@
-package se.chalmers.tda367.team15.game.view;
+package se.chalmers.tda367.team15.game.view.renderers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.model.FogOfWar;
 import se.chalmers.tda367.team15.game.model.GameModel;
 
-public class SceneView {
+public class WorldRenderer {
     private final SpriteBatch batch;
     private final CameraView cameraView;
     private final TextureRegistry textureRegistry;
@@ -16,7 +18,7 @@ public class SceneView {
     private final FogRenderer fogRenderer;
     private final GameModel model;
 
-    public SceneView(CameraView cameraView, TextureRegistry textureRegistry, GameModel model) {
+    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, GameModel model) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
@@ -40,7 +42,6 @@ public class SceneView {
     private void draw(Drawable drawable) {
         TextureRegion region = textureRegistry.get(drawable.getTextureName());
 
-        // With TILE_SIZE = 1, world units ARE tile units, no conversion needed
         float width = drawable.getSize().x;
         float height = drawable.getSize().y;
 
