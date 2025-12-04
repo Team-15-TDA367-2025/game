@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -54,7 +55,7 @@ public class ResourceSystem {
     }
 
     private void tryPickupNearbyResource(Ant ant) {
-        GridPoint2 antGrid = ant.getGridPosition();
+        GridPoint2 antGrid = getAntGridPosition(ant);
         GridPoint2 checkCell = new GridPoint2();
 
         for (int dx = -PICKUP_RADIUS; dx <= PICKUP_RADIUS; dx++) {
@@ -80,7 +81,7 @@ public class ResourceSystem {
                 continue;
             }
 
-            GridPoint2 antGrid = ant.getGridPosition();
+            GridPoint2 antGrid = getAntGridPosition(ant);
             int distance = Math.abs(antGrid.x - colonyGrid.x) +
                     Math.abs(antGrid.y - colonyGrid.y);
 
@@ -88,6 +89,11 @@ public class ResourceSystem {
                 ant.leaveResources(colony);
             }
         }
+    }
+
+    private GridPoint2 getAntGridPosition(Ant ant) {
+        Vector2 pos = ant.getPosition();
+        return new GridPoint2(Math.round(pos.x), Math.round(pos.y));
     }
 
     private boolean tryPickupResource(Ant ant, Resource resource) {
