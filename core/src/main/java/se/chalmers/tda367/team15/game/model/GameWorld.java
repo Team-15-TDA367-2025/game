@@ -87,9 +87,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         return Collections.unmodifiableList(allEntities);
     }
 
+    // TODO: Clean up this, we already know entities are subentities to colony
     public List<Ant> getAnts() {
         List<Ant> ants = new ArrayList<>();
-        for (Entity entity : entities) {
+        for (Entity entity : getEntities()) {
             if (entity instanceof Ant) {
                 ants.add((Ant) entity);
             }

@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.view;
+package se.chalmers.tda367.team15.game.view.camera;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Matrix4;

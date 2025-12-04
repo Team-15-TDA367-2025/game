@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.view;
+package se.chalmers.tda367.team15.game.view.camera;
 
 import java.util.LinkedHashSet;
 
