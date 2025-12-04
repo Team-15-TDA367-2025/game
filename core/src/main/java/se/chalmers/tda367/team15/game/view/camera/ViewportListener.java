@@ -1,9 +1,9 @@
-package se.chalmers.tda367.team15.game.view;
+package se.chalmers.tda367.team15.game.view.camera;
 
 import java.util.LinkedHashSet;
 
 /**
- * Listener that notifies observers when the viewport is resized.
+ * Listener to the viewport that notifies observers when the viewport is resized.
  */
 public class ViewportListener {
     // We want to keep the order of the observers

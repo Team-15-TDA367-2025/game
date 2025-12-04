@@ -2,9 +2,7 @@ package se.chalmers.tda367.team15.game.model.entity;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.HasPosition;
-import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
@@ -13,7 +11,6 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
     protected float rotation;
     private String textureName;
     protected Vector2 velocity;
-    private GameWorld gameWorld;
 
     // TODO reduce amount of parameters clients need to handle
     // Some kind of entity factory might help reduce the amount of parameters

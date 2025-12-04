@@ -5,21 +5,28 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
+import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
 public class GameModel {
     private final GameWorld world;
 
-    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, float tileSize) {
-        this.world = GameWorld.createInstance(timeCycle, mapWidth, mapHeight, tileSize);
+    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+        this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
 
         this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(20, 25), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(-20, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -20), "food", 1, ResourceType.FOOD, 5));
+    }
+
+    public PheromoneGridConverter getPheromoneGridConverter() {
+        return world.getPheromoneSystem().getConverter();
     }
 
     // --- FACADE METHODS (Actions) ---
@@ -40,6 +47,10 @@ public class GameModel {
         world.update(deltaTime);
     }
 
+    public TimeCycle.GameTime getGameTime() {
+        return world.getTimeCycle().getGameTime();
+    }
+
     public Iterable<Drawable> getDrawables() {
         return world.getDrawables();
     }
@@ -49,6 +60,10 @@ public class GameModel {
     }
 
     public PheromoneSystem getPheromoneSystem() {
-        return GameWorld.getInstance().getPheromoneSystem();
+        return world.getPheromoneSystem();
+    }
+
+    public WorldMap getWorldMap() {
+        return world.getWorldMap();
     }
 }

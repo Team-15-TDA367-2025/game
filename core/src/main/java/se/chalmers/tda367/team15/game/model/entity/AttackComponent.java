@@ -23,7 +23,8 @@ public class AttackComponent {
         ATTACK_COOLDOWN_MS = attackCooldownMs;
         ATTACK_RANGE = attackRange;
         this.host = host;
-        this.lastAttackTimeMS = System.currentTimeMillis();
+        // Initialize to 0 so the first attack can happen immediately
+        this.lastAttackTimeMS = 0;
     }
 
     public void attack(AttackTarget target) {

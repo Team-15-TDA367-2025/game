@@ -7,25 +7,35 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ObjectMap;
 
+/**
+ * Centralized texture management.
+ * Loads textures from assets directory and caches them.
+ */
 public class TextureRegistry {
     private final ObjectMap<String, TextureRegion> textures = new ObjectMap<>();
 
     public TextureRegistry() {
-        loadAll();
+        loadDirectory(".");
+        loadDirectory("TopBar");
+        loadDirectory("BottomBar");
         createPixelTexture();
     }
 
-    /** Scans the assets directory and loads all `.png` files */
-    private void loadAll() {
-        FileHandle root = Gdx.files.internal("./"); // ./assets
-        for (FileHandle file : root.list()) {
-            if (!file.extension().equalsIgnoreCase("png")) {
-                continue;
-            }
+    /**
+     * Loads all PNG files from the specified directory.
+     */
+    public void loadDirectory(String path) {
+        FileHandle dir = Gdx.files.internal(path);
+        if (!dir.exists())
+            return;
 
-            String name = file.nameWithoutExtension();
-            Texture texture = new Texture(file);
-            textures.put(name, new TextureRegion(texture));
+        String prefix = (path.equals(".") || path.equals("./")) ? "" : path + "/";
+
+        for (FileHandle file : dir.list()) {
+            if (file.extension().equalsIgnoreCase("png")) {
+                String key = prefix + file.nameWithoutExtension();
+                textures.put(key, new TextureRegion(new Texture(file)));
+            }
         }
     }
 
@@ -37,21 +47,25 @@ public class TextureRegistry {
         return region;
     }
 
+    public boolean has(String name) {
+        return textures.containsKey(name);
+    }
+
     public void dispose() {
         for (TextureRegion region : textures.values()) {
             region.getTexture().dispose();
         }
         textures.clear();
     }
-    // AI generated method
+
     private void createPixelTexture() {
-    if (!textures.containsKey("pixel")) {
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(1f, 1f, 1f, 1f); // white
-        pixmap.fill();
-        Texture texture = new Texture(pixmap);
-        textures.put("pixel", new TextureRegion(texture));
-        pixmap.dispose();
+        if (!textures.containsKey("pixel")) {
+            Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+            pixmap.setColor(1f, 1f, 1f, 1f);
+            pixmap.fill();
+            Texture texture = new Texture(pixmap);
+            textures.put("pixel", new TextureRegion(texture));
+            pixmap.dispose();
+        }
     }
-}
 }
