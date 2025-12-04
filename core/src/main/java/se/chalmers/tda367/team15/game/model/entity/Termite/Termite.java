@@ -25,8 +25,11 @@ public class Termite extends Entity implements CanBeAttacked {
     private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
     private final float MAX_HEALTH = 1;
     private float health;
-    public Termite(Vector2 position) {
+    private final GameWorld world;
+
+    public Termite(Vector2 position, GameWorld world) {
         super(position, "termite");
+        this.world = world;
         this.termiteBehaviour = new TermiteBehaviour(this);
         health = MAX_HEALTH;
     }
@@ -37,8 +40,8 @@ public class Termite extends Entity implements CanBeAttacked {
      */
     @Override
     public void update(float deltaTime){
-        List<Entity> entities = GameWorld.getInstance().getEntities();
-        List<Structure> structures = GameWorld.getInstance().getStructures();
+        List<Entity> entities = world.getEntities();
+        List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities,structures);
         super.update(deltaTime);
         if(target != null) {

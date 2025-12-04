@@ -17,7 +17,7 @@ public class GameModel {
     private final GameWorld world;
 
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
-        this.world = GameWorld.createInstance(timeCycle, mapWidth, mapHeight, generator);
+        this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
 
         this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));
@@ -33,12 +33,12 @@ public class GameModel {
     // --- FACADE METHODS (Actions) ---
 
     public void spawnAnt(Vector2 position) {
-        Ant ant = new Ant(position, GameWorld.getInstance().getPheromoneSystem(), 5);
+        Ant ant = new Ant(position, world.getPheromoneSystem(), 5);
         world.getColony().addAnt(ant);
     }
 
     public void spawnTermite(Vector2 position) {
-        Termite termite = new Termite(position);
+        Termite termite = new Termite(position, world);
         world.addEntity(termite);
     }
 
@@ -59,7 +59,7 @@ public class GameModel {
     }
 
     public PheromoneSystem getPheromoneSystem() {
-        return GameWorld.getInstance().getPheromoneSystem();
+        return world.getPheromoneSystem();
     }
 
     public WorldMap getWorldMap() {

@@ -53,20 +53,11 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
+        addTimeObserver(colony);
         addTimeObserver(waveManager);
 
     }
 
-    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator terrainGenerator) {
-        gameWorld = new GameWorld(timeCycle, mapWidth, mapHeight,  terrainGenerator);
-        return gameWorld;
-    }
-
-    public static GameWorld getInstance() {
-        if (gameWorld == null) {
-            throw new IllegalStateException("GameWorld must be created with createInstance() before used");
-        }
-        return gameWorld;
     }
 
     public Colony getColony() {
@@ -117,11 +108,19 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         timeObservers.remove(observer);
     }
 
-    private void notifyTimeObservers() {
+    private void notifyTimeObservers(boolean nightJustStarted, boolean dayJustStarted) {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
+
+        if (nightJustStarted) {
+                observer.onNightStart(timeCycle);
+            }
+        else if (dayJustStarted) {
+                observer.onDayStart(timeCycle);
+                }
+            }
         }
-    }
+
 
     private List<Updatable> getUpdatables() {
         List<Updatable> updatables = new ArrayList<>();
@@ -134,8 +133,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         List<Entity> entities = getEntities();
         tickAccumulator += deltaTime; // add real seconds
         while (tickAccumulator >= secondsPerTick) {
+            boolean wasDay = timeCycle.getIsDay();
             timeCycle.tick();
-            notifyTimeObservers();
+            boolean isDay = timeCycle.getIsDay();
+            notifyTimeObservers(wasDay && !isDay, !wasDay && isDay);
             tickAccumulator -= secondsPerTick; // remove the processed time
         }
 
