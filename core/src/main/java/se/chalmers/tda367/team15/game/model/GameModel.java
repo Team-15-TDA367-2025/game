@@ -22,11 +22,11 @@ public class GameModel {
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
 
-        this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(20, 25), "food", 1, ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(-20, 10), "food", 1, ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -20), "food", 1, ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(-10, 10), "node", ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -10), "node", ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(20, 25), "node", ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(-20, 10), "node", ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -20), "node", ResourceType.FOOD, 5));
     }
 
     public PheromoneGridConverter getPheromoneGridConverter() {

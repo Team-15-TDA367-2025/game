@@ -8,8 +8,8 @@ public class Resource extends Structure {
     private ResourceType type;
     private int amount;
 
-    public Resource(GridPoint2 position, String textureName, int radius, ResourceType type, int amount) {
-        super(position, textureName, radius);
+    public Resource(GridPoint2 position, String textureName, ResourceType type, int amount) {
+        super(position, textureName, 1);
         this.type = type;
         this.amount = amount;
     }

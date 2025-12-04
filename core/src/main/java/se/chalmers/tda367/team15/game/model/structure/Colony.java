@@ -33,7 +33,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     private float MAX_HEALTH = 60;
 
     public Colony(GridPoint2 position, PheromoneSystem pheromoneSystem) {
-        super(position, "colony", 2);
+        super(position, "colony", 4);
         this.pheromoneSystem = pheromoneSystem;
         this.ants = new ArrayList<>();
         this.health = MAX_HEALTH;
