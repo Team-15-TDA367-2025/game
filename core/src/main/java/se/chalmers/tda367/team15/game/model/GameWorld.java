@@ -19,9 +19,8 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceSystem;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
-
 public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
-    private Colony colony = new Colony(new GridPoint2(0, 0));
+    private final Colony colony;
     private final PheromoneSystem pheromoneSystem;
     private List<Entity> worldEntities; // Floating positions and can move around.
     private List<Structure> structures; // Integer positions and fixed in place.
@@ -35,12 +34,13 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private List<TimeObserver> timeObservers;
     private float tickAccumulator = 0f;
     private float secondsPerTick;
-    private static GameWorld gameWorld;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
+        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
+        this.colony = new Colony(new GridPoint2(0, 0), pheromoneSystem);
         this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
         structures.add(colony);
@@ -52,23 +52,10 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
-        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
-        
+
         // Register colony's egg manager as a time observer
         addTimeObserver(colony.getEggManager());
 
-    }
-
-    public static GameWorld createInstance(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator terrainGenerator) {
-        gameWorld = new GameWorld(timeCycle, mapWidth, mapHeight,  terrainGenerator);
-        return gameWorld;
-    }
-
-    public static GameWorld getInstance() {
-        if (gameWorld == null) {
-            throw new IllegalStateException("GameWorld must be created with createInstance() before used");
-        }
-        return gameWorld;
     }
 
     public Colony getColony() {
@@ -111,6 +98,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     public TimeCycle getTimeCycle() {
         return timeCycle;
     }
+
     public void addTimeObserver(TimeObserver observer) {
         timeObservers.add(observer);
     }
@@ -122,16 +110,14 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private void notifyTimeObservers(boolean nightJustStarted, boolean dayJustStarted) {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
-        
-        if (nightJustStarted) {
+
+            if (nightJustStarted) {
                 observer.onNightStart(timeCycle);
-            }
-        else if (dayJustStarted) {
+            } else if (dayJustStarted) {
                 observer.onDayStart(timeCycle);
-                }
             }
         }
-    
+    }
 
     private List<Updatable> getUpdatables() {
         List<Updatable> updatables = new ArrayList<>();
