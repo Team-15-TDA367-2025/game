@@ -4,11 +4,13 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import se.chalmers.tda367.team15.game.controller.CameraController;
+import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
 import se.chalmers.tda367.team15.game.controller.PheromoneController;
 import se.chalmers.tda367.team15.game.model.GameModel;
@@ -18,7 +20,7 @@ import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.world.PerlinNoiseTerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.view.CameraView;
-import se.chalmers.tda367.team15.game.view.HUDView;
+import se.chalmers.tda367.team15.game.view.HudView;
 import se.chalmers.tda367.team15.game.view.PheromoneView;
 import se.chalmers.tda367.team15.game.view.SceneView;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
@@ -40,11 +42,13 @@ public class GameScreen extends ScreenAdapter {
     private final PheromoneController pheromoneController;
     private final ViewportListener viewportListener;
     private final InputManager inputManager;
+    private final HudController hudController;
 
     // Views
     private final SceneView sceneView;
+    private final SpriteBatch hudBatch;
     private final PheromoneView pheromoneView;
-    private final HUDView hudView;
+    private final HudView hudView;
     private final TextureRegistry textureRegistry;
 
     public GameScreen() {
@@ -77,26 +81,28 @@ public class GameScreen extends ScreenAdapter {
         worldCameraView = new CameraView(cameraModel, WORLD_VIEWPORT_WIDTH, WORLD_VIEWPORT_WIDTH * aspectRatio);
         cameraController = new CameraController(cameraModel, worldCameraView);
 
+        hudBatch = new SpriteBatch();
         inputManager = new InputManager();
         inputManager.addProcessor(cameraController);
 
         textureRegistry = new TextureRegistry();
         sceneView = new SceneView(worldCameraView, textureRegistry, gameModel);
-        hudView = new HUDView(cameraModel, worldCameraView);
 
+        hudView = new HudView(hudBatch);
         pheromoneController = new PheromoneController(gameModel, worldCameraView);
-        hudView.setPheromoneController(pheromoneController);
-        hudView.setPheromoneSystem(gameModel.getPheromoneSystem());
+        hudController = new HudController(hudView, gameModel, pheromoneController);
 
         // Add Stage first so it can handle button clicks before other processors
-        inputManager.addProcessor(hudView.getStage());
+        inputManager.addProcessor(hudView.getTopStage());
+        inputManager.addProcessor(hudView.getBottomStage());
         inputManager.addProcessor(pheromoneController);
 
         pheromoneView = new PheromoneView(worldCameraView, gameModel.getPheromoneSystem());
 
         viewportListener = new ViewportListener();
         viewportListener.addObserver(worldCameraView);
-        viewportListener.addObserver(hudView);
+        // viewportListener.addObserver(hudView);
+
     }
 
     @Override
@@ -105,23 +111,27 @@ public class GameScreen extends ScreenAdapter {
         cameraController.update(delta);
         worldCameraView.updateCamera();
         gameModel.update(delta);
+        hudController.update(delta);
 
         ScreenUtils.clear(0.227f, 0.643f, 0.239f, 1f);
 
         sceneView.render(gameModel.getDrawables(), gameModel.getFog());
         pheromoneView.render();
         // gridView.render();
-        hudView.render();
+        //hudController.update(Gdx.graphics.getDeltaTime());
+        hudView.render(Gdx.graphics.getDeltaTime());
     }
 
     @Override
     public void resize(int width, int height) {
         viewportListener.resize(width, height);
+        hudView.resize(width, height);
     }
 
     @Override
     public void dispose() {
         sceneView.dispose();
+        hudBatch.dispose();
         pheromoneView.dispose();
         hudView.dispose();
         textureRegistry.dispose();

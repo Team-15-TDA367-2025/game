@@ -8,7 +8,6 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
@@ -45,6 +44,10 @@ public class GameModel {
 
     public void update(float deltaTime) {
         world.update(deltaTime);
+    }
+
+    public TimeCycle.GameTime getGameTime() {
+        return world.getTimeCycle().getGameTime();
     }
 
     public Iterable<Drawable> getDrawables() {

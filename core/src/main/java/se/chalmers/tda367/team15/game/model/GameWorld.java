@@ -105,6 +105,9 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         return worldMap;
     }
 
+    public TimeCycle getTimeCycle() {
+        return timeCycle;
+    }
     public void addTimeObserver(TimeObserver observer) {
         timeObservers.add(observer);
     }
