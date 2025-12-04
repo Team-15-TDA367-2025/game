@@ -1,7 +1,8 @@
 package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;import se.chalmers.tda367.team15.game.model.entity.Entity;
+import com.badlogic.gdx.math.Vector2;
+import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
@@ -13,6 +14,8 @@ import java.util.Random;
  */
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
+    private boolean dayIsNext = false;
+
 
     WaveManager() {
 
@@ -57,20 +60,22 @@ public class WaveManager implements TimeObserver {
         return origin.add(directionV.scl(distance));
     }
 
-
     @Override
     public void onTimeUpdate(TimeCycle timeCycle) {
 
-    }
+        if(dayIsNext) {
+            if(timeCycle.getIsDay()) {
+               dayIsNext =false;
+            }
+        }
+        else {
+            if(!timeCycle.getIsDay()) {
+                dayIsNext=true;
+                nightNumber++;
+                spawnWave();
+            }
+        }
 
-    @Override
-    public void onDayStart(TimeCycle timeCycle) {
 
-    }
-
-    @Override
-    public void onNightStart(TimeCycle timeCycle) {
-        nightNumber++;
-        spawnWave();
     }
 }

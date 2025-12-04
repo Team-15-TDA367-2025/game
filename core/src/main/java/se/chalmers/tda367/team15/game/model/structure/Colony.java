@@ -3,16 +3,14 @@ package se.chalmers.tda367.team15.game.model.structure;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
@@ -24,7 +22,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     private Inventory inventory;
 
     private float health;
-    private float MAX_HEALTH = 60;
+    private float MAX_HEALTH = 800;
 
     public Colony(GridPoint2 position) {
         super(position, "colony", 2);

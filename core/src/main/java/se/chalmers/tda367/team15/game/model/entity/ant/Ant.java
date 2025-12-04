@@ -5,21 +5,27 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AttackBehavior;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
+import java.util.List;
+
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
-    private static final float SPEED = 5f;
-    private final float MAX_HEALTH = 6;
+    private static final float SPEED = 2.9f;
+    private final float MAX_HEALTH = 45;
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
@@ -48,10 +54,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     @Override
     public void update(float deltaTime) {
-        behavior.update(system, deltaTime);
+        updateBehavior(deltaTime);
         super.update(deltaTime);
         updateRotation();
         updateTexture();
+    }
+
+    public void updateBehavior(float deltaTime) {
+        behavior.update(system, deltaTime);
     }
 
     private void updateTexture() {

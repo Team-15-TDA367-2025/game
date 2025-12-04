@@ -34,7 +34,7 @@ public class GameFactory {
     public static final float WORLD_VIEWPORT_WIDTH = 15f;
     public static final float MIN_ZOOM = 0.15f;
     public static final float MAX_ZOOM = 4.0f;
-    public static final int TICKS_PER_MINUTE = 60;
+    public static final int TICKS_PER_MINUTE = 600;
 
     private GameFactory() {
     }
@@ -114,9 +114,10 @@ public class GameFactory {
     }
 
     private static void spawnInitialEntities(GameModel gameModel) {
-        for (int i = 0; i < 5; i++) {
+        /*for (int i = 0; i < 5; i++) {
             gameModel.spawnAnt(new Vector2(0, 0));
-        }
-        gameModel.spawnTermite(new Vector2(10, 0));
+        } */
+        gameModel.spawnAnt(new Vector2(0, 0));
+       // gameModel.spawnTermite(new Vector2(10, 0));
     }
 }
