@@ -32,7 +32,16 @@ public class HudView {
 
     public void render(float dt) {
         stage.act(dt);
+        bottomBar.update(dt);
         stage.draw();
+    }
+    
+    public void setEggPanelView(EggPanelView eggPanelView) {
+        bottomBar.setEggPanelView(eggPanelView);
+    }
+    
+    public BottomBarView getBottomBar() {
+        return bottomBar;
     }
 
     public void resize(int w, int h) {

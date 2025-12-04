@@ -4,22 +4,31 @@ import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
 import se.chalmers.tda367.team15.game.view.ui.PheromoneSelectionListener;
+import se.chalmers.tda367.team15.game.view.ui.EggPanelView;
+import se.chalmers.tda367.team15.game.view.ui.UiFactory;
 
 public class HudController implements PheromoneSelectionListener {
     private final HudView view;
     private final GameModel model;
     private final PheromoneController pheromoneController;
+    private final EggController eggController;
+    private final EggPanelView eggPanelView;
 
-    public HudController(HudView view, GameModel model, PheromoneController pheromoneController) {
+    public HudController(HudView view, GameModel model, PheromoneController pheromoneController, UiFactory uiFactory) {
         this.view = view;
         this.model = model;
         this.pheromoneController = pheromoneController;
+        
+        // Create egg controller and panel
+        this.eggController = new EggController(model.getColony());
+        this.eggPanelView = new EggPanelView(uiFactory, eggController, model.getColony());
 
         initializeListeners();
     }
 
     private void initializeListeners() {
         view.setPheromoneSelectionListener(this);
+        view.setEggPanelView(eggPanelView);
     }
 
     @Override

@@ -18,11 +18,13 @@ import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
-    private static final float SPEED = 5f;
-    private final float MAX_HEALTH = 6;
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
+    
+    // Stats from AntType
+    private final float speed;
+    private final String baseTextureName;
 
     private AntBehavior behavior;
     private PheromoneSystem system;
@@ -30,20 +32,25 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private float health;
     private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
-        super(position, "ant");
+    public Ant(Vector2 position, PheromoneSystem system, AntType type) {
+        super(position, type.textureName());
         this.behavior = new WanderBehavior(this);
         this.system = system;
         this.hunger = 2; // test value
-        this.inventory = new Inventory(capacity);
+        
+        // Initialize from AntType
+        this.speed = type.moveSpeed();
+        this.health = type.maxHealth();
+        this.inventory = new Inventory(type.carryCapacity());
+        this.baseTextureName = type.textureName();
+        
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.health = MAX_HEALTH;
     }
 
     private void pickRandomDirection() {
         float angle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
-        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(SPEED);
+        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(speed);
     }
 
     @Override
@@ -56,9 +63,16 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     private void updateTexture() {
         if (inventory.isEmpty()) {
-            setTextureName("ant");
+            setTextureName(baseTextureName);
         } else {
+            // For now hardcode carrying texture logic, or we could add carryingTextureName to AntType
+            // But "AntCarryingFood" seems to be the convention for now
+            if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
             setTextureName("AntCarryingFood");
+            } else {
+                 // Fallback or specific logic for other types carrying things
+                 setTextureName(baseTextureName); 
+            }
         }
     }
 
@@ -73,7 +87,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     }
 
     public float getSpeed() {
-        return SPEED;
+        return speed;
     }
 
     public GridPoint2 getGridPosition() {

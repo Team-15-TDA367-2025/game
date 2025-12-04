@@ -53,6 +53,9 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
+        
+        // Register colony's egg manager as a time observer
+        addTimeObserver(colony.getEggManager());
 
     }
 

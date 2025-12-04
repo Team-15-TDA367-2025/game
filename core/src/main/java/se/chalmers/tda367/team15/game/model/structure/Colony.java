@@ -3,9 +3,7 @@ package se.chalmers.tda367.team15.game.model.structure;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -18,13 +16,19 @@ import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
+import se.chalmers.tda367.team15.game.model.egg.EggHatchListener;
+import se.chalmers.tda367.team15.game.model.egg.EggManager;
+import se.chalmers.tda367.team15.game.model.GameWorld;
+import com.badlogic.gdx.math.Vector2;
 
-public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver, TimeObserver {
+public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver, EggHatchListener, TimeObserver {
     private List<Ant> ants;
     private Inventory inventory;
+    private EggManager eggManager;
 
     private float health;
     private float MAX_HEALTH = 60;
@@ -35,6 +39,8 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         this.health = MAX_HEALTH;
         faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000); // test value for now
+        this.eggManager = new EggManager();
+        this.eggManager.addListener(this);
         // Register to receive ant death notifications
         DestructionListener.getInstance().addEntityDeathObserver(this);
         GameWorld.getInstance().addTimeObserver(this);
@@ -77,6 +83,51 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
 
     public int getTotalResources(ResourceType type) {
         return inventory.getAmount(type);
+    }
+
+    /**
+     * Gets the egg manager for this colony.
+     *
+     * @return the egg manager
+     */
+    public EggManager getEggManager() {
+        return eggManager;
+    }
+
+    /**
+     * Attempts to purchase an egg of the specified type.
+     * Checks if the colony has enough resources and deducts them if successful.
+     *
+     * @param type the type of egg to purchase
+     * @return true if the purchase was successful, false otherwise
+     */
+    public boolean purchaseEgg(AntType type) {
+        if (type == null) {
+            return false;
+        }
+
+        int foodCost = type.foodCost();
+        if (getTotalResources(ResourceType.FOOD) < foodCost) {
+            return false;
+        }
+
+        // Deduct resources
+        inventory.addResource(ResourceType.FOOD, -foodCost);
+        // Add egg to manager
+        eggManager.addEgg(type);
+        return true;
+    }
+
+    @Override
+    public void onEggHatch(AntType type) {
+        // Get spawn position (Colony location)
+        Vector2 spawnPosition = getPosition();
+
+        // Create the ant directly using AntType
+        Ant newAnt = new Ant(spawnPosition, GameWorld.getInstance().getPheromoneSystem(), type);
+
+        // Add the ant to the colony
+        addAnt(newAnt);
     }
 
     @Override

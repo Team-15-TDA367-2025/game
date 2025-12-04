@@ -5,9 +5,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
@@ -33,8 +36,11 @@ public class GameModel {
     // --- FACADE METHODS (Actions) ---
 
     public void spawnAnt(Vector2 position) {
-        Ant ant = new Ant(position, GameWorld.getInstance().getPheromoneSystem(), 5);
-        world.getColony().addAnt(ant);
+        AntType workerType = AntTypeRegistry.getInstance().get("worker");
+        if (workerType != null) {
+            Ant ant = new Ant(position, GameWorld.getInstance().getPheromoneSystem(), workerType);
+            GameWorld.getInstance().getColony().addAnt(ant);
+        }
     }
 
     public void spawnTermite(Vector2 position) {
@@ -60,6 +66,10 @@ public class GameModel {
 
     public PheromoneSystem getPheromoneSystem() {
         return GameWorld.getInstance().getPheromoneSystem();
+    }
+
+    public Colony getColony() {
+        return GameWorld.getInstance().getColony();
     }
 
     public WorldMap getWorldMap() {
