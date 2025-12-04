@@ -31,7 +31,8 @@ public class GameModel {
     }
 
     public void spawnTermite(Vector2 position) {
-        Termite termite = new Termite(position);
+        EnemyFactory enemyFactory = new EnemyFactory();
+        Termite termite = enemyFactory.createTermite(position);
         world.addEntity(termite);
     }
 
