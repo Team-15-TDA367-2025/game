@@ -33,8 +33,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private List<TimeObserver> timeObservers;
     private float tickAccumulator = 0f;
     private float secondsPerTick;
-    private static GameWorld gameWorld;
-    private final WaveManager waveManager;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
@@ -48,17 +46,15 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
-        this.waveManager = new WaveManager();
+
         destructionListener = DestructionListener.getInstance();
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
         addTimeObserver(colony);
-        addTimeObserver(waveManager);
-
     }
 
-    }
+
 
     public Colony getColony() {
         return colony;
@@ -66,7 +62,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
 
     public List<Structure> getStructures() {
         return Collections.unmodifiableList(structures);
-
     }
 
     public List<Entity> getEntities() {

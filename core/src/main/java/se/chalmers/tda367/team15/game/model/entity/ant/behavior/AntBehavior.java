@@ -19,7 +19,7 @@ public abstract class AntBehavior {
     }
 
     public boolean enemiesInSight() {
-        List<Entity> entities = new ArrayList<>(GameWorld.getInstance().getEntities());
+        List<Entity> entities = new ArrayList<>(ant.getGameWorld().getEntities());
 
         entities.removeIf(e -> e.getPosition().dst(ant.getPosition()) > ant.getVisionRadius());
 

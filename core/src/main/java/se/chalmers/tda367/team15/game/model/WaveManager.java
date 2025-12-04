@@ -15,10 +15,11 @@ import java.util.Random;
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
     private boolean dayIsNext = false;
-
-
-    WaveManager() {
-
+    private GameWorld gameWorld;
+    private GameModel gameModel;
+    WaveManager(GameWorld gameWorld, GameModel gameModel) {
+        this.gameWorld = gameWorld;
+        this.gameModel = gameModel;
     }
 
     public int getNightNumber() {
@@ -30,7 +31,7 @@ public class WaveManager implements TimeObserver {
      */
     private void spawnWave() {
 
-        List<Entity> e = GameWorld.getInstance().getEntities();
+        List<Entity> e = gameWorld.getEntities();
         System.out.println(e.size());
 
         int nEnemies = nightNumber*2;
@@ -39,8 +40,7 @@ public class WaveManager implements TimeObserver {
         Vector2 spawnLocation = scatter(new Vector2(0,0),45);
         // spawn enemies
         for(int i = 0 ; i < nEnemies; i++) {
-            Termite termite = new Termite(scatter(spawnLocation,15));
-            GameWorld.getInstance().addEntity(termite);
+            gameModel.spawnTermite(scatter(spawnLocation,15));
         }
 
     }
@@ -61,21 +61,8 @@ public class WaveManager implements TimeObserver {
     }
 
     @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
-
-        if(dayIsNext) {
-            if(timeCycle.getIsDay()) {
-               dayIsNext =false;
-            }
-        }
-        else {
-            if(!timeCycle.getIsDay()) {
-                dayIsNext=true;
-                nightNumber++;
-                spawnWave();
-            }
-        }
-
-
+    public void onNightStart(TimeCycle timeCycle) {
+        nightNumber++;
+        spawnWave();
     }
 }

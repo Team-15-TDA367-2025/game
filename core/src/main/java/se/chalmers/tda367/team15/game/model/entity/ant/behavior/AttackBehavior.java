@@ -48,7 +48,7 @@ public class AttackBehavior extends AntBehavior{
 
     private AttackTarget findTarget() {
         AttackTarget target = null;
-        List<Entity> entities = GameWorld.getInstance().getEntities();
+        List<Entity> entities = ant.getGameWorld().getEntities();
         List<AttackTarget> potentialTargets = potentialTargets(entities);
 
         //determine target

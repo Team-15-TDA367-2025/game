@@ -15,9 +15,13 @@ import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
 public class GameModel {
     private final GameWorld world;
+    private final WaveManager waveManager;
 
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
+        this.waveManager = new WaveManager(world,this);
+        world.addTimeObserver(waveManager);
 
         this.world.addResource(new Resource(new GridPoint2(-10, 10), "food", 1, ResourceType.FOOD, 5));
         this.world.addResource(new Resource(new GridPoint2(10, -10), "food", 1, ResourceType.FOOD, 5));
@@ -33,7 +37,7 @@ public class GameModel {
     // --- FACADE METHODS (Actions) ---
 
     public void spawnAnt(Vector2 position) {
-        Ant ant = new Ant(position, world.getPheromoneSystem(), 5);
+        Ant ant = new Ant(position, world.getPheromoneSystem(), 5,world);
         world.getColony().addAnt(ant);
     }
 

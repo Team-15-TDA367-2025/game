@@ -13,7 +13,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.entity.Entity;

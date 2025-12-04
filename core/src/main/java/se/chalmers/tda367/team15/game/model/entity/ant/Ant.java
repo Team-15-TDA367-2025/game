@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AttackBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
@@ -29,14 +30,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
-
+    private GameWorld gameWorld;
     private AntBehavior behavior;
     private PheromoneSystem system;
 
     private float health;
     private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
+    public Ant(Vector2 position, PheromoneSystem system, int capacity, GameWorld gameWorld) {
         super(position, "ant");
         this.behavior = new WanderBehavior(this);
         this.system = system;
@@ -45,6 +46,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.health = MAX_HEALTH;
+        this.gameWorld=gameWorld;
     }
 
     private void pickRandomDirection() {
@@ -146,5 +148,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     @Override
     public AttackCategory getAttackCategory() {
         return AttackCategory.WORKER_ANT;
+    }
+    public GameWorld getGameWorld(){
+        return gameWorld;
     }
 }
