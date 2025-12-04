@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import se.chalmers.tda367.team15.game.model.GameEndReason;
 import se.chalmers.tda367.team15.game.model.GameStats;
+import se.chalmers.tda367.team15.game.screens.game.GameFactory;
 
 public class EndScreen extends ScreenAdapter {
     private final Game game;
@@ -61,7 +62,7 @@ public class EndScreen extends ScreenAdapter {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new StartScreen(game));
+                game.setScreen(GameFactory.createGameScreen(game));
                 dispose();
             }
         });
