@@ -51,11 +51,8 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
 
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
-        addTimeObserver(colony);
         structures.add(colony);
     }
-
-
 
     public Colony getColony() {
         return colony;
@@ -108,7 +105,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
 
-        if (nightJustStarted) {
+            if (nightJustStarted) {
                 observer.onNightStart(timeCycle);
             } else if (dayJustStarted) {
                 observer.onDayStart(timeCycle);
