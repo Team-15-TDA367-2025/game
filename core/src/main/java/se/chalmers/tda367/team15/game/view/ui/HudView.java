@@ -32,7 +32,16 @@ public class HudView {
 
     public void render(float dt) {
         stage.act(dt);
+        bottomBar.update(dt);
         stage.draw();
+    }
+    
+    public void setEggPanelView(EggPanelView eggPanelView) {
+        bottomBar.setEggPanelView(eggPanelView);
+    }
+    
+    public BottomBarView getBottomBar() {
+        return bottomBar;
     }
 
     public void resize(int w, int h) {
@@ -40,8 +49,8 @@ public class HudView {
         bottomBar.updateLayout(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
     }
 
-    public void updateData(TimeCycle.GameTime gameTime) {
-        topBar.update(gameTime, 0, 0);
+    public void updateData(TimeCycle.GameTime gameTime, int antCount, int resourceCount) {
+        topBar.update(gameTime, antCount, resourceCount);
     }
 
     public void setPheromoneSelectionListener(PheromoneSelectionListener listener) {

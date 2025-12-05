@@ -25,6 +25,8 @@ import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
 import se.chalmers.tda367.team15.game.view.ui.UiFactory;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 
 /**
  * Factory for creating and wiring the GameScreen.
@@ -35,12 +37,15 @@ public class GameFactory {
     public static final float WORLD_VIEWPORT_WIDTH = 15f;
     public static final float MIN_ZOOM = 0.15f;
     public static final float MAX_ZOOM = 4.0f;
-    public static final int TICKS_PER_MINUTE = 60;
+    public static final int TICKS_PER_MINUTE = 600;
 
     private GameFactory() {
     }
 
-    public static GameScreen createGameScreen(Game game) {
+    public static GameScreen createGameScreen() {
+        // 0. Initialize ant types (must happen before models)
+        initializeAntTypes();
+
         // 1. Create Models
         CameraModel cameraModel = createCameraModel();
         GameModel gameModel = createGameModel();
@@ -62,7 +67,7 @@ public class GameFactory {
         InputManager inputManager = new InputManager(); // Used for wiring but not stored in screen
         CameraController cameraController = new CameraController(cameraModel, cameraView);
         PheromoneController pheromoneController = new PheromoneController(gameModel, cameraView);
-        HudController hudController = new HudController(hudView, gameModel, pheromoneController);
+        HudController hudController = new HudController(hudView, gameModel, pheromoneController, uiFactory);
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);
@@ -119,6 +124,52 @@ public class GameFactory {
         for (int i = 0; i < 5; i++) {
             gameModel.spawnAnt(new Vector2(0, 0));
         }
-        gameModel.spawnTermite(new Vector2(10, 0));
+        // gameModel.spawnTermite(new Vector2(10, 0));
+    }
+
+    /**
+     * Initializes and registers all ant types in the registry.
+     * This must be called before creating GameModel to ensure ant types are
+     * available.
+     */
+    private static void initializeAntTypes() {
+        AntTypeRegistry registry = AntTypeRegistry.getInstance();
+        registry.clear();
+
+        // Scout: High speed, low HP, 0 capacity, cheap/fast to hatch
+        registry.register(new AntType(
+                "scout",
+                "Scout",
+                5, // Food Cost
+                30, // 30 ticks (0.5 min)
+                4f, // Max Health
+                8f, // Speed
+                0, // Capacity
+                "ant" // Texture
+        ));
+
+        // Soldier: Low speed, high HP, 0 capacity, expensive
+        registry.register(new AntType(
+                "soldier",
+                "Soldier",
+                40, // Food Cost
+                300, // 5 min
+                20f, // Max Health
+                2f, // Speed
+                0, // Capacity
+                "ant" // Texture
+        ));
+
+        // Worker: Medium speed, medium HP, some capacity
+        registry.register(new AntType(
+                "worker",
+                "Worker",
+                10, // Food Cost
+                60, // 1 min
+                6f, // Max Health
+                5f, // Speed
+                10, // Capacity
+                "ant" // Texture
+        ));
     }
 }

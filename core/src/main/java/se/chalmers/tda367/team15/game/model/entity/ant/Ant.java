@@ -5,60 +5,80 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
-
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
-    private static final float SPEED = 5f;
-    private final float MAX_HEALTH = 6;
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
 
+    // Stats from AntType
+    private final float speed;
+    private final String baseTextureName;
+    private GameWorld gameWorld;
     private AntBehavior behavior;
     private PheromoneSystem system;
 
     private float health;
     private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
-        super(position, "ant");
+    public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
+        super(position, type.textureName());
         this.behavior = new WanderBehavior(this);
         this.system = system;
         this.hunger = 2; // test value
-        this.inventory = new Inventory(capacity);
+
+        // Initialize from AntType
+        this.speed = type.moveSpeed();
+        this.health = type.maxHealth();
+        this.inventory = new Inventory(type.carryCapacity());
+        this.baseTextureName = type.textureName();
+
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.health = MAX_HEALTH;
+        this.gameWorld=gameWorld;
     }
 
     private void pickRandomDirection() {
         float angle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
-        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(SPEED);
+        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(speed);
     }
 
     @Override
     public void update(float deltaTime) {
-        behavior.update(system, deltaTime);
+        updateBehavior(deltaTime);
         super.update(deltaTime);
         updateRotation();
         updateTexture();
     }
 
+    public void updateBehavior(float deltaTime) {
+        behavior.update(system, deltaTime);
+    }
+
     private void updateTexture() {
         if (inventory.isEmpty()) {
-            setTextureName("ant");
+            setTextureName(baseTextureName);
         } else {
-            setTextureName("AntCarryingFood");
+            // For now hardcode carrying texture logic, or we could add carryingTextureName
+            // to AntType
+            // But "AntCarryingFood" seems to be the convention for now
+            if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
+                setTextureName("AntCarryingFood");
+            } else {
+                // Fallback or specific logic for other types carrying things
+                setTextureName(baseTextureName);
+            }
         }
     }
 
@@ -66,14 +86,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         this.behavior = behavior;
     }
 
-    public void updateRotation() {
-        if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
-        }
-    }
-
     public float getSpeed() {
-        return SPEED;
+        return speed;
     }
 
     public GridPoint2 getGridPosition() {
@@ -136,5 +150,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     @Override
     public AttackCategory getAttackCategory() {
         return AttackCategory.WORKER_ANT;
+    }
+    public GameWorld getGameWorld(){
+        return gameWorld;
     }
 }

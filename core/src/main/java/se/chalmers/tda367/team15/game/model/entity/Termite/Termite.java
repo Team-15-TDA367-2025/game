@@ -1,12 +1,13 @@
 package se.chalmers.tda367.team15.game.model.entity.Termite;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
@@ -20,13 +21,16 @@ import java.util.List;
  */
 public class Termite extends Entity implements CanBeAttacked {
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
-    private final float SPEED = 12f;
+    private final float SPEED = 2.9f;
     private final TermiteBehaviour  termiteBehaviour;
-    private AttackComponent attackComponent = new AttackComponent(3, 500, 2.0f, this);
-    private final float MAX_HEALTH = 6;
+    private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
+    private final float MAX_HEALTH = 1;
     private float health;
-    public Termite(Vector2 position) {
+    private final GameWorld world;
+
+    public Termite(Vector2 position, GameWorld world) {
         super(position, "termite");
+        this.world = world;
         this.termiteBehaviour = new TermiteBehaviour(this);
         health = MAX_HEALTH;
     }
@@ -37,10 +41,11 @@ public class Termite extends Entity implements CanBeAttacked {
      */
     @Override
     public void update(float deltaTime){
-        List<Entity> entities = GameWorld.getInstance().getEntities();
-        List<Structure> structures = GameWorld.getInstance().getStructures();
+        List<Entity> entities = world.getEntities();
+        List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities,structures);
         super.update(deltaTime);
+        updateRotation();
         if(target != null) {
             attackComponent.attack(target);
         }
