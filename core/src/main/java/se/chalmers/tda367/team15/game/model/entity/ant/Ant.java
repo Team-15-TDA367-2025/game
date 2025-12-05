@@ -5,13 +5,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
@@ -24,14 +25,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     // Stats from AntType
     private final float speed;
     private final String baseTextureName;
-
+    private GameWorld gameWorld;
     private AntBehavior behavior;
     private PheromoneSystem system;
 
     private float health;
     private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, AntType type) {
+    public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
         super(position, type.textureName());
         this.behavior = new WanderBehavior(this);
         this.system = system;
@@ -45,6 +46,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.gameWorld=gameWorld;
     }
 
     private void pickRandomDirection() {
@@ -54,10 +56,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     @Override
     public void update(float deltaTime) {
-        behavior.update(system, deltaTime);
+        updateBehavior(deltaTime);
         super.update(deltaTime);
         updateRotation();
         updateTexture();
+    }
+
+    public void updateBehavior(float deltaTime) {
+        behavior.update(system, deltaTime);
     }
 
     private void updateTexture() {
@@ -78,12 +84,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     public void setBehavior(AntBehavior behavior) {
         this.behavior = behavior;
-    }
-
-    public void updateRotation() {
-        if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
-        }
     }
 
     public float getSpeed() {
@@ -150,5 +150,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     @Override
     public AttackCategory getAttackCategory() {
         return AttackCategory.WORKER_ANT;
+    }
+    public GameWorld getGameWorld(){
+        return gameWorld;
     }
 }

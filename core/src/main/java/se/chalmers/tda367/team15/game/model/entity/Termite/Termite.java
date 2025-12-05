@@ -1,12 +1,13 @@
 package se.chalmers.tda367.team15.game.model.entity.Termite;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
@@ -20,10 +21,10 @@ import java.util.List;
  */
 public class Termite extends Entity implements CanBeAttacked {
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
-    private final float SPEED = 12f;
+    private final float SPEED = 2.9f;
     private final TermiteBehaviour  termiteBehaviour;
-    private AttackComponent attackComponent = new AttackComponent(3, 500, 2.0f, this);
-    private final float MAX_HEALTH = 6;
+    private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
+    private final float MAX_HEALTH = 1;
     private float health;
     private final GameWorld world;
 
@@ -44,6 +45,7 @@ public class Termite extends Entity implements CanBeAttacked {
         List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities,structures);
         super.update(deltaTime);
+        updateRotation();
         if(target != null) {
             attackComponent.attack(target);
         }

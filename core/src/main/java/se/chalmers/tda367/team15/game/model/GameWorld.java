@@ -7,9 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.*;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
@@ -48,12 +46,16 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.resourceSystem = new ResourceSystem();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
+
         destructionListener = DestructionListener.getInstance();
 
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
+        addTimeObserver(colony);
         structures.add(colony);
     }
+
+
 
     public Colony getColony() {
         return colony;
@@ -61,7 +63,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
 
     public List<Structure> getStructures() {
         return Collections.unmodifiableList(structures);
-
     }
 
     public List<Entity> getEntities() {
@@ -107,7 +108,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         for (TimeObserver observer : timeObservers) {
             observer.onTimeUpdate(timeCycle);
 
-            if (nightJustStarted) {
+        if (nightJustStarted) {
                 observer.onNightStart(timeCycle);
             } else if (dayJustStarted) {
                 observer.onDayStart(timeCycle);

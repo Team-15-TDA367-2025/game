@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
@@ -29,9 +30,13 @@ public class FollowTrailBehavior extends AntBehavior {
         float threshold = cellSize * REACHED_THRESHOLD_FRACTION;
         this.reachedThresholdSq = threshold * threshold;
     }
-
     @Override
     public void update(PheromoneSystem system, float deltaTime) {
+        if(enemiesInSight()) {
+            ant.setBehavior( new AttackBehavior(ant, ant.getPosition()));
+            return;
+        }
+
         List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition());
 
         // 1. Initialization / Re-anchoring
@@ -39,7 +44,7 @@ public class FollowTrailBehavior extends AntBehavior {
             lastPheromone = neighbors.stream()
                     .min(Comparator.comparingInt(Pheromone::getDistance))
                     .orElse(null);
-            
+
             if (lastPheromone == null) {
                 ant.setBehavior(new WanderBehavior(ant));
                 return;
@@ -71,7 +76,7 @@ public class FollowTrailBehavior extends AntBehavior {
         Vector2 targetPos = getCenterPos(currentTarget);
         Vector2 diff = new Vector2(targetPos).sub(ant.getPosition());
         float distSq = diff.len2();
-        
+
         if (distSq > 0.001f) {
             // Scale speed based on distance to avoid overshooting
             float maxSpeed = ant.getSpeed() * SPEED_BOOST_ON_TRAIL;
@@ -83,6 +88,7 @@ public class FollowTrailBehavior extends AntBehavior {
             // Very close to target - stop to prevent oscillation
             ant.setVelocity(new Vector2(0, 0));
         }
+
     }
 
     private Pheromone findNextPheromone(List<Pheromone> neighbors, boolean returning) {

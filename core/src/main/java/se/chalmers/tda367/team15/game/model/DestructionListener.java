@@ -1,6 +1,8 @@
 package se.chalmers.tda367.team15.game.model;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureDeathObserver;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 import java.util.LinkedHashSet;

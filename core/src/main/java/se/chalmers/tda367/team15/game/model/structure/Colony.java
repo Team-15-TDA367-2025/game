@@ -9,9 +9,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
@@ -21,6 +19,8 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
@@ -30,8 +30,9 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     private Inventory inventory;
     private EggManager eggManager;
     private PheromoneSystem pheromoneSystem;
+    private GameWorld world;
     private float health;
-    private float MAX_HEALTH = 60;
+    private float MAX_HEALTH = 600;
 
     public Colony(GridPoint2 position, PheromoneSystem pheromoneSystem, GameWorld world) {
         super(position, "colony", 4);
@@ -42,6 +43,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         this.inventory = new Inventory(1000); // test value for now
         this.eggManager = new EggManager(world);
         this.eggManager.addObserver(this);
+        this.world = world;
         // Register to receive ant death notifications
         world.addTimeObserver(this);
         DestructionListener.getInstance().addEntityDeathObserver(this);
@@ -129,7 +131,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         Vector2 spawnPosition = getPosition();
 
         // Create the ant directly using AntType
-        Ant newAnt = new Ant(spawnPosition, pheromoneSystem, type);
+        Ant newAnt = new Ant(spawnPosition, pheromoneSystem, type, world);
 
         // Add the ant to the colony
         addAnt(newAnt);
