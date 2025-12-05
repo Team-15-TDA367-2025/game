@@ -37,21 +37,21 @@ public class EggManager implements TimeObserver {
 
     @Override
     public void onTimeUpdate(TimeCycle timeCycle) {
-        Iterator<Egg> iterator = eggs.iterator();
-        while (iterator.hasNext()) {
-            Egg egg = iterator.next();
+        for (Egg egg : eggs) {
             egg.tick();
 
             if (egg.isHatched()) {
                 AntType type = egg.getType();
-                if (type != null) {
-                    for (EggHatchObserver listener : listeners) {
-                        listener.onEggHatch(type);
-                    }
+                if (type == null) {
+                    continue;
                 }
-                iterator.remove();
+
+                for (EggHatchObserver listener : listeners) {
+                    listener.onEggHatch(type);
+                }
             }
         }
+        eggs.removeIf(Egg::isHatched);
     }
 
     public List<Egg> getEggs() {
