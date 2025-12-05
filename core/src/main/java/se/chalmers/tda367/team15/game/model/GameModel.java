@@ -23,18 +23,18 @@ public class GameModel {
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
 
-        this.world.addResource(new Resource(new GridPoint2(-10, 10), "node",
+        this.world.addResource(new Resource(new GridPoint2(-10, 10), "food",
                 ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -10), "node",
+        this.world.addResource(new Resource(new GridPoint2(10, -10), "food",
                 ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(20, 25), "node",
+        this.world.addResource(new Resource(new GridPoint2(20, 25), "food",
                 ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(-20, 10), "node",
+        this.world.addResource(new Resource(new GridPoint2(-20, 10), "food",
                 ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -20), "node",
+        this.world.addResource(new Resource(new GridPoint2(10, -20), "food",
                 ResourceType.FOOD, 5));
 
-        this.world.addResourceNode(new ResourceNode(new GridPoint2(5, 5), "node", 1,
+        this.world.addResourceNode(new ResourceNode(new GridPoint2(10, 10), "node", 1,
                 ResourceType.FOOD, 10, 20));
     }
 
