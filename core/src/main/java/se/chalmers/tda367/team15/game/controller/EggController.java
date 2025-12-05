@@ -4,10 +4,6 @@ import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 
-/**
- * Controller for handling egg purchase logic.
- * Bridges the view layer and model layer following MVC pattern.
- */
 public class EggController {
     private final Colony colony;
 
@@ -32,11 +28,6 @@ public class EggController {
         return colony.purchaseEgg(type);
     }
 
-    /**
-     * Gets the colony associated with this controller.
-     *
-     * @return the colony
-     */
     public Colony getColony() {
         return colony;
     }
