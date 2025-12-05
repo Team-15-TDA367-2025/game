@@ -59,7 +59,7 @@ public class BottomBarView {
     private void buildBarContents() {
         HorizontalGroup pheromoneGroup = createPheromoneButtonGroup();
 
-        ImageButton minimizeBtn = uiFactory.createImageButton("BottomBar/minimize", () -> setMinimizedBar(true));
+        ImageButton minimizeBtn = uiFactory.createImageButton("ant", () -> setMinimizedBar(true));
 
         barTable.left();
         barTable.add(pheromoneGroup).left();
@@ -120,7 +120,7 @@ public class BottomBarView {
     }
 
     private Table createExpandButton() {
-        ImageButton expandBtn = uiFactory.createImageButton("BottomBar/expand", () -> setMinimizedBar(false));
+        ImageButton expandBtn = uiFactory.createImageButton("ant", () -> setMinimizedBar(false));
         Label lbl = new Label("expand",
                 uiFactory.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT, com.badlogic.gdx.graphics.Color.WHITE));
 
