@@ -168,7 +168,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     public void addResourceNode(ResourceNode resourceNode) {
         structures.add(resourceNode);
         resourceSystem.addResourceNode(resourceNode);
-        addTimeObserver(resourceNode);
     }
 
     public void removeStructure(Structure s) {
