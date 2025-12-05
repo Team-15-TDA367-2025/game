@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.TimeCycle;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
@@ -16,9 +17,10 @@ public class EggManager implements TimeObserver {
     private final List<Egg> eggs;
     private final List<EggHatchObserver> observers;
 
-    public EggManager() {
+    public EggManager(GameWorld world) {
         this.eggs = new ArrayList<>();
         this.observers = new ArrayList<>();
+        world.addTimeObserver(this);
     }
 
     public void addEgg(AntType type) {

@@ -12,6 +12,7 @@ import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
@@ -32,16 +33,17 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     private float health;
     private float MAX_HEALTH = 60;
 
-    public Colony(GridPoint2 position, PheromoneSystem pheromoneSystem) {
+    public Colony(GridPoint2 position, PheromoneSystem pheromoneSystem, GameWorld world) {
         super(position, "colony", 4);
         this.pheromoneSystem = pheromoneSystem;
         this.ants = new ArrayList<>();
         this.health = MAX_HEALTH;
         faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000); // test value for now
-        this.eggManager = new EggManager();
+        this.eggManager = new EggManager(world);
         this.eggManager.addObserver(this);
         // Register to receive ant death notifications
+        world.addTimeObserver(this);
         DestructionListener.getInstance().addEntityDeathObserver(this);
     }
 

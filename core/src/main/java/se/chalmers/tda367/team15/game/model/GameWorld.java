@@ -36,26 +36,24 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private float secondsPerTick;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+        this.timeObservers = new ArrayList<>();
+        this.worldEntities = new ArrayList<>();
+        this.resources = new ArrayList<>();
+        this.structures = new ArrayList<>();
+
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
-        this.colony = new Colony(new GridPoint2(0, 0), pheromoneSystem);
-        this.worldEntities = new ArrayList<>();
-        this.structures = new ArrayList<>();
-        structures.add(colony);
-        this.resources = new ArrayList<>();
+        this.colony = new Colony(new GridPoint2(0, 0), pheromoneSystem, this);
         this.resourceSystem = new ResourceSystem();
-        this.timeObservers = new ArrayList<>();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
         destructionListener = DestructionListener.getInstance();
+
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
-
-        // Register colony's egg manager as a time observer
-        addTimeObserver(colony.getEggManager());
-
+        structures.add(colony);
     }
 
     public Colony getColony() {
