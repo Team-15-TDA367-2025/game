@@ -1,5 +1,6 @@
 package se.chalmers.tda367.team15.game.model.entity.Termite;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
@@ -44,6 +45,7 @@ public class Termite extends Entity implements CanBeAttacked {
         List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities,structures);
         super.update(deltaTime);
+        updateRotation();
         if(target != null) {
             attackComponent.attack(target);
         }

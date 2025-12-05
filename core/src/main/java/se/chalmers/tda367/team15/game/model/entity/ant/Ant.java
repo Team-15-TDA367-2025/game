@@ -78,12 +78,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         this.behavior = behavior;
     }
 
-    public void updateRotation() {
-        if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
-        }
-    }
-
     public float getSpeed() {
         return SPEED;
     }
