@@ -42,7 +42,7 @@ public class GameFactory {
     private GameFactory() {
     }
 
-    public static GameScreen createGameScreen() {
+    public static GameScreen createGameScreen(Game game) {
         // 0. Initialize ant types (must happen before models)
         initializeAntTypes();
 

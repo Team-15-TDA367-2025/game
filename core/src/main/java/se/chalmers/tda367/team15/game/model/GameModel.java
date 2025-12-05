@@ -91,4 +91,9 @@ public class GameModel {
     public int getTotalDays() {
         return world.getTimeCycle().getTotalDays();
     }
+
+    public int getTotalAnts() {
+        return world.getAnts().size();
+    }
+
 }
