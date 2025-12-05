@@ -17,12 +17,13 @@ public class ResourceNode extends Structure implements TimeObserver {
     private boolean depleted;
     private GameWorld gameWorld;
 
-    public ResourceNode(GridPoint2 position, String textureName, int radius,
+    public ResourceNode(GameWorld gameWorld, GridPoint2 position, String textureName, int radius,
             ResourceType type, int maxAmount, int cooldownTicks) {
         super(position, textureName, radius);
         this.type = type;
         this.maxAmount = maxAmount;
         this.currentAmount = maxAmount;
+        this.gameWorld = gameWorld;
         this.cooldownTicks = cooldownTicks;
         this.ticksRemaining = 0;
         this.depleted = false;

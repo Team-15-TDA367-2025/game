@@ -34,7 +34,7 @@ public class GameModel {
         this.world.addResource(new Resource(new GridPoint2(10, -20), "food",
                 ResourceType.FOOD, 5));
 
-        this.world.addResourceNode(new ResourceNode(new GridPoint2(10, 10), "node", 1,
+        this.world.addResourceNode(new ResourceNode(world, new GridPoint2(10, 10), "node", 1,
                 ResourceType.FOOD, 10, 20));
     }
 
