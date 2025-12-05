@@ -1,7 +1,9 @@
 package se.chalmers.tda367.team15.game.model.structure.resource;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.GridPoint2;
 
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
@@ -13,6 +15,7 @@ public class ResourceNode extends Structure implements TimeObserver {
     private int cooldownTicks; // ticks until respawn
     private int ticksRemaining; // current countdown
     private boolean depleted;
+    private GameWorld gameWorld;
 
     public ResourceNode(GridPoint2 position, String textureName, int radius,
             ResourceType type, int maxAmount, int cooldownTicks) {
@@ -23,6 +26,7 @@ public class ResourceNode extends Structure implements TimeObserver {
         this.cooldownTicks = cooldownTicks;
         this.ticksRemaining = 0;
         this.depleted = false;
+        gameWorld.addTimeObserver(this);
     }
 
     @Override
