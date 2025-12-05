@@ -16,12 +16,11 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
-
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
-    
+
     // Stats from AntType
     private final float speed;
     private final String baseTextureName;
@@ -37,13 +36,13 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         this.behavior = new WanderBehavior(this);
         this.system = system;
         this.hunger = 2; // test value
-        
+
         // Initialize from AntType
         this.speed = type.moveSpeed();
         this.health = type.maxHealth();
         this.inventory = new Inventory(type.carryCapacity());
         this.baseTextureName = type.textureName();
-        
+
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
     }
@@ -65,13 +64,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         if (inventory.isEmpty()) {
             setTextureName(baseTextureName);
         } else {
-            // For now hardcode carrying texture logic, or we could add carryingTextureName to AntType
+            // For now hardcode carrying texture logic, or we could add carryingTextureName
+            // to AntType
             // But "AntCarryingFood" seems to be the convention for now
             if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
-            setTextureName("AntCarryingFood");
+                setTextureName("AntCarryingFood");
             } else {
-                 // Fallback or specific logic for other types carrying things
-                 setTextureName(baseTextureName); 
+                // Fallback or specific logic for other types carrying things
+                setTextureName(baseTextureName);
             }
         }
     }

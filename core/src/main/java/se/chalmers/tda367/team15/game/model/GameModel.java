@@ -13,6 +13,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
@@ -22,11 +23,19 @@ public class GameModel {
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
 
-        this.world.addResource(new Resource(new GridPoint2(-10, 10), "node", ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -10), "node", ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(20, 25), "node", ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(-20, 10), "node", ResourceType.FOOD, 5));
-        this.world.addResource(new Resource(new GridPoint2(10, -20), "node", ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(-10, 10), "food",
+                ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -10), "food",
+                ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(20, 25), "food",
+                ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(-20, 10), "food",
+                ResourceType.FOOD, 5));
+        this.world.addResource(new Resource(new GridPoint2(10, -20), "food",
+                ResourceType.FOOD, 5));
+
+        this.world.addResourceNode(new ResourceNode(world, new GridPoint2(10, 10), "node", 1,
+                ResourceType.FOOD, 10, 20));
     }
 
     public PheromoneGridConverter getPheromoneGridConverter() {
