@@ -7,6 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.*;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
@@ -69,6 +70,17 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
             allEntities.addAll(structure.getSubEntities());
         }
         return Collections.unmodifiableList(allEntities);
+    }
+
+    // TODO: Clean up this, we already know entities are subentities to colony
+    public List<Ant> getAnts() {
+        List<Ant> ants = new ArrayList<>();
+        for (Entity entity : getEntities()) {
+            if (entity instanceof Ant) {
+                ants.add((Ant) entity);
+            }
+        }
+        return Collections.unmodifiableList(ants);
     }
 
     public Iterable<Drawable> getDrawables() {

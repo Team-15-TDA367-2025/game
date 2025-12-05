@@ -6,8 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.utils.Align;
 
 import se.chalmers.tda367.team15.game.controller.EggController;
 import se.chalmers.tda367.team15.game.model.egg.Egg;
@@ -36,14 +34,14 @@ public class EggPanelView {
         this.eggManager = colony.getEggManager();
         
         panelTable = new Table();
-        panelTable.setBackground(uiFactory.createDrawable("BottomBar/bottombar_bg"));
+        // No background - this panel is embedded in BottomBarView which has its own background
         
         eggTypeGroup = new HorizontalGroup();
         eggTypeGroup.space(UiTheme.BUTTON_SPACING);
         
         buildEggTypeButtons();
         
-        panelTable.add(eggTypeGroup).pad(UiTheme.PADDING_MEDIUM);
+        panelTable.add(eggTypeGroup);
     }
 
     /**
@@ -53,7 +51,7 @@ public class EggPanelView {
         AntTypeRegistry registry = AntTypeRegistry.getInstance();
         
         for (AntType type : registry.getAll()) {
-            VerticalGroup eggTypeContainer = createEggTypeButton(type);
+            Table eggTypeContainer = createEggTypeButton(type);
             eggTypeGroup.addActor(eggTypeContainer);
         }
     }
@@ -62,45 +60,35 @@ public class EggPanelView {
      * Creates a button and info display for a specific ant type.
      *
      * @param type the ant type to create UI for
-     * @return a VerticalGroup containing the button and labels
+     * @return a Table containing the button and name label
      */
-    private VerticalGroup createEggTypeButton(AntType type) {
-        // Create purchase button
-        ImageButton button = uiFactory.createImageButton("BottomBar/btn1", () -> {
+    private Table createEggTypeButton(AntType type) {
+        // Create purchase button with the ant type's texture
+        ImageButton button = uiFactory.createImageButton(type.textureName(), () -> {
             eggController.purchaseEgg(type.id());
         });
         
-        // Create labels
-        Label nameLabel = new Label(type.displayName(),
+        // Name label below the button
+        String labelText = type.displayName() + " (" + type.foodCost() + ")";
+        Label nameLabel = new Label(labelText, 
                 uiFactory.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT, Color.WHITE));
-        nameLabel.setAlignment(Align.center);
         
-        Label costLabel = new Label("Cost: " + type.foodCost() + " Food",
-                uiFactory.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT * 0.8f, Color.LIGHT_GRAY));
-        costLabel.setAlignment(Align.center);
-        
-        // Progress bar for eggs of this type
+        // Progress bar for eggs of this type - using area background for consistent styling
         ProgressBar.ProgressBarStyle progressStyle = new ProgressBar.ProgressBarStyle();
-        // Use simple drawables for progress bar
-        progressStyle.background = uiFactory.createDrawable("BottomBar/bottombar_bg");
-        progressStyle.knobBefore = uiFactory.createDrawable("BottomBar/btn1");
-        progressStyle.knob = uiFactory.createDrawable("BottomBar/btn1");
+        progressStyle.background = uiFactory.getAreaBackground();
+        progressStyle.knobBefore = uiFactory.getButtonBackgroundChecked();
         ProgressBar progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressStyle);
         progressBar.setValue(0f);
-        progressBar.setSize(80f, 8f);
         progressBar.setVisible(false);
         
         // Store reference to progress bar for updates
         button.setUserObject(new EggTypeUIState(type.id(), progressBar));
         
-        // Container
-        VerticalGroup container = new VerticalGroup();
-        container.center();
-        container.space(UiTheme.PADDING_SMALL);
-        container.addActor(button);
-        container.addActor(nameLabel);
-        container.addActor(costLabel);
-        container.addActor(progressBar);
+        // Container table for vertical layout
+        Table container = new Table();
+        container.add(button).size(UiTheme.ICON_SIZE_LARGE).row();
+        container.add(nameLabel).padTop(UiTheme.PADDING_TINY).row();
+        container.add(progressBar).width(UiTheme.ICON_SIZE_LARGE).height(UiTheme.PADDING_SMALL).padTop(UiTheme.PADDING_TINY);
         
         return container;
     }
@@ -112,7 +100,7 @@ public class EggPanelView {
     public void update() {
         // Update progress bars and button states
         for (int i = 0; i < eggTypeGroup.getChildren().size; i++) {
-            VerticalGroup container = (VerticalGroup) eggTypeGroup.getChild(i);
+            Table container = (Table) eggTypeGroup.getChild(i);
             ImageButton button = (ImageButton) container.getChild(0);
             EggTypeUIState state = (EggTypeUIState) button.getUserObject();
             

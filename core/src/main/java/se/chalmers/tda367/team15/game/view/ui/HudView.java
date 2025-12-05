@@ -14,6 +14,7 @@ public class HudView {
 
     public HudView(SpriteBatch batch, UiFactory uiFactory) {
         stage = new Stage(new ScreenViewport(), batch);
+        ((ScreenViewport) stage.getViewport()).setUnitsPerPixel(1f / UiTheme.UI_SCALE);
 
         // Create sub-views
         topBar = new TopBarView(uiFactory);
@@ -23,7 +24,8 @@ public class HudView {
         Table topContainer = new Table();
         topContainer.setFillParent(true);
         topContainer.top();
-        topContainer.add(topBar).width(UiTheme.TOP_BAR_WIDTH).height(UiTheme.TOP_BAR_HEIGHT);
+        topContainer.padTop(UiTheme.PADDING_MEDIUM);
+        topContainer.add(topBar);
         stage.addActor(topContainer);
 
         // Layout BottomBar

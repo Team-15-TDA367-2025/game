@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.screens.game;
 
 import java.util.List;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -41,7 +42,7 @@ public class GameFactory {
     private GameFactory() {
     }
 
-    public static GameScreen createGameScreen() {
+    public static GameScreen createGameScreen(Game game) {
         // 0. Initialize ant types (must happen before models)
         initializeAntTypes();
 
@@ -78,6 +79,7 @@ public class GameFactory {
         viewportListener.addObserver(cameraView);
 
         return new GameScreen(
+                game,
                 gameModel,
                 cameraView,
                 sceneView,
@@ -136,7 +138,7 @@ public class GameFactory {
                 4f, // Max Health
                 8f, // Speed
                 0, // Capacity
-                "ant" // Texture
+                "scout" // Texture
         ));
 
         // Soldier: Low speed, high HP, 0 capacity, expensive

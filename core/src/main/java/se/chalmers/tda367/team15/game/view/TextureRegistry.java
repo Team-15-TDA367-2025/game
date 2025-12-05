@@ -32,9 +32,14 @@ public class TextureRegistry {
         String prefix = (path.equals(".") || path.equals("./")) ? "" : path + "/";
 
         for (FileHandle file : dir.list()) {
-            if (file.extension().equalsIgnoreCase("png")) {
+            if (file.extension().equalsIgnoreCase("png") && !file.name().startsWith("c__")) {
+                try {
                 String key = prefix + file.nameWithoutExtension();
                 textures.put(key, new TextureRegion(new Texture(file)));
+                } catch (Exception e) {
+                    // Skip files that can't be loaded as textures
+                    System.err.println("Warning: Could not load texture: " + file.name());
+                }
             }
         }
     }

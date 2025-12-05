@@ -2,9 +2,13 @@ package se.chalmers.tda367.team15.game.view.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Scaling;
 
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 
@@ -19,8 +23,11 @@ public class TopBarView extends Table {
     public TopBarView(UiFactory uiFactory) {
         this.uiFactory = uiFactory;
 
-        setBackground(uiFactory.createDrawable("TopBar/topbar_bg"));
-        
+        setBackground(uiFactory.getPanelBackground());
+        // Remove padding if requested
+        // pad(UiTheme.PADDING_MEDIUM);
+        padTop(UiTheme.PADDING_MEDIUM).padBottom(UiTheme.PADDING_MEDIUM);
+
         Label.LabelStyle labelStyle = uiFactory.createLabelStyle(UiTheme.FONT_SCALE_LARGE, Color.BLACK);
 
         dayLabel = new Label("Day 1", labelStyle);
@@ -31,30 +38,31 @@ public class TopBarView extends Table {
         resource1Value = new Label("1337", labelStyle);
         resource2Value = new Label("420", labelStyle);
 
-        Table resourceBar1 = createResourceBar("TopBar/ant", resource1Value);
-        Table resourceBar2 = createResourceBar("TopBar/berry", resource2Value);
+        Stack resourceBar1 = createResourceBar("ant", resource1Value);
+        Stack resourceBar2 = createResourceBar("resource", resource2Value);
 
         Table resourceStack = new Table();
-        resourceStack.add(resourceBar1).growX().height(UiTheme.RESOURCE_BAR_HEIGHT).padBottom(UiTheme.PADDING_TINY);
+        resourceStack.add(resourceBar1).width(120f).growY().padBottom(UiTheme.PADDING_SMALL);
         resourceStack.row();
-        resourceStack.add(resourceBar2).growX().height(UiTheme.RESOURCE_BAR_HEIGHT);
+        resourceStack.add(resourceBar2).width(120f).growY();
 
         Table rightButtons = createRightButtons();
 
         left();
-        add(dayLabel).left().padLeft(UiTheme.PADDING_MEDIUM).padRight(UiTheme.PADDING_XLARGE).minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
-        add(timeLabel).left().padRight(UiTheme.PADDING_XLARGE).minWidth(UiTheme.TIME_LABEL_MIN_WIDTH);
-        add(speedTable).padRight(UiTheme.PADDING_XXLARGE);
-        add(resourceStack).width(UiTheme.RESOURCE_BAR_WIDTH).padRight(UiTheme.PADDING_XXLARGE);
-        add(rightButtons).right().padRight(UiTheme.PADDING_SMALL);
+        add(dayLabel).left().padRight(UiTheme.PADDING_MEDIUM)
+                .minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
+        add(timeLabel).left().padRight(UiTheme.PADDING_MEDIUM).minWidth(UiTheme.TIME_LABEL_MIN_WIDTH);
+        add(speedTable).padRight(UiTheme.PADDING_MEDIUM);
+        add(resourceStack).growY().padRight(UiTheme.PADDING_MEDIUM);
+        add(rightButtons).right();
     }
 
     private Table createSpeedControls() {
-        ImageButton pauseBtn = uiFactory.createImageButton("TopBar/pause", null);
-        ImageButton playBtn = uiFactory.createImageButton("TopBar/play", null);
-        ImageButton fastBtn = uiFactory.createImageButton("TopBar/fast", null);
+        TextButton pauseBtn = uiFactory.createToggleTextButton("Pause");
+        TextButton playBtn = uiFactory.createToggleTextButton("Play");
+        TextButton fastBtn = uiFactory.createToggleTextButton("Fast");
 
-        ButtonGroup<ImageButton> group = new ButtonGroup<>();
+        ButtonGroup<TextButton> group = new ButtonGroup<>();
         group.setMinCheckCount(1);
         group.setMaxCheckCount(1);
         group.setUncheckLast(true);
@@ -62,28 +70,46 @@ public class TopBarView extends Table {
         playBtn.setChecked(true);
 
         Table speedTable = new Table();
-        speedTable.add(pauseBtn).size(UiTheme.ICON_SIZE_MEDIUM).padRight(UiTheme.PADDING_SMALL);
-        speedTable.add(playBtn).size(UiTheme.ICON_SIZE_MEDIUM).padRight(UiTheme.PADDING_SMALL);
-        speedTable.add(fastBtn).size(UiTheme.ICON_SIZE_MEDIUM);
+        speedTable.add(pauseBtn).padRight(UiTheme.PADDING_SMALL);
+        speedTable.add(playBtn).padRight(UiTheme.PADDING_SMALL);
+        speedTable.add(fastBtn);
 
         return speedTable;
     }
 
-    private Table createResourceBar(String iconTextureName, Label valueLabel) {
-        Table table = new Table();
-        table.setBackground(uiFactory.createDrawable("TopBar/resource_bg"));
-        table.add(uiFactory.createImage(iconTextureName)).size(UiTheme.ICON_SIZE_SMALL).padLeft(UiTheme.PADDING_SMALL).left();
-        table.add(valueLabel).expandX().right().padRight(UiTheme.PADDING_MEDIUM);
-        return table;
+    private Stack createResourceBar(String iconTextureName, Label valueLabel) {
+        // Background table
+        Table bg = new Table();
+        bg.setBackground(uiFactory.getAreaBackground());
+        bg.pad(UiTheme.PADDING_SMALL);
+        bg.add().width(40f); // Spacer for the icon
+        bg.add(valueLabel).width(60f).right().padRight(UiTheme.PADDING_SMALL);
+
+        // Icon
+        Image icon = uiFactory.createImage(iconTextureName);
+        icon.setScaling(Scaling.fit); // Keep aspect ratio
+        
+        Stack stack = new Stack();
+        stack.add(bg);
+        
+        // Container for icon to align it left and centered vertically, slightly overlapping
+        Container<Image> iconContainer = new Container<>(icon);
+        // Set explicit size or max size, but allow scaling
+        iconContainer.size(32f, 48f); // Adjust size to fit 32x48 roughly, or use Scaling
+        iconContainer.left().padLeft(-10f); // Pull it out to the left slightly
+        
+        stack.add(iconContainer);
+
+        return stack;
     }
 
     private Table createRightButtons() {
-        ImageButton statsBtn = uiFactory.createImageButton("TopBar/stats", null);
-        ImageButton settingsBtn = uiFactory.createImageButton("TopBar/settings", null);
+        TextButton statsBtn = uiFactory.createTextButton("Stats", null);
+        TextButton settingsBtn = uiFactory.createTextButton("Settings", null);
 
         Table rightButtons = new Table();
-        rightButtons.add(statsBtn).size(UiTheme.ICON_SIZE_LARGE).padRight(UiTheme.PADDING_SMALL);
-        rightButtons.add(settingsBtn).size(UiTheme.ICON_SIZE_LARGE);
+        rightButtons.add(statsBtn).padRight(UiTheme.PADDING_SMALL);
+        rightButtons.add(settingsBtn);
 
         return rightButtons;
     }

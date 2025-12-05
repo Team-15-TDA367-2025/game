@@ -1,12 +1,16 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.HudController;
+import se.chalmers.tda367.team15.game.model.GameEndReason;
 import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.GameStats;
+import se.chalmers.tda367.team15.game.screens.EndScreen;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
@@ -40,7 +44,10 @@ public class GameScreen extends ScreenAdapter {
     private final CameraController cameraController;
     private final HudController hudController;
 
+    private final Game game;
+
     public GameScreen(
+            Game game,
             GameModel gameModel,
             CameraView cameraView,
             WorldRenderer sceneView,
@@ -51,6 +58,7 @@ public class GameScreen extends ScreenAdapter {
             ViewportListener viewportListener,
             CameraController cameraController,
             HudController hudController) {
+        this.game = game;
         this.gameModel = gameModel;
         this.cameraView = cameraView;
         this.sceneView = sceneView;
@@ -63,6 +71,13 @@ public class GameScreen extends ScreenAdapter {
         this.hudController = hudController;
     }
 
+    private GameEndReason gameHasEnded() {
+        if (gameModel.getTotalAnts() == 0) {
+            return GameEndReason.ALL_ANTS_DEAD;
+        }
+        return GameEndReason.STILL_PLAYING;
+    }
+
     @Override
     public void render(float delta) {
         // Update
@@ -70,6 +85,13 @@ public class GameScreen extends ScreenAdapter {
         cameraView.updateCamera();
         gameModel.update(delta);
         hudController.update(delta);
+
+        GameEndReason endReason = gameHasEnded();
+        if (endReason != GameEndReason.STILL_PLAYING) {
+            GameStats gameStats = new GameStats(gameModel.getTotalDays());
+            gameStats.saveIfNewHighScore();
+            game.setScreen(new EndScreen(game, endReason));
+        }
 
         // Render
         ScreenUtils.clear(0.227f, 0.643f, 0.239f, 1f);

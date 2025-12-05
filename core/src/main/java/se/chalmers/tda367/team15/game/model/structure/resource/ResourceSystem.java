@@ -121,7 +121,6 @@ public class ResourceSystem {
             if (resource.getAmount() <= 0) {
                 removeResource(resource);
             }
-
             return true;
         }
 
