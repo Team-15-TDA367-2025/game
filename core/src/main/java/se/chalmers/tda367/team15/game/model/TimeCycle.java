@@ -4,7 +4,9 @@ public class TimeCycle {
     private int ticks;
     private int ticksPerMinute;
 
-    public record GameTime(int totalDays, int currentHour, int currentMinute, int ticks) {}
+    public record GameTime(int totalDays, int currentHour, int currentMinute, int ticks) {
+    }
+
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
         this.ticks = 0;
@@ -35,7 +37,7 @@ public class TimeCycle {
     }
 
     public GameTime getGameTime() {
-        return new GameTime((getTotalMinutes()/(24*60))+1, getHour(), getMinute(), ticks);
+        return new GameTime((getTotalMinutes() / (24 * 60)) + 1, getHour(), getMinute(), ticks);
     }
 
     public boolean getIsDay() {

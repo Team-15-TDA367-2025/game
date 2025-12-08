@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import se.chalmers.tda367.team15.game.model.GameEndReason;
 import se.chalmers.tda367.team15.game.model.GameStats;
-
 import se.chalmers.tda367.team15.game.screens.game.GameFactory;
 
 public class StartScreen extends ScreenAdapter {

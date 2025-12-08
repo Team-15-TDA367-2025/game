@@ -8,7 +8,11 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
-import se.chalmers.tda367.team15.game.model.interfaces.*;
+import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
@@ -43,7 +47,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
-        this.colony = new Colony(new GridPoint2(0, 0), pheromoneSystem, this);
+        this.colony = new Colony(new GridPoint2(0, 0), this);
         this.resourceSystem = new ResourceSystem();
         this.timeCycle = timeCycle;
         this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();

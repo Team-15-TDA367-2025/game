@@ -40,13 +40,13 @@ public class UiFactory {
     public ImageButton createImageButton(String textureName, Runnable onClick) {
         TextureRegion region = textures.get(textureName);
         TextureRegionDrawable drawable = new TextureRegionDrawable(region);
-        
+
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
         style.imageUp = drawable;
         style.up = getButtonBackground();
         style.over = getButtonBackgroundHover();
         style.down = getButtonBackgroundPressed();
-        
+
         ImageButton button = new ImageButton(style);
 
         if (onClick != null) {
@@ -130,14 +130,14 @@ public class UiFactory {
         style.over = getButtonBackgroundHover();
         style.down = getButtonBackgroundPressed();
         style.checked = getButtonBackgroundChecked();
-        
+
         return new ImageButton(style);
     }
 
     public TextButton createTextButton(String text, Runnable onClick) {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(UiTheme.FONT_SCALE_DEFAULT);
-        
+
         TextButtonStyle style = new TextButtonStyle();
         style.font = font;
         style.up = getButtonBackground();
@@ -145,9 +145,9 @@ public class UiFactory {
         style.down = getButtonBackgroundPressed();
         style.checked = getButtonBackground();
         style.fontColor = Color.WHITE;
-        
+
         TextButton button = new TextButton(text, style);
-        
+
         if (onClick != null) {
             button.addListener(new ClickListener() {
                 @Override
@@ -156,14 +156,14 @@ public class UiFactory {
                 }
             });
         }
-        
+
         return button;
     }
 
     public TextButton createToggleTextButton(String text) {
         BitmapFont font = new BitmapFont();
         font.getData().setScale(UiTheme.FONT_SCALE_DEFAULT);
-        
+
         TextButtonStyle style = new TextButtonStyle();
         style.font = font;
         style.up = getButtonBackground();
@@ -172,7 +172,7 @@ public class UiFactory {
         style.checked = getButtonBackgroundChecked();
         style.fontColor = Color.WHITE;
         style.checkedFontColor = Color.WHITE;
-        
+
         return new TextButton(text, style);
     }
 

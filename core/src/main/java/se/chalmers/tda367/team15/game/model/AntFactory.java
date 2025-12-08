@@ -8,7 +8,6 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class AntFactory {
-    private static final int DEFAULT_CAPACITY = 5;
     private final PheromoneSystem pheromoneSystem;
     private final Colony colony;
     private final GameWorld world;

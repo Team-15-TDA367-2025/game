@@ -56,7 +56,7 @@ public class CameraController extends InputAdapter {
     @Override
     public boolean scrolled(float amountX, float amountY) {
         Vector2 screenPos = new Vector2(Gdx.input.getX(), Gdx.input.getY());
-        
+
         // Get current world position of mouse
         Vector2 worldPos = converter.screenToWorld(screenPos);
 
@@ -66,7 +66,7 @@ public class CameraController extends InputAdapter {
 
         // Apply zoom while keeping mouse position fixed in world
         cameraModel.zoomTo(newZoom, worldPos);
-        
+
         // Apply constraints
         cameraModel.applyConstraints(converter.getViewportSize());
 

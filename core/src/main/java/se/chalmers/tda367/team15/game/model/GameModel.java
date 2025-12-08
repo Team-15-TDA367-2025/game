@@ -2,17 +2,14 @@ package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
-import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
-import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
-import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
-import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
-import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 

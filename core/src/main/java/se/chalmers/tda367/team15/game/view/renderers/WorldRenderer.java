@@ -4,11 +4,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
+import se.chalmers.tda367.team15.game.model.FogOfWar;
+import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
-import se.chalmers.tda367.team15.game.model.FogOfWar;
-import se.chalmers.tda367.team15.game.model.GameModel;
 
 public class WorldRenderer {
     private final SpriteBatch batch;

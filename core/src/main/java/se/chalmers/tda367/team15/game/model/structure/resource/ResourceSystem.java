@@ -1,6 +1,5 @@
 package se.chalmers.tda367.team15.game.model.structure.resource;
 
-import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -88,16 +88,17 @@ public class TopBarView extends Table {
         // Icon
         Image icon = uiFactory.createImage(iconTextureName);
         icon.setScaling(Scaling.fit); // Keep aspect ratio
-        
+
         Stack stack = new Stack();
         stack.add(bg);
-        
-        // Container for icon to align it left and centered vertically, slightly overlapping
+
+        // Container for icon to align it left and centered vertically, slightly
+        // overlapping
         Container<Image> iconContainer = new Container<>(icon);
         // Set explicit size or max size, but allow scaling
         iconContainer.size(32f, 48f); // Adjust size to fit 32x48 roughly, or use Scaling
         iconContainer.left().padLeft(-10f); // Pull it out to the left slightly
-        
+
         stack.add(iconContainer);
 
         return stack;

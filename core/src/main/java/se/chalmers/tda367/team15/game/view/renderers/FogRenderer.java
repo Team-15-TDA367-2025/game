@@ -1,11 +1,10 @@
 package se.chalmers.tda367.team15.game.view.renderers;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.FogOfWar;
-
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class FogRenderer {
     private final TextureRegion pixelTexture;

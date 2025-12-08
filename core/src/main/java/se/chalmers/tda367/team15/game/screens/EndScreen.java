@@ -44,6 +44,9 @@ public class EndScreen extends ScreenAdapter {
             case STARVATION:
                 endMessage = "Your colony has starved!";
                 break;
+            default:
+                endMessage = "Unknown reason";
+                break;
         }
 
         stage = new Stage(new ScreenViewport());

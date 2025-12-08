@@ -5,4 +5,3 @@ public enum PheromoneType {
     ATTACK,
     EXPLORE
 }
-

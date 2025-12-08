@@ -10,7 +10,8 @@ import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
  */
 public class Egg {
     private final String typeId;
-    private int ticksRemaining; // Number of ticks remaining until hatching (can be negative, meaning the egg is hatched)
+    private int ticksRemaining; // Number of ticks remaining until hatching (can be negative, meaning the egg is
+                                // hatched)
 
     public Egg(String typeId, int ticksRemaining) {
         this.typeId = typeId;

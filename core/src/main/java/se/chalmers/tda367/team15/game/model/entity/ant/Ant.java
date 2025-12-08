@@ -46,7 +46,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.gameWorld=gameWorld;
+        this.gameWorld = gameWorld;
     }
 
     private void pickRandomDirection() {
@@ -151,7 +151,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     public AttackCategory getAttackCategory() {
         return AttackCategory.WORKER_ANT;
     }
-    public GameWorld getGameWorld(){
+
+    public GameWorld getGameWorld() {
         return gameWorld;
     }
 }

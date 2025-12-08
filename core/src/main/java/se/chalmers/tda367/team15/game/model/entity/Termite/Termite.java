@@ -1,28 +1,29 @@
 package se.chalmers.tda367.team15.game.model.entity.Termite;
 
-import com.badlogic.gdx.math.MathUtils;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
+
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
-import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-
-
-import java.util.List;
+import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
- * Termites are hostile to anything not in their {@link Faction}, termites {@link Faction} is "TERMITE_PROTECTORATE". Termites will pursue enemy entities
- *  then structures, then stand still. Perfect vision of map.
+ * Termites are hostile to anything not in their {@link Faction}, termites
+ * {@link Faction} is "TERMITE_PROTECTORATE". Termites will pursue enemy
+ * entities
+ * then structures, then stand still. Perfect vision of map.
  */
 public class Termite extends Entity implements CanBeAttacked {
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
     private final float SPEED = 2.9f;
-    private final TermiteBehaviour  termiteBehaviour;
+    private final TermiteBehaviour termiteBehaviour;
     private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
     private final float MAX_HEALTH = 1;
     private float health;
@@ -30,23 +31,24 @@ public class Termite extends Entity implements CanBeAttacked {
 
     public Termite(Vector2 position, GameWorld world) {
         super(position, "termite");
-        this.world = world; 
+        this.world = world;
         this.termiteBehaviour = new TermiteBehaviour(this);
         health = MAX_HEALTH;
     }
 
     /**
      * Updates the termite
+     * 
      * @param deltaTime the real time change between frames
      */
     @Override
-    public void update(float deltaTime){
+    public void update(float deltaTime) {
         List<Entity> entities = world.getEntities();
         List<Structure> structures = world.getStructures();
-        AttackTarget target = termiteBehaviour.update(entities,structures);
+        AttackTarget target = termiteBehaviour.update(entities, structures);
         super.update(deltaTime);
         updateRotation();
-        if(target != null) {
+        if (target != null) {
             attackComponent.attack(target);
         }
 
@@ -65,19 +67,17 @@ public class Termite extends Entity implements CanBeAttacked {
      * @return the termites {@link Faction}
      */
     @Override
-    public Faction getFaction(){
+    public Faction getFaction() {
         return faction;
     }
 
-
     @Override
     public void takeDamage(float amount) {
-        health = Math.max(0f,health-amount);
-        if(health == 0f) {
+        health = Math.max(0f, health - amount);
+        if (health == 0f) {
             die();
         }
     }
-
 
     @Override
     public void die() {
@@ -95,5 +95,3 @@ public class Termite extends Entity implements CanBeAttacked {
         return new Vector2(1f, 1.5f);
     }
 }
-
-

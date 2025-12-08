@@ -32,15 +32,16 @@ public class EggPanelView {
         this.eggController = eggController;
         this.colony = colony;
         this.eggManager = colony.getEggManager();
-        
+
         panelTable = new Table();
-        // No background - this panel is embedded in BottomBarView which has its own background
-        
+        // No background - this panel is embedded in BottomBarView which has its own
+        // background
+
         eggTypeGroup = new HorizontalGroup();
         eggTypeGroup.space(UiTheme.BUTTON_SPACING);
-        
+
         buildEggTypeButtons();
-        
+
         panelTable.add(eggTypeGroup);
     }
 
@@ -49,7 +50,7 @@ public class EggPanelView {
      */
     private void buildEggTypeButtons() {
         AntTypeRegistry registry = AntTypeRegistry.getInstance();
-        
+
         for (AntType type : registry.getAll()) {
             Table eggTypeContainer = createEggTypeButton(type);
             eggTypeGroup.addActor(eggTypeContainer);
@@ -67,29 +68,31 @@ public class EggPanelView {
         ImageButton button = uiFactory.createImageButton(type.textureName(), () -> {
             eggController.purchaseEgg(type.id());
         });
-        
+
         // Name label below the button
         String labelText = type.displayName() + " (" + type.foodCost() + ")";
-        Label nameLabel = new Label(labelText, 
+        Label nameLabel = new Label(labelText,
                 uiFactory.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT, Color.WHITE));
-        
-        // Progress bar for eggs of this type - using area background for consistent styling
+
+        // Progress bar for eggs of this type - using area background for consistent
+        // styling
         ProgressBar.ProgressBarStyle progressStyle = new ProgressBar.ProgressBarStyle();
         progressStyle.background = uiFactory.getAreaBackground();
         progressStyle.knobBefore = uiFactory.getButtonBackgroundChecked();
         ProgressBar progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressStyle);
         progressBar.setValue(0f);
         progressBar.setVisible(false);
-        
+
         // Store reference to progress bar for updates
         button.setUserObject(new EggTypeUIState(type.id(), progressBar));
-        
+
         // Container table for vertical layout
         Table container = new Table();
         container.add(button).size(UiTheme.ICON_SIZE_LARGE).row();
         container.add(nameLabel).padTop(UiTheme.PADDING_TINY).row();
-        container.add(progressBar).width(UiTheme.ICON_SIZE_LARGE).height(UiTheme.PADDING_SMALL).padTop(UiTheme.PADDING_TINY);
-        
+        container.add(progressBar).width(UiTheme.ICON_SIZE_LARGE).height(UiTheme.PADDING_SMALL)
+                .padTop(UiTheme.PADDING_TINY);
+
         return container;
     }
 
@@ -103,19 +106,19 @@ public class EggPanelView {
             Table container = (Table) eggTypeGroup.getChild(i);
             ImageButton button = (ImageButton) container.getChild(0);
             EggTypeUIState state = (EggTypeUIState) button.getUserObject();
-            
+
             if (state != null) {
                 // Find eggs of this type
                 int eggCount = 0;
                 float totalProgress = 0f;
-                
+
                 for (Egg egg : eggManager.getEggs()) {
                     if (egg.getTypeId().equals(state.typeId)) {
                         eggCount++;
                         totalProgress += egg.getProgress();
                     }
                 }
-                
+
                 // Update progress bar
                 ProgressBar progressBar = state.progressBar;
                 if (eggCount > 0) {
@@ -124,7 +127,7 @@ public class EggPanelView {
                 } else {
                     progressBar.setVisible(false);
                 }
-                
+
                 // Update button enabled state based on resources
                 AntType type = AntTypeRegistry.getInstance().get(state.typeId);
                 if (type != null) {

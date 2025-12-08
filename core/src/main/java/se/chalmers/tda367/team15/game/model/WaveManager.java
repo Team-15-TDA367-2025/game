@@ -1,16 +1,15 @@
 package se.chalmers.tda367.team15.game.model;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-
-import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+
 /**
- * When night starts as dictated by {@link GameWorld} spawns a new wave of enemies.
+ * When night starts as dictated by {@link GameWorld} spawns a new wave of
+ * enemies.
  */
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
@@ -26,7 +25,8 @@ public class WaveManager implements TimeObserver {
     }
 
     /**
-     * spawns a wave of termites according to a scaling difficulty, the termites will have scattered positions from a random direction.
+     * spawns a wave of termites according to a scaling difficulty, the termites
+     * will have scattered positions from a random direction.
      */
     private void spawnWave() {
 
@@ -42,7 +42,8 @@ public class WaveManager implements TimeObserver {
     }
 
     /**
-     * Calculates a new vector that is a specified distance away from some origin in a random direction.
+     * Calculates a new vector that is a specified distance away from some origin in
+     * a random direction.
      *
      * @param origin   the origin point
      * @param distance the distance

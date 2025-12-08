@@ -37,11 +37,11 @@ public class HudView {
         bottomBar.update(dt);
         stage.draw();
     }
-    
+
     public void setEggPanelView(EggPanelView eggPanelView) {
         bottomBar.setEggPanelView(eggPanelView);
     }
-    
+
     public BottomBarView getBottomBar() {
         return bottomBar;
     }

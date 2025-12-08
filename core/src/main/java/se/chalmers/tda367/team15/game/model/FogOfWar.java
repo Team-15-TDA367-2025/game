@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.GridPoint2;
+
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
 public class FogOfWar {
@@ -30,7 +31,7 @@ public class FogOfWar {
                 GridPoint2 pos = new GridPoint2(center.x + dx, center.y + dy);
                 boolean insideCircle = dx * dx + dy * dy <= radius * radius;
                 if (worldMap.isInBounds(pos) && insideCircle) {
-                    discovered[pos.x][pos.y] = true;    
+                    discovered[pos.x][pos.y] = true;
                 }
             }
         }

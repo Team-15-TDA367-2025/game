@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 
 public class FollowTrailBehavior extends AntBehavior {
     private static final float SPEED_BOOST_ON_TRAIL = 1.5f;
-    // Threshold as fraction of pheromone cell size (must be < 1 to avoid reaching multiple cells)
+    // Threshold as fraction of pheromone cell size (must be < 1 to avoid reaching
+    // multiple cells)
     private static final float REACHED_THRESHOLD_FRACTION = 0.3f;
 
     private boolean returningToColony = false;
@@ -30,10 +30,11 @@ public class FollowTrailBehavior extends AntBehavior {
         float threshold = cellSize * REACHED_THRESHOLD_FRACTION;
         this.reachedThresholdSq = threshold * threshold;
     }
+
     @Override
     public void update(PheromoneSystem system, float deltaTime) {
-        if(enemiesInSight()) {
-            ant.setBehavior( new AttackBehavior(ant, ant.getPosition()));
+        if (enemiesInSight()) {
+            ant.setBehavior(new AttackBehavior(ant, ant.getPosition()));
             return;
         }
 
@@ -99,7 +100,8 @@ public class FollowTrailBehavior extends AntBehavior {
                 .filter(p -> returning ? p.getDistance() < currentDist : p.getDistance() > currentDist)
                 .collect(Collectors.toList());
 
-        if (candidates.isEmpty()) return null;
+        if (candidates.isEmpty())
+            return null;
 
         Collections.shuffle(candidates);
         candidates.sort((p1, p2) -> returning

@@ -14,12 +14,12 @@ package se.chalmers.tda367.team15.game.model.entity.ant;
  * @param textureName      base name of the texture to use
  */
 public record AntType(
-    String id,
-    String displayName,
-    int foodCost,
-    int developmentTicks,
-    float maxHealth,
-    float moveSpeed,
-    int carryCapacity,
-    String textureName
-) {}
+        String id,
+        String displayName,
+        int foodCost,
+        int developmentTicks,
+        float maxHealth,
+        float moveSpeed,
+        int carryCapacity,
+        String textureName) {
+}

@@ -52,7 +52,8 @@ public class AntTypeRegistry {
         return types.containsKey(id);
     }
 
-    // Should be called when restarting the game to prevent duplicate registration errors.
+    // Should be called when restarting the game to prevent duplicate registration
+    // errors.
     public void clear() {
         types.clear();
     }

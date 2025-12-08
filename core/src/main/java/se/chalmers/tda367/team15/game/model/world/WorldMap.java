@@ -1,10 +1,10 @@
 package se.chalmers.tda367.team15.game.model.world;
 
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 
 public class WorldMap {
     private final int width;
@@ -44,28 +44,26 @@ public class WorldMap {
         return pos.x >= 0 && pos.x < width && pos.y >= 0 && pos.y < height;
     }
 
-
     public GridPoint2 worldToTile(Vector2 worldPos) {
         return new GridPoint2(
-            (int) Math.floor(worldPos.x) + width / 2,
-            (int) Math.floor(worldPos.y) + height / 2
-        );
+                (int) Math.floor(worldPos.x) + width / 2,
+                (int) Math.floor(worldPos.y) + height / 2);
     }
 
     public Vector2 tileToWorld(GridPoint2 tilePos) {
         return new Vector2(
-            tilePos.x - width / 2f + 0.5f,
-            tilePos.y - height / 2f + 0.5f
-        );
+                tilePos.x - width / 2f + 0.5f,
+                tilePos.y - height / 2f + 0.5f);
     }
 
     public GridPoint2 getSize() {
         return new GridPoint2(width, height);
     }
 
-    /** Returns a reference to the tiles array. DO NOT MODIFY THE RETURNED ARRAY.
-     *  We do not copy the array because we'll need to do this each frame.
-    */
+    /**
+     * Returns a reference to the tiles array. DO NOT MODIFY THE RETURNED ARRAY.
+     * We do not copy the array because we'll need to do this each frame.
+     */
     public Tile[][] getTiles() {
         return tiles;
     }

@@ -19,7 +19,7 @@ public class HudController implements PheromoneSelectionListener {
         this.view = view;
         this.model = model;
         this.pheromoneController = pheromoneController;
-        
+
         // Create egg controller and panel
         this.eggController = new EggController(model.getColony());
         this.eggPanelView = new EggPanelView(uiFactory, eggController, model.getColony());
@@ -38,6 +38,7 @@ public class HudController implements PheromoneSelectionListener {
     }
 
     public void update(float dt) {
-        view.updateData(model.getGameTime(), model.getColony().getAntCount(), model.getColony().getTotalResources(ResourceType.FOOD));
+        view.updateData(model.getGameTime(), model.getColony().getAntCount(),
+                model.getColony().getTotalResources(ResourceType.FOOD));
     }
 }

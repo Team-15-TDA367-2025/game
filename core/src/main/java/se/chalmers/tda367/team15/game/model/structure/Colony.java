@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
@@ -24,30 +23,25 @@ import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver, EggHatchObserver, TimeObserver {
     private List<Ant> ants;
     private Inventory inventory;
     private EggManager eggManager;
-    private PheromoneSystem pheromoneSystem;
-    private GameWorld world;
     private float health;
     private float MAX_HEALTH = 600;
     private AntFactory antFactory;
     private Faction faction;
 
-    public Colony(GridPoint2 position, PheromoneSystem pheromoneSystem, GameWorld world) {
+    public Colony(GridPoint2 position, GameWorld world) {
         super(position, "colony", 4);
-        this.pheromoneSystem = pheromoneSystem;
         this.ants = new ArrayList<>();
         this.health = MAX_HEALTH;
         faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000); // test value for now
         this.eggManager = new EggManager(world);
         this.eggManager.addObserver(this);
-        this.world = world;
         // Register to receive ant death notifications
         world.addTimeObserver(this);
         DestructionListener.getInstance().addEntityDeathObserver(this);

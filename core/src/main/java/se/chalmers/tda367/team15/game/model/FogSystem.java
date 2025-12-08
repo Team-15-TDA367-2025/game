@@ -1,11 +1,12 @@
 package se.chalmers.tda367.team15.game.model;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
+
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
-
-import java.util.List;
 
 public class FogSystem {
     private final FogOfWar fogOfWar;

@@ -14,10 +14,10 @@ import se.chalmers.tda367.team15.game.screens.EndScreen;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
-import se.chalmers.tda367.team15.game.view.ui.HudView;
-import se.chalmers.tda367.team15.game.view.ui.UiFactory;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
+import se.chalmers.tda367.team15.game.view.ui.HudView;
+import se.chalmers.tda367.team15.game.view.ui.UiFactory;
 
 /**
  * Main game screen.

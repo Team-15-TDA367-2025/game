@@ -47,7 +47,8 @@ public class PheromoneSystem {
         Pheromone pheromone = new Pheromone(pos, type, minDistance + 1);
         pheromoneGrid.addPheromone(pheromone);
 
-        // Update connected pheromones that now have a shorter path via this new pheromone
+        // Update connected pheromones that now have a shorter path via this new
+        // pheromone
         propagateShorterDistances(pos, pheromone.getDistance());
 
         return true;

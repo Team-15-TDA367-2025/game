@@ -45,8 +45,7 @@ public class PheromoneRenderer {
                     baseColor.r * fadeFactor,
                     baseColor.g * fadeFactor,
                     baseColor.b * fadeFactor,
-                    1.0f
-            );
+                    1.0f);
             shapeRenderer.setColor(color);
 
             GridPoint2 gridPos = pheromone.getPosition();

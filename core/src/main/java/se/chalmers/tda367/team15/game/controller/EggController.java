@@ -1,8 +1,8 @@
 package se.chalmers.tda367.team15.game.controller;
 
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
+import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class EggController {
     private final Colony colony;
@@ -20,7 +20,7 @@ public class EggController {
     public boolean purchaseEgg(String typeId) {
         AntTypeRegistry registry = AntTypeRegistry.getInstance();
         AntType type = registry.get(typeId);
-        
+
         if (type == null) {
             return false;
         }

@@ -15,8 +15,10 @@ public class AttackComponent {
      *
      * @param attackDmg        the amount of damage dealt with each attack
      * @param attackCooldownMs the minimum time between attacks
-     * @param attackRange      the max distance the target can be. cannot attack beyond this distance.
-     * @param host             the Object that this component handles the attack logic for.
+     * @param attackRange      the max distance the target can be. cannot attack
+     *                         beyond this distance.
+     * @param host             the Object that this component handles the attack
+     *                         logic for.
      */
     public AttackComponent(float attackDmg, int attackCooldownMs, float attackRange, Entity host) {
         ATTACK_DMG = attackDmg;

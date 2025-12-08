@@ -36,14 +36,19 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
      *
      * @param texturePool    the list of texture names to use
      * @param seed           the random seed for reproducible generation
-     * @param scale          controls the "zoom" level of the noise (smaller = larger features)
-     * @param octaves        number of noise layers to combine (more = more detail, 4-8 recommended)
-     * @param persistence    amplitude multiplier per octave (0-1, higher = rougher terrain)
-     * @param lacunarity     frequency multiplier per octave (typically 2.0, higher = more detail variation)
-     * @param redistribution power curve for terrain distribution (1.0 = linear, >1 = more low areas, <1 = more high areas)
+     * @param scale          controls the "zoom" level of the noise (smaller =
+     *                       larger features)
+     * @param octaves        number of noise layers to combine (more = more detail,
+     *                       4-8 recommended)
+     * @param persistence    amplitude multiplier per octave (0-1, higher = rougher
+     *                       terrain)
+     * @param lacunarity     frequency multiplier per octave (typically 2.0, higher
+     *                       = more detail variation)
+     * @param redistribution power curve for terrain distribution (1.0 = linear, >1
+     *                       = more low areas, <1 = more high areas)
      */
-    public PerlinNoiseTerrainGenerator(List<String> texturePool, long seed, double scale, int octaves, 
-                                        double persistence, double lacunarity, double redistribution) {
+    public PerlinNoiseTerrainGenerator(List<String> texturePool, long seed, double scale, int octaves,
+            double persistence, double lacunarity, double redistribution) {
         this.texturePool = texturePool;
         this.scale = scale;
         this.octaves = octaves;
@@ -113,8 +118,8 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
                     double perlinValue = perlin(sampleX, sampleY);
                     noiseValue += perlinValue * amplitude;
 
-                    amplitude *= persistence;  // Each octave contributes less
-                    frequency *= lacunarity;   // Each octave has higher frequency (more detail)
+                    amplitude *= persistence; // Each octave contributes less
+                    frequency *= lacunarity; // Each octave has higher frequency (more detail)
                 }
 
                 noiseMap[x][y] = noiseValue;
@@ -128,7 +133,7 @@ public class PerlinNoiseTerrainGenerator implements TerrainGenerator {
             for (int y = 0; y < height; y++) {
                 // Normalize
                 double normalized = (noiseMap[x][y] - minNoise) / (maxNoise - minNoise);
-                
+
                 // Apply redistribution curve for more natural terrain distribution
                 // redistribution > 1 creates more lowlands, < 1 creates more highlands
                 noiseMap[x][y] = Math.pow(normalized, redistribution);

@@ -1,15 +1,12 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
-import com.badlogic.gdx.math.GridPoint2;
-import se.chalmers.tda367.team15.game.model.GameWorld;
-import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
-import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
-import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
 public abstract class AntBehavior {
     protected Ant ant;
@@ -24,8 +21,8 @@ public abstract class AntBehavior {
         entities.removeIf(e -> e.getPosition().dst(ant.getPosition()) > ant.getVisionRadius());
 
         List<CanBeAttacked> targets = new ArrayList<>();
-        for(Entity e : entities) {
-            if(e instanceof CanBeAttacked) {
+        for (Entity e : entities) {
+            if (e instanceof CanBeAttacked) {
                 targets.add((CanBeAttacked) e);
             }
         }
@@ -34,6 +31,7 @@ public abstract class AntBehavior {
 
         return !targets.isEmpty();
     }
+
     public abstract void update(PheromoneSystem system, float deltaTime);
 
 }

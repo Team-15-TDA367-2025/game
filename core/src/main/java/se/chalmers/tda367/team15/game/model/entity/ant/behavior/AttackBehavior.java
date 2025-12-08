@@ -1,19 +1,18 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
+
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Structure;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class AttackBehavior extends AntBehavior {
     HashMap<AttackCategory, Integer> targetPriority = new HashMap<>();
@@ -46,14 +45,16 @@ public class AttackBehavior extends AntBehavior {
         List<Entity> entities = ant.getGameWorld().getEntities();
         List<AttackTarget> potentialTargets = potentialTargets(entities);
 
-        //determine target
+        // determine target
         if (!potentialTargets.isEmpty()) {
             target = potentialTargets.getFirst();
             for (AttackTarget t : potentialTargets) {
                 // Greater or equal target priority?
-                if (targetPriority.get(t.canBeAttacked.getAttackCategory()) >= targetPriority.get(target.canBeAttacked.getAttackCategory())) {
+                if (targetPriority.get(t.canBeAttacked.getAttackCategory()) >= targetPriority
+                        .get(target.canBeAttacked.getAttackCategory())) {
                     // closest distance?
-                    if (t.hasPosition.getPosition().dst(ant.getPosition()) < target.hasPosition.getPosition().dst(ant.getPosition())) {
+                    if (t.hasPosition.getPosition().dst(ant.getPosition()) < target.hasPosition.getPosition()
+                            .dst(ant.getPosition())) {
                         target = t;
                     }
                 }
