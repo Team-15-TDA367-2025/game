@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
+import se.chalmers.tda367.team15.game.model.interfaces.MovementStrategy;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 public abstract class Entity implements Drawable, Updatable, HasPosition {
@@ -12,6 +13,7 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
     protected float rotation;
     private String textureName;
     protected Vector2 velocity;
+    private MovementStrategy movementStrategy;
 
     // TODO reduce amount of parameters clients need to handle
     // Some kind of entity factory might help reduce the amount of parameters
@@ -25,8 +27,27 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
         this.velocity = new Vector2(0f, 0f);
     }
 
+    public void setMovementStrategy(MovementStrategy movementStrategy) {
+        this.movementStrategy = movementStrategy;
+    }
+
+    protected void handleCollision() {
+        velocity = new Vector2(0, 0); 
+        }
+
     public void update(float deltaTime) {
         position.add(velocity.cpy().scl(deltaTime));
+        updateRotation();
+        Vector2 velocityStep = velocity.cpy().scl(deltaTime);
+        Vector2 nextPosition = position.cpy().add(velocityStep);
+
+        // If no strategy is set, we assume free movement (or you could assume strict)
+        if (movementStrategy != null && !movementStrategy.canMoveTo(nextPosition)) {
+            handleCollision();
+            return;
+        }
+        position.set(nextPosition);
+        
     }
 
     @Override
@@ -39,7 +60,7 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
         return rotation;
     }
 
-    public void updateRotation() {
+    private void updateRotation() {
         if (getVelocity().len2() > 0.1f) {
             rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
         }
