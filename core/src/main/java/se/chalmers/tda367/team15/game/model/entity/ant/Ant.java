@@ -47,6 +47,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.gameWorld = gameWorld;
+        setMovementStrategy(new AntMovementStrategy(gameWorld.getWorldMap()));
     }
 
     private void pickRandomDirection() {
@@ -55,10 +56,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     }
 
     @Override
+    public void handleCollision() {
+        pickRandomDirection();
+    }
+
+    @Override
     public void update(float deltaTime) {
         updateBehavior(deltaTime);
         super.update(deltaTime);
-        updateRotation();
         updateTexture();
     }
 
