@@ -18,7 +18,7 @@ public class FogRenderer {
     public void render(SpriteBatch batch, FogOfWar fogOfWar, CameraView cameraView) {
         GridPoint2 size = fogOfWar.getSize();
 
-        batch.setColor(0.09f, 0.188f, 0.11f, 0.7f);
+        batch.setColor(0.09f, 0.188f, 0.11f, 1f);
         float offsetX = -size.x / 2f;
         float offsetY = -size.y / 2f;
 

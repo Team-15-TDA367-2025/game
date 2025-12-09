@@ -33,11 +33,21 @@ public class WorldMap {
         return textureNames;
     }
 
+    public Tile getTile(Vector2 worldPos) {
+        GridPoint2 tilePos = worldToTile(worldPos);
+        return getTile(tilePos);
+    }
+
     public Tile getTile(GridPoint2 pos) {
         if (!isInBounds(pos)) {
             return null;
         }
         return tiles[pos.x][pos.y];
+    }
+
+    public boolean isInBounds(Vector2 worldPos) {
+        GridPoint2 tilePos = worldToTile(worldPos);
+        return isInBounds(tilePos);
     }
 
     public boolean isInBounds(GridPoint2 pos) {

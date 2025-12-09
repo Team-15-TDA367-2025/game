@@ -47,7 +47,6 @@ public class Termite extends Entity implements CanBeAttacked {
         List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities, structures);
         super.update(deltaTime);
-        updateRotation();
         if (target != null) {
             attackComponent.attack(target);
         }

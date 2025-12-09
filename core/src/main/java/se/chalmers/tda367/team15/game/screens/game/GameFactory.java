@@ -31,10 +31,10 @@ import se.chalmers.tda367.team15.game.view.ui.UiFactory;
  * Factory for creating and wiring the GameScreen.
  */
 public class GameFactory {
-    public static final int MAP_WIDTH = 200;
-    public static final int MAP_HEIGHT = 200;
+    public static final int MAP_WIDTH = 400;
+    public static final int MAP_HEIGHT = 400;
     public static final float WORLD_VIEWPORT_WIDTH = 15f;
-    public static final float MIN_ZOOM = 0.15f;
+    public static final float MIN_ZOOM = 0.05f;
     public static final float MAX_ZOOM = 4.0f;
     public static final int TICKS_PER_MINUTE = 600;
 
