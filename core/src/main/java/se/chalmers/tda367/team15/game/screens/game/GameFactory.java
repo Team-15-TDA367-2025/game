@@ -16,7 +16,6 @@ import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.world.TerrainFactory;
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerationConfig;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
@@ -102,8 +101,7 @@ public class GameFactory {
     private static GameModel createGameModel() {
         TimeCycle timeCycle = new TimeCycle(TICKS_PER_MINUTE);
         TerrainGenerator terrainGenerator = TerrainFactory.createStandardPerlinGenerator(
-            System.currentTimeMillis(), 
-            TerrainGenerationConfig.builder().build()
+            System.currentTimeMillis()
         );
         return new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
     }

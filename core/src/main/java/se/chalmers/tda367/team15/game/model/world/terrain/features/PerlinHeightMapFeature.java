@@ -1,7 +1,6 @@
 package se.chalmers.tda367.team15.game.model.world.terrain.features;
 
 import se.chalmers.tda367.team15.game.model.world.PerlinNoise;
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerationConfig;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationContext;
 
@@ -9,9 +8,18 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Generates a base height map using Perlin noise.
  */
 public class PerlinHeightMapFeature implements TerrainFeature {
-    private final TerrainGenerationConfig config;
+    
+    public record Config(
+        double scale,
+        int octaves,
+        double persistence,
+        double lacunarity,
+        double redistribution
+    ) {}
 
-    public PerlinHeightMapFeature(TerrainGenerationConfig config) {
+    private final Config config;
+
+    public PerlinHeightMapFeature(Config config) {
         this.config = config;
     }
 
@@ -31,13 +39,13 @@ public class PerlinHeightMapFeature implements TerrainFeature {
                 double frequency = 1.0;
                 double noiseValue = 0.0;
 
-                for (int o = 0; o < config.getOctaves(); o++) {
-                    double sampleX = x * config.getScale() * frequency;
-                    double sampleY = y * config.getScale() * frequency;
+                for (int o = 0; o < config.octaves(); o++) {
+                    double sampleX = x * config.scale() * frequency;
+                    double sampleY = y * config.scale() * frequency;
                     double perlinValue = perlinNoise.noise(sampleX, sampleY);
                     noiseValue += perlinValue * amplitude;
-                    amplitude *= config.getPersistence();
-                    frequency *= config.getLacunarity();
+                    amplitude *= config.persistence();
+                    frequency *= config.lacunarity();
                 }
 
                 noiseMap[x][y] = noiseValue;
@@ -50,11 +58,10 @@ public class PerlinHeightMapFeature implements TerrainFeature {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 double normalized = (noiseMap[x][y] - minNoise) / (maxNoise - minNoise);
-                noiseMap[x][y] = Math.pow(normalized, config.getRedistribution());
+                noiseMap[x][y] = Math.pow(normalized, config.redistribution());
             }
         }
         
         context.setHeightMap(noiseMap);
     }
 }
-

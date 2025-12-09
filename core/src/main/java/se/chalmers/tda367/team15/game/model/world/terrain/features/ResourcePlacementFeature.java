@@ -6,7 +6,6 @@ import java.util.Random;
 
 import com.badlogic.gdx.math.GridPoint2;
 
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerationConfig;
 import se.chalmers.tda367.team15.game.model.world.Tile;
 import se.chalmers.tda367.team15.game.model.world.TileType;
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
@@ -17,9 +16,18 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Places resource nucleation points and ensures they are on valid ground.
  */
 public class ResourcePlacementFeature implements TerrainFeature {
-    private final TerrainGenerationConfig config;
+    
+    public record Config(
+        int nucleationCount,
+        int nucleationRadius,
+        int nucleationMinDistance,
+        int colonyNucleationRadius,
+        int sandBorderWidth // Needed for validation check
+    ) {}
 
-    public ResourcePlacementFeature(TerrainGenerationConfig config) {
+    private final Config config;
+
+    public ResourcePlacementFeature(Config config) {
         this.config = config;
     }
 
@@ -41,11 +49,11 @@ public class ResourcePlacementFeature implements TerrainFeature {
         }
 
         // 2. Random Nucleation
-        int margin = config.getNucleationMinDistance();
+        int margin = config.nucleationMinDistance();
         int attempts = 0;
-        int maxAttempts = config.getNucleationCount() * 100;
+        int maxAttempts = config.nucleationCount() * 100;
 
-        while (points.size() < config.getNucleationCount() && attempts < maxAttempts) {
+        while (points.size() < config.nucleationCount() && attempts < maxAttempts) {
             attempts++;
             int x = margin + nucRandom.nextInt(width - 2 * margin);
             int y = margin + nucRandom.nextInt(height - 2 * margin);
@@ -54,7 +62,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
 
             boolean tooClose = false;
             for (GridPoint2 existing : points) {
-                if (existing.dst2(new GridPoint2(x, y)) < config.getNucleationMinDistance() * config.getNucleationMinDistance()) {
+                if (existing.dst2(new GridPoint2(x, y)) < config.nucleationMinDistance() * config.nucleationMinDistance()) {
                     tooClose = true;
                     break;
                 }
@@ -76,7 +84,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
     }
 
     private void applyNucleationZone(TerrainGenerationContext context, GridPoint2 point, Random random) {
-        int smoothRadius = config.getNucleationRadius() + 3;
+        int smoothRadius = config.nucleationRadius() + 3;
 
         for (int dx = -smoothRadius; dx <= smoothRadius; dx++) {
             for (int dy = -smoothRadius; dy <= smoothRadius; dy++) {
@@ -88,10 +96,10 @@ public class ResourcePlacementFeature implements TerrainFeature {
 
                 double dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (dist <= config.getNucleationRadius()) {
+                if (dist <= config.nucleationRadius()) {
                     setGrass1(context, nx, ny);
                 } else if (dist <= smoothRadius) {
-                    double blendFactor = (dist - config.getNucleationRadius()) / (smoothRadius - config.getNucleationRadius());
+                    double blendFactor = (dist - config.nucleationRadius()) / (smoothRadius - config.nucleationRadius());
                     if (random.nextDouble() > blendFactor * blendFactor) {
                         setGrass1(context, nx, ny);
                     }
@@ -110,7 +118,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
         
         for (int attempt = 0; attempt < 100; attempt++) {
             double angle = rng.nextDouble() * Math.PI * 2;
-            double distance = 3 + rng.nextDouble() * (config.getColonyNucleationRadius() - 3);
+            double distance = 3 + rng.nextDouble() * (config.colonyNucleationRadius() - 3);
             
             int x = centerX + (int) Math.round(Math.cos(angle) * distance);
             int y = centerY + (int) Math.round(Math.sin(angle) * distance);
@@ -125,7 +133,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
     }
 
     private boolean isValidNucleationPoint(int x, int y, TerrainGenerationContext context) {
-        int checkRadius = config.getNucleationRadius() + config.getSandBorderWidth() + 2;
+        int checkRadius = config.nucleationRadius() + config.sandBorderWidth() + 2;
         for (int dx = -checkRadius; dx <= checkRadius; dx++) {
             for (int dy = -checkRadius; dy <= checkRadius; dy++) {
                 int nx = x + dx;
@@ -138,4 +146,3 @@ public class ResourcePlacementFeature implements TerrainFeature {
         return true;
     }
 }
-

@@ -1,7 +1,9 @@
 package se.chalmers.tda367.team15.game.model.world.terrain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import se.chalmers.tda367.team15.game.model.world.Tile;
@@ -16,11 +18,12 @@ public class TerrainGenerationContext {
     private final long seed;
     private final Random random;
 
-    // Generation maps
-    private double[][] heightMap;
-    private boolean[][] waterMap;
+    // Generic maps
+    private final Map<String, Object> data;
+    
+    // Core tile map (final result)
     private Tile[][] tileMap;
-
+    
     // Feature results
     private final List<StructureSpawn> structureSpawns;
 
@@ -30,8 +33,7 @@ public class TerrainGenerationContext {
         this.seed = seed;
         this.random = new Random(seed);
         
-        this.heightMap = new double[width][height];
-        this.waterMap = new boolean[width][height];
+        this.data = new HashMap<>();
         this.tileMap = new Tile[width][height];
         this.structureSpawns = new ArrayList<>();
     }
@@ -41,23 +43,48 @@ public class TerrainGenerationContext {
     public long getSeed() { return seed; }
     public Random getRandom() { return random; }
 
-    // Map Accessors
-    public double[][] getHeightMap() { return heightMap; }
-    public void setHeightMap(double[][] heightMap) { this.heightMap = heightMap; }
+    // Generic Data Access
+    public void putData(String key, Object value) {
+        data.put(key, value);
+    }
 
-    public boolean[][] getWaterMap() { return waterMap; }
-    public void setWaterMap(boolean[][] waterMap) { this.waterMap = waterMap; }
+    @SuppressWarnings("unchecked")
+    public <T> T getData(String key) {
+        return (T) data.get(key);
+    }
+    
+    public boolean hasData(String key) {
+        return data.containsKey(key);
+    }
+
+    // Typed Helpers for common maps
+    public double[][] getHeightMap() {
+        return getData("heightMap");
+    }
+
+    public void setHeightMap(double[][] heightMap) {
+        putData("heightMap", heightMap);
+    }
+
+    public boolean[][] getWaterMap() {
+        return getData("waterMap");
+    }
+
+    public void setWaterMap(boolean[][] waterMap) {
+        putData("waterMap", waterMap);
+    }
 
     public Tile[][] getTileMap() { return tileMap; }
+    public void setTileMap(Tile[][] tileMap) { this.tileMap = tileMap; }
     
-    // Structure Spawns
     public List<StructureSpawn> getStructureSpawns() { return structureSpawns; }
     public void addStructureSpawn(StructureSpawn spawn) { structureSpawns.add(spawn); }
 
     // Helpers
     public boolean isWater(int x, int y) {
         if (!isInBounds(x, y)) return false;
-        return waterMap[x][y];
+        boolean[][] waterMap = getWaterMap();
+        return waterMap != null && waterMap[x][y];
     }
 
     public void setTile(int x, int y, Tile tile) {
@@ -68,11 +95,11 @@ public class TerrainGenerationContext {
     
     public double getHeight(int x, int y) {
         if (!isInBounds(x, y)) return 0.0;
-        return heightMap[x][y];
+        double[][] heightMap = getHeightMap();
+        return heightMap != null ? heightMap[x][y] : 0.0;
     }
 
     public boolean isInBounds(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 }
-

@@ -2,7 +2,6 @@ package se.chalmers.tda367.team15.game.model.world.terrain.features;
 
 import java.util.Random;
 
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerationConfig;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationContext;
 
@@ -10,9 +9,18 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Generates random walk lakes and smooths them.
  */
 public class LakeFeature implements TerrainFeature {
-    private final TerrainGenerationConfig config;
+    
+    public record Config(
+        int lakeCount,
+        int lakeMinSteps,
+        int lakeMaxSteps,
+        int lakeSmoothingPasses,
+        int centerExclusionRadius
+    ) {}
 
-    public LakeFeature(TerrainGenerationConfig config) {
+    private final Config config;
+
+    public LakeFeature(Config config) {
         this.config = config;
     }
 
@@ -20,6 +28,7 @@ public class LakeFeature implements TerrainFeature {
     public void apply(TerrainGenerationContext context) {
         boolean[][] lakeMap = generateLakes(context);
         boolean[][] smoothedLakes = smoothLakes(lakeMap);
+        
         context.setWaterMap(smoothedLakes);
     }
 
@@ -32,9 +41,9 @@ public class LakeFeature implements TerrainFeature {
         int margin = Math.max(width, height) / 8;
         int centerX = width / 2;
         int centerY = height / 2;
-        int centerExclusionRadius = config.getColonyNucleationRadius() + 15;
+        int centerExclusionRadius = config.centerExclusionRadius();
 
-        for (int lake = 0; lake < config.getLakeCount(); lake++) {
+        for (int lake = 0; lake < config.lakeCount(); lake++) {
             int startX, startY;
             int attempts = 0;
             do {
@@ -45,7 +54,7 @@ public class LakeFeature implements TerrainFeature {
                      Math.sqrt((startX - centerX) * (startX - centerX) + 
                                (startY - centerY) * (startY - centerY)) < centerExclusionRadius);
 
-            int steps = config.getLakeMinSteps() + lakeRandom.nextInt(config.getLakeMaxSteps() - config.getLakeMinSteps());
+            int steps = config.lakeMinSteps() + lakeRandom.nextInt(config.lakeMaxSteps() - config.lakeMinSteps());
             int x = startX;
             int y = startY;
             double angle = lakeRandom.nextDouble() * Math.PI * 2;
@@ -98,7 +107,7 @@ public class LakeFeature implements TerrainFeature {
         int height = lakeMap[0].length;
         boolean[][] current = copyBooleanMap(lakeMap);
 
-        for (int pass = 0; pass < config.getLakeSmoothingPasses(); pass++) {
+        for (int pass = 0; pass < config.lakeSmoothingPasses(); pass++) {
             boolean[][] next = new boolean[width][height];
             for (int x = 0; x < width; x++) {
                 for (int y = 0; y < height; y++) {
@@ -140,4 +149,3 @@ public class LakeFeature implements TerrainFeature {
         return copy;
     }
 }
-

@@ -3,7 +3,6 @@ package se.chalmers.tda367.team15.game.model.world.terrain.features;
 import java.util.HashSet;
 import java.util.Set;
 
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerationConfig;
 import se.chalmers.tda367.team15.game.model.world.Tile;
 import se.chalmers.tda367.team15.game.model.world.TileType;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
@@ -18,9 +17,13 @@ public class TextureApplicationFeature implements TerrainFeature {
     private static final String TEXTURE_SAND = "sand";
     private static final String[] TEXTURE_GRASS = { "grass1", "grass2", "grass3" };
 
-    private final TerrainGenerationConfig config;
+    public record Config(
+        int sandBorderWidth
+    ) {}
 
-    public TextureApplicationFeature(TerrainGenerationConfig config) {
+    private final Config config;
+
+    public TextureApplicationFeature(Config config) {
         this.config = config;
     }
 
@@ -33,10 +36,17 @@ public class TextureApplicationFeature implements TerrainFeature {
         // 1. Initial Texture Assignment
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (context.isWater(x, y)) {
+                double noise = context.getHeight(x, y);
+                // Treat low height values as water (e.g. from IslandMask)
+                // Reduced threshold from 0.2 to 0.1 to prevent small puddles inland
+                if (context.isWater(x, y) || noise < 0.1) {
                     textureMap[x][y] = TEXTURE_WATER;
+                    // Also update water map for subsequent features
+                    boolean[][] waterMap = context.getWaterMap();
+                    if (waterMap != null) {
+                        waterMap[x][y] = true;
+                    }
                 } else {
-                    double noise = context.getHeight(x, y);
                     textureMap[x][y] = noiseToGrassTexture(noise);
                 }
             }
@@ -74,7 +84,7 @@ public class TextureApplicationFeature implements TerrainFeature {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (!TEXTURE_WATER.equals(textureMap[x][y])) {
-                    if (isNearWater(x, y, waterTiles, config.getSandBorderWidth(), width, height)) {
+                    if (isNearWater(x, y, waterTiles, config.sandBorderWidth(), width, height)) {
                         sandTiles.add(packCoord(x, y));
                     }
                 }
@@ -118,4 +128,3 @@ public class TextureApplicationFeature implements TerrainFeature {
         }
     }
 }
-
