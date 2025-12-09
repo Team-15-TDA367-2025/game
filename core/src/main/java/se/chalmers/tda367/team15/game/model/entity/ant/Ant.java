@@ -18,6 +18,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
+    AntType type;
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
@@ -34,6 +35,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
         super(position, type.textureName());
+        this.type = type;
         this.behavior = new WanderBehavior(this);
         this.system = system;
         this.hunger = 2; // test value
@@ -110,6 +112,10 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     public int getHunger() {
         return hunger;
+    }
+
+    public AntType getType() {
+        return type;
     }
 
     public boolean leaveResources(Colony colony) {

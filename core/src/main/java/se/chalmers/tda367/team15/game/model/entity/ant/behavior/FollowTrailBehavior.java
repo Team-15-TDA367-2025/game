@@ -11,8 +11,12 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 public class FollowTrailBehavior extends AntBehavior {
+    private final PheromoneType allowedType;
+    private final boolean stickyTrail;
+
     private static final float SPEED_BOOST_ON_TRAIL = 1.5f;
     // Threshold as fraction of pheromone cell size (must be < 1 to avoid reaching
     // multiple cells)
@@ -29,6 +33,26 @@ public class FollowTrailBehavior extends AntBehavior {
         float cellSize = ant.getSystem().getConverter().getPheromoneCellSize();
         float threshold = cellSize * REACHED_THRESHOLD_FRACTION;
         this.reachedThresholdSq = threshold * threshold;
+
+        String typeId = ant.getType().id();
+        switch (typeId) {
+            case "scout" -> {
+                allowedType = PheromoneType.EXPLORE;
+                stickyTrail = false;
+            }
+            case "soldier" -> {
+                allowedType = PheromoneType.ATTACK;
+                stickyTrail = false;
+            }
+            case "worker" -> {
+                allowedType = PheromoneType.GATHER;
+                stickyTrail = true;
+            }
+            default -> {
+                allowedType = PheromoneType.EXPLORE;
+                stickyTrail = false;
+            }
+        }
     }
 
     @Override
@@ -38,7 +62,9 @@ public class FollowTrailBehavior extends AntBehavior {
             return;
         }
 
-        List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition());
+        List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition()).stream()
+                .filter(p -> p.getType() == allowedType)
+                .collect(Collectors.toList());
 
         // 1. Initialization / Re-anchoring
         if (lastPheromone == null) {
