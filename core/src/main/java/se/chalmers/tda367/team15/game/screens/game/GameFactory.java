@@ -1,7 +1,5 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
-import java.util.List;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -102,9 +100,7 @@ public class GameFactory {
 
     private static GameModel createGameModel() {
         TimeCycle timeCycle = new TimeCycle(TICKS_PER_MINUTE);
-        TerrainGenerator terrainGenerator = new PerlinNoiseTerrainGenerator(
-                List.of("grass1", "grass2", "grass3"),
-                System.currentTimeMillis());
+        TerrainGenerator terrainGenerator = new PerlinNoiseTerrainGenerator(System.currentTimeMillis());
         return new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
     }
 

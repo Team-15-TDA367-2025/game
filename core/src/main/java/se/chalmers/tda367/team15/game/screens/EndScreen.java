@@ -28,7 +28,6 @@ public class EndScreen extends ScreenAdapter {
     private Stage stage;
     GameEndReason reason;
     String endMessage;
-
     public EndScreen(Game game, GameEndReason reason) {
         this.game = game;
         this.reason = reason;

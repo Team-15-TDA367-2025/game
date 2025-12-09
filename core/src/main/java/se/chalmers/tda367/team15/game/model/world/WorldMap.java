@@ -1,6 +1,9 @@
 package se.chalmers.tda367.team15.game.model.world;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
@@ -11,11 +14,14 @@ public class WorldMap {
     private final int height;
     private final Tile[][] tiles;
     private final Set<String> textureNames;
+    private final List<GridPoint2> nucleationPoints;
 
     public WorldMap(int width, int height, TerrainGenerator generator) {
         this.width = width;
         this.height = height;
-        this.tiles = generator.generate(width, height);
+        TerrainGenerationResult result = generator.generateWithFeatures(width, height);
+        this.tiles = result.getTiles();
+        this.nucleationPoints = new ArrayList<>(result.getNucleationPoints());
         this.textureNames = collectTextureNames();
     }
 
@@ -76,5 +82,14 @@ public class WorldMap {
      */
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    /**
+     * Returns the nucleation points generated during terrain creation.
+     * These are ideal locations for spawning resource nodes.
+     * The coordinates are in tile space (0 to width/height).
+     */
+    public List<GridPoint2> getNucleationPoints() {
+        return Collections.unmodifiableList(nucleationPoints);
     }
 }
