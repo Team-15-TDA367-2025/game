@@ -36,12 +36,7 @@ public class WorldRenderer {
         batch.begin();
 
         terrainRenderer.render(batch, model.getWorldMap(), cameraView);
-
-
-        for (Drawable d : drawables) {
-            draw(d);
-        }
-        
+        drawables.forEach(this::draw);
         fogRenderer.render(batch, fog, cameraView);
 
         batch.end();
