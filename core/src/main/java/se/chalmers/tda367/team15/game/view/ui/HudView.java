@@ -59,6 +59,10 @@ public class HudView {
         bottomBar.setPheromoneSelectionListener(listener);
     }
 
+    public void SetSpeedControlsListener(SpeedControlsListener speedControlsListener){
+        topBar.setSpeedControlsListener(speedControlsListener);
+    }
+
     public Stage getStage() {
         return stage;
     }

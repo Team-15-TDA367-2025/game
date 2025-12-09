@@ -7,10 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import se.chalmers.tda367.team15.game.controller.CameraController;
-import se.chalmers.tda367.team15.game.controller.HudController;
-import se.chalmers.tda367.team15.game.controller.InputManager;
-import se.chalmers.tda367.team15.game.controller.PheromoneController;
+import se.chalmers.tda367.team15.game.controller.*;
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
@@ -66,7 +63,8 @@ public class GameFactory {
         InputManager inputManager = new InputManager(); // Used for wiring but not stored in screen
         CameraController cameraController = new CameraController(cameraModel, cameraView);
         PheromoneController pheromoneController = new PheromoneController(gameModel, cameraView);
-        HudController hudController = new HudController(hudView, gameModel, pheromoneController, uiFactory);
+        SpeedController speedController = new SpeedController(gameModel);
+        HudController hudController = new HudController(hudView, gameModel, pheromoneController, speedController, uiFactory);
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);

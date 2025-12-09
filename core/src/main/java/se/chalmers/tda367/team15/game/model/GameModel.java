@@ -43,6 +43,16 @@ public class GameModel {
         world.addEntity(termite);
     }
 
+    public void setGameSpeedFast(){
+
+    }
+    public void setGameSpeedNormal(){
+
+    }
+    public void setGameSpeedPaused(){
+
+    }
+
     public void update(float deltaTime) {
         world.update(deltaTime);
     }

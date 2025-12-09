@@ -14,12 +14,13 @@ public class HudController implements PheromoneSelectionListener {
     private final PheromoneController pheromoneController;
     private final EggController eggController;
     private final EggPanelView eggPanelView;
+    private final SpeedController speedController;
 
-    public HudController(HudView view, GameModel model, PheromoneController pheromoneController, UiFactory uiFactory) {
+    public HudController(HudView view, GameModel model, PheromoneController pheromoneController,SpeedController speedController, UiFactory uiFactory) {
         this.view = view;
         this.model = model;
         this.pheromoneController = pheromoneController;
-
+        this.speedController=speedController;
         // Create egg controller and panel
         this.eggController = new EggController(model.getColony());
         this.eggPanelView = new EggPanelView(uiFactory, eggController, model.getColony());
@@ -30,6 +31,7 @@ public class HudController implements PheromoneSelectionListener {
     private void initializeListeners() {
         view.setPheromoneSelectionListener(this);
         view.setEggPanelView(eggPanelView);
+        view.SetSpeedControlsListener(speedController);
     }
 
     @Override
