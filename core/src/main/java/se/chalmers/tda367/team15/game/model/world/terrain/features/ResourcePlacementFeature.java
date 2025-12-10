@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.world.Tile;
 import se.chalmers.tda367.team15.game.model.world.TileType;
@@ -39,8 +40,8 @@ public class ResourcePlacementFeature implements TerrainFeature {
         int height = context.getHeight();
 
         // 1. Colony Nucleation (Center area)
-        GridPoint2 colonyPoint = findValidPointNear(width/2, height/2, colonyNucleationRadius, context, nucRandom);
-        if (colonyPoint != null) points.add(colonyPoint);
+        GridPoint2 colonyPoint = placeInitialResource(context, nucRandom);
+        if (colonyPoint != null) points.add(colonyPoint.add(new GridPoint2(width/2, height/2)));
         else points.add(new GridPoint2(width/2, height/2)); // Fallback
 
         // 2. Random Nucleation
@@ -63,15 +64,9 @@ public class ResourcePlacementFeature implements TerrainFeature {
         }
     }
 
-    private GridPoint2 findValidPointNear(int cx, int cy, int radius, TerrainGenerationContext context, Random rng) {
-        for (int i = 0; i < 50; i++) {
-            double angle = rng.nextDouble() * Math.PI * 2;
-            double dist = rng.nextDouble() * radius;
-            int x = cx + (int)(Math.cos(angle) * dist);
-            int y = cy + (int)(Math.sin(angle) * dist);
-            if (isValidNucleationPoint(x, y, context)) return new GridPoint2(x, y);
-        }
-        return null;
+    private GridPoint2 placeInitialResource(TerrainGenerationContext context, Random random) {
+        double angle = random.nextDouble() * 2 * Math.PI;
+        return new GridPoint2((int)(Math.cos(angle) * colonyNucleationRadius), (int)(Math.sin(angle) * colonyNucleationRadius));
     }
 
     private boolean isTooClose(int x, int y, List<GridPoint2> points, int minDst) {
