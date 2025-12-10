@@ -18,13 +18,11 @@ public class TerrainGenerationContext {
     private final long seed;
     private final Random random;
 
-    // Generic maps
+    // Generic state maps used by features
     private final Map<String, Object> data;
     
-    // Core tile map (final result)
     private Tile[][] tileMap;
     
-    // Feature results
     private final List<StructureSpawn> structureSpawns;
 
     public TerrainGenerationContext(int width, int height, long seed) {
@@ -43,7 +41,6 @@ public class TerrainGenerationContext {
     public long getSeed() { return seed; }
     public Random getRandom() { return random; }
 
-    // Generic Data Access
     public void putData(String key, Object value) {
         data.put(key, value);
     }
@@ -57,7 +54,6 @@ public class TerrainGenerationContext {
         return data.containsKey(key);
     }
 
-    // Typed Helpers for common maps
     public double[][] getHeightMap() {
         return getData("heightMap");
     }

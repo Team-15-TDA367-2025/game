@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model.world.terrain.features;
 
+import com.badlogic.gdx.math.GridPoint2;
+
 import se.chalmers.tda367.team15.game.model.world.Tile;
 import se.chalmers.tda367.team15.game.model.world.TileType;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
@@ -13,12 +15,6 @@ public class TextureApplicationFeature implements TerrainFeature {
     private static final String TEXTURE_WATER = "water";
     private static final String TEXTURE_SAND = "sand";
     private static final String[] TEXTURE_GRASS = { "grass1", "grass2", "grass3" };
-
-    private final int sandBorderWidth;
-
-    public TextureApplicationFeature(int sandBorderWidth) {
-        this.sandBorderWidth = sandBorderWidth;
-    }
 
     @Override
     public void apply(TerrainGenerationContext context) {
@@ -59,34 +55,32 @@ public class TextureApplicationFeature implements TerrainFeature {
 
     private void applySandBorders(String[][] textureMap, int width, int height, TerrainGenerationContext context) {
         boolean[][] waterMap = context.getWaterMap();
-        if (waterMap == null) return;
+        if (waterMap == null)
+            return;
 
-        int radius = sandBorderWidth;
-        
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 // If it's already water, skip
-                if (waterMap[x][y]) continue;
+                if (waterMap[x][y])
+                    continue;
 
                 // Check neighbors for water
-                if (hasWaterNeighbor(x, y, waterMap, radius, width, height)) {
+                if (hasWaterNeighbor(x, y, context)) {
                     textureMap[x][y] = TEXTURE_SAND;
                 }
             }
         }
     }
 
-    private boolean hasWaterNeighbor(int x, int y, boolean[][] waterMap, int radius, int width, int height) {
-        for (int dx = -radius; dx <= radius; dx++) {
-            for (int dy = -radius; dy <= radius; dy++) {
-                int nx = x + dx;
-                int ny = y + dy;
-                if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                    if (waterMap[nx][ny]) {
-                        return true;
-                    }
-                }
-            }
+    private boolean hasWaterNeighbor(int x, int y, TerrainGenerationContext context) {
+        int[][] NEIGHBORS = { { -1, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 }, };
+        for (int[] n : NEIGHBORS) {
+            int nx = x + n[0];
+            int ny = y + n[1];
+            if (!context.isInBounds(nx, ny))
+                continue;
+            if (context.isWater(nx, ny))
+                return true;
         }
         return false;
     }

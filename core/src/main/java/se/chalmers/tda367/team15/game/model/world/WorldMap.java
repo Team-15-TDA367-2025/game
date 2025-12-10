@@ -21,7 +21,7 @@ public class WorldMap {
     public WorldMap(int width, int height, TerrainGenerator generator) {
         this.width = width;
         this.height = height;
-        TerrainGenerationResult result = generator.generateWithFeatures(width, height);
+        TerrainGenerationResult result = generator.generate(width, height);
         this.tiles = result.getTiles();
         this.structureSpawns = new ArrayList<>(result.getStructureSpawns());
         this.textureNames = collectTextureNames();

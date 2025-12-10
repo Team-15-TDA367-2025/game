@@ -9,5 +9,5 @@ public interface TerrainGenerator {
      * @param height height of the terrain grid
      * @return TerrainGenerationResult containing tiles and nucleation points
      */
-    TerrainGenerationResult generateWithFeatures(int width, int height);
+    TerrainGenerationResult generate(int width, int height);
 }

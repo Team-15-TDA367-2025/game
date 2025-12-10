@@ -80,6 +80,11 @@ public class RiverFeature implements TerrainFeature {
                 double currentRadius = brushRadius * radiusMod;
                 currentRadius = Math.max(1.0, currentRadius); // Ensure at least 1px
 
+                // Make sure the river doesn't cover the center exclusion radius
+                if (Math.sqrt(Math.pow(curX - centerX, 2) + Math.pow(curY - centerY, 2)) < centerExclusionRadius) {
+                    break;
+                }
+
                 // Mark current spot as water
                 paintBrush(waterMap, (int) curX, (int) curY, currentRadius, width, height);
 

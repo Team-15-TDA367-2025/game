@@ -19,7 +19,7 @@ public class PipelineTerrainGenerator implements TerrainGenerator {
     }
 
     @Override
-    public TerrainGenerationResult generateWithFeatures(int width, int height) {
+    public TerrainGenerationResult generate(int width, int height) {
         TerrainGenerationContext context = new TerrainGenerationContext(width, height, seed);
 
         for (TerrainFeature feature : pipeline) {

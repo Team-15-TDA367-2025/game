@@ -3,7 +3,7 @@ package se.chalmers.tda367.team15.game.model.world;
 import java.util.Random;
 
 /**
- * Utility class for generating Perlin noise.
+ * Utility class for generating 2D Perlin noise. (Stolen from the internet)
  */
 public class PerlinNoise {
     private static final int PERMUTATION_SIZE = 256;
@@ -13,6 +13,7 @@ public class PerlinNoise {
         this.permutation = generatePermutation(seed);
     }
 
+    /** @return a value between -1 and 1 */
     public double noise(double x, double y) {
         int xi = (int) Math.floor(x) & 255;
         int yi = (int) Math.floor(y) & 255;
