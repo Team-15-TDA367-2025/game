@@ -51,8 +51,8 @@ public class HudView {
         bottomBar.updateLayout(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
     }
 
-    public void updateData(TimeCycle.GameTime gameTime, int antCount, int resourceCount) {
-        topBar.update(gameTime, antCount, resourceCount);
+    public void updateData(TimeCycle.GameTime gameTime, int antCount, int resourceCount, int consumption) {
+        topBar.update(gameTime, antCount, resourceCount, consumption);
     }
 
     public void setPheromoneSelectionListener(PheromoneSelectionListener listener) {
