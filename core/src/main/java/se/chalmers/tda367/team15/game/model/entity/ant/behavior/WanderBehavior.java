@@ -30,4 +30,9 @@ public class WanderBehavior extends AntBehavior {
         }
 
     }
+
+    @Override
+    public void handleCollision() {
+        ant.pickRandomDirection();
+    }
 }
