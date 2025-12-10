@@ -10,37 +10,25 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * This does NOT modify the height map, only the water map.
  */
 public class IslandMaskFeature implements TerrainFeature {
-    public record Config(
-            /**
-             * How aggressively to mask the edges.
-             * 1.0 is a circular gradient. Higher values (e.g. 2.0) make
-             * a steeper drop-off (squarer island).
-             * Lower values (e.g. 0.5) make a very gentle slope from
-             * center.
-             */
-            double islandFactor,
-            /**
-             * The percentage of the map at which the deep water starts.
-             * 0.05 means 5% of the map.
-             */
-            double deepWaterStartPercentage,
-            /**
-             * Scale of the noise to break up the perfect circle.
-             * Lower values (e.g. 0.02) mean larger features.
-             */
-            double noiseScale,
-            /**
-             * How much the noise affects the distance mask.
-             * 0.0 means perfect circle, 0.2 means significant distortion.
-             */
-            double noiseAmount) {
-    }
+    
+    private final double islandFactor;
+    private final double deepWaterStartPercentage;
+    private final double noiseScale;
+    private final double noiseAmount;
 
-    private final Config config;
     private static final double WATER_THRESHOLD = 0.2;
 
-    public IslandMaskFeature(Config config) {
-        this.config = config;
+    /**
+     * @param islandFactor How aggressively to mask the edges.
+     * @param deepWaterStartPercentage The percentage of the map at which the deep water starts.
+     * @param noiseScale Scale of the noise to break up the perfect circle.
+     * @param noiseAmount How much the noise affects the distance mask.
+     */
+    public IslandMaskFeature(double islandFactor, double deepWaterStartPercentage, double noiseScale, double noiseAmount) {
+        this.islandFactor = islandFactor;
+        this.deepWaterStartPercentage = deepWaterStartPercentage;
+        this.noiseScale = noiseScale;
+        this.noiseAmount = noiseAmount;
     }
 
     @Override
@@ -68,8 +56,8 @@ public class IslandMaskFeature implements TerrainFeature {
                 double normalizedDist = dist / maxDist;
                 
                 // Add noise to the distance to break up the circle
-                double noise = noiseGen.noise(x * config.noiseScale(), y * config.noiseScale());
-                double distortedDist = normalizedDist + noise * config.noiseAmount();
+                double noise = noiseGen.noise(x * noiseScale, y * noiseScale);
+                double distortedDist = normalizedDist + noise * noiseAmount;
                 
                 // Clamp to valid range for Math.pow
                 distortedDist = Math.max(0.0, distortedDist);
@@ -78,7 +66,7 @@ public class IslandMaskFeature implements TerrainFeature {
                 // As we get closer to the edge (normalizedDist -> 1.0), the mask value
                 // increases
                 
-                double mask = Math.pow(distortedDist, config.islandFactor());
+                double mask = Math.pow(distortedDist, islandFactor);
 
                 // Invert the mask logic: gradient is 1.0 at center and 0.0 at edges.
                 double gradient = 1.0 - mask;
@@ -89,7 +77,7 @@ public class IslandMaskFeature implements TerrainFeature {
                 }
 
                 // Force very edges to be water
-                if (x < width * config.deepWaterStartPercentage() || x > width * (1 - config.deepWaterStartPercentage()) || y < height * config.deepWaterStartPercentage() || y > height * (1 - config.deepWaterStartPercentage())) {
+                if (x < width * deepWaterStartPercentage || x > width * (1 - deepWaterStartPercentage) || y < height * deepWaterStartPercentage || y > height * (1 - deepWaterStartPercentage)) {
                     waterMap[x][y] = true;
                 }
             }

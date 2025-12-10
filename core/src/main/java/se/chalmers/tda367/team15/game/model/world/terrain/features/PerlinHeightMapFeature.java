@@ -9,18 +9,18 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  */
 public class PerlinHeightMapFeature implements TerrainFeature {
     
-    public record Config(
-        double scale,
-        int octaves,
-        double persistence,
-        double lacunarity,
-        double redistribution
-    ) {}
+    private final double scale;
+    private final int octaves;
+    private final double persistence;
+    private final double lacunarity;
+    private final double redistribution;
 
-    private final Config config;
-
-    public PerlinHeightMapFeature(Config config) {
-        this.config = config;
+    public PerlinHeightMapFeature(double scale, int octaves, double persistence, double lacunarity, double redistribution) {
+        this.scale = scale;
+        this.octaves = octaves;
+        this.persistence = persistence;
+        this.lacunarity = lacunarity;
+        this.redistribution = redistribution;
     }
 
     @Override
@@ -39,13 +39,13 @@ public class PerlinHeightMapFeature implements TerrainFeature {
                 double frequency = 1.0;
                 double noiseValue = 0.0;
 
-                for (int o = 0; o < config.octaves(); o++) {
-                    double sampleX = x * config.scale() * frequency;
-                    double sampleY = y * config.scale() * frequency;
+                for (int o = 0; o < octaves; o++) {
+                    double sampleX = x * scale * frequency;
+                    double sampleY = y * scale * frequency;
                     double perlinValue = perlinNoise.noise(sampleX, sampleY);
                     noiseValue += perlinValue * amplitude;
-                    amplitude *= config.persistence();
-                    frequency *= config.lacunarity();
+                    amplitude *= persistence;
+                    frequency *= lacunarity;
                 }
 
                 noiseMap[x][y] = noiseValue;
@@ -58,7 +58,7 @@ public class PerlinHeightMapFeature implements TerrainFeature {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 double normalized = (noiseMap[x][y] - minNoise) / (maxNoise - minNoise);
-                noiseMap[x][y] = Math.pow(normalized, config.redistribution());
+                noiseMap[x][y] = Math.pow(normalized, redistribution);
             }
         }
         

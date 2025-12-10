@@ -14,14 +14,10 @@ public class TextureApplicationFeature implements TerrainFeature {
     private static final String TEXTURE_SAND = "sand";
     private static final String[] TEXTURE_GRASS = { "grass1", "grass2", "grass3" };
 
-    public record Config(
-        int sandBorderWidth
-    ) {}
+    private final int sandBorderWidth;
 
-    private final Config config;
-
-    public TextureApplicationFeature(Config config) {
-        this.config = config;
+    public TextureApplicationFeature(int sandBorderWidth) {
+        this.sandBorderWidth = sandBorderWidth;
     }
 
     @Override
@@ -65,7 +61,7 @@ public class TextureApplicationFeature implements TerrainFeature {
         boolean[][] waterMap = context.getWaterMap();
         if (waterMap == null) return;
 
-        int radius = config.sandBorderWidth();
+        int radius = sandBorderWidth;
         
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {

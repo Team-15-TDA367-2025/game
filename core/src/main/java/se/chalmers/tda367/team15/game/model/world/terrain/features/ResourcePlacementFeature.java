@@ -17,18 +17,18 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  */
 public class ResourcePlacementFeature implements TerrainFeature {
     
-    public record Config(
-        int nucleationCount,
-        int nucleationRadius,
-        int nucleationMinDistance,
-        int colonyNucleationRadius,
-        int sandBorderWidth // Needed for validation check
-    ) {}
+    private final int nucleationCount;
+    private final int nucleationRadius;
+    private final int nucleationMinDistance;
+    private final int colonyNucleationRadius;
+    private final int sandBorderWidth;
 
-    private final Config config;
-
-    public ResourcePlacementFeature(Config config) {
-        this.config = config;
+    public ResourcePlacementFeature(int nucleationCount, int nucleationRadius, int nucleationMinDistance, int colonyNucleationRadius, int sandBorderWidth) {
+        this.nucleationCount = nucleationCount;
+        this.nucleationRadius = nucleationRadius;
+        this.nucleationMinDistance = nucleationMinDistance;
+        this.colonyNucleationRadius = colonyNucleationRadius;
+        this.sandBorderWidth = sandBorderWidth;
     }
 
     @Override
@@ -39,19 +39,19 @@ public class ResourcePlacementFeature implements TerrainFeature {
         int height = context.getHeight();
 
         // 1. Colony Nucleation (Center area)
-        GridPoint2 colonyPoint = findValidPointNear(width/2, height/2, config.colonyNucleationRadius(), context, nucRandom);
+        GridPoint2 colonyPoint = findValidPointNear(width/2, height/2, colonyNucleationRadius, context, nucRandom);
         if (colonyPoint != null) points.add(colonyPoint);
         else points.add(new GridPoint2(width/2, height/2)); // Fallback
 
         // 2. Random Nucleation
         int attempts = 0;
-        while (points.size() < config.nucleationCount() && attempts < config.nucleationCount() * 50) {
+        while (points.size() < nucleationCount && attempts < nucleationCount * 50) {
             attempts++;
             int x = nucRandom.nextInt(width);
             int y = nucRandom.nextInt(height);
 
             if (!isValidNucleationPoint(x, y, context)) continue;
-            if (isTooClose(x, y, points, config.nucleationMinDistance())) continue;
+            if (isTooClose(x, y, points, nucleationMinDistance)) continue;
 
             points.add(new GridPoint2(x, y));
         }
@@ -83,7 +83,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
     }
 
     private void applyNucleationZone(TerrainGenerationContext context, GridPoint2 point) {
-        int radius = config.nucleationRadius();
+        int radius = nucleationRadius;
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dy = -radius; dy <= radius; dy++) {
                 if (dx*dx + dy*dy <= radius*radius) {
@@ -98,7 +98,7 @@ public class ResourcePlacementFeature implements TerrainFeature {
     }
 
     private boolean isValidNucleationPoint(int x, int y, TerrainGenerationContext context) {
-        int checkRadius = config.nucleationRadius() + config.sandBorderWidth() + 2;
+        int checkRadius = nucleationRadius + sandBorderWidth + 2;
         for (int dx = -checkRadius; dx <= checkRadius; dx++) {
             for (int dy = -checkRadius; dy <= checkRadius; dy++) {
                 int nx = x + dx;
