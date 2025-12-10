@@ -37,15 +37,9 @@ public class TextureApplicationFeature implements TerrainFeature {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 double noise = context.getHeight(x, y);
-                // Treat low height values as water (e.g. from IslandMask)
-                // Reduced threshold from 0.2 to 0.1 to prevent small puddles inland
-                if (context.isWater(x, y) || noise < 0.1) {
+                // Only treat explicitly marked areas as water (from IslandMask or LakeFeature)
+                if (context.isWater(x, y)) {
                     textureMap[x][y] = TEXTURE_WATER;
-                    // Also update water map for subsequent features
-                    boolean[][] waterMap = context.getWaterMap();
-                    if (waterMap != null) {
-                        waterMap[x][y] = true;
-                    }
                 } else {
                     textureMap[x][y] = noiseToGrassTexture(noise);
                 }

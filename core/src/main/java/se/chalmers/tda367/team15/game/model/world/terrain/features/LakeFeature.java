@@ -26,16 +26,24 @@ public class LakeFeature implements TerrainFeature {
 
     @Override
     public void apply(TerrainGenerationContext context) {
-        boolean[][] lakeMap = generateLakes(context);
+        boolean[][] existingWater = context.getWaterMap();
+        boolean[][] lakeMap = generateLakes(context, existingWater);
         boolean[][] smoothedLakes = smoothLakes(lakeMap);
         
         context.setWaterMap(smoothedLakes);
     }
 
-    private boolean[][] generateLakes(TerrainGenerationContext context) {
+    private boolean[][] generateLakes(TerrainGenerationContext context, boolean[][] existingWater) {
         int width = context.getWidth();
         int height = context.getHeight();
-        boolean[][] lakeMap = new boolean[width][height];
+        boolean[][] lakeMap;
+        
+        if (existingWater != null) {
+            lakeMap = copyBooleanMap(existingWater);
+        } else {
+            lakeMap = new boolean[width][height];
+        }
+
         Random lakeRandom = new Random(context.getSeed() + 1000);
 
         int margin = Math.max(width, height) / 8;

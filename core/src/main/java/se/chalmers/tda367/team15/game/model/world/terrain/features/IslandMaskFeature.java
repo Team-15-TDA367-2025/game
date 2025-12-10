@@ -1,12 +1,13 @@
 package se.chalmers.tda367.team15.game.model.world.terrain.features;
 
+import se.chalmers.tda367.team15.game.model.world.PerlinNoise;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationContext;
 
 /**
- * Applies a radial mask to the height map to force the terrain into an island
- * shape.
- * Areas near the edge of the map are forced to be lower (water).
+ * Applies a radial mask to determine the island shape.
+ * Areas near the edge of the map are forced to be water.
+ * This does NOT modify the height map, only the water map.
  */
 public class IslandMaskFeature implements TerrainFeature {
     public record Config(
@@ -22,10 +23,21 @@ public class IslandMaskFeature implements TerrainFeature {
              * The percentage of the map at which the deep water starts.
              * 0.05 means 5% of the map.
              */
-            double deepWaterStartPercentage) {
+            double deepWaterStartPercentage,
+            /**
+             * Scale of the noise to break up the perfect circle.
+             * Lower values (e.g. 0.02) mean larger features.
+             */
+            double noiseScale,
+            /**
+             * How much the noise affects the distance mask.
+             * 0.0 means perfect circle, 0.2 means significant distortion.
+             */
+            double noiseAmount) {
     }
 
     private final Config config;
+    private static final double WATER_THRESHOLD = 0.2;
 
     public IslandMaskFeature(Config config) {
         this.config = config;
@@ -35,7 +47,13 @@ public class IslandMaskFeature implements TerrainFeature {
     public void apply(TerrainGenerationContext context) {
         int width = context.getWidth();
         int height = context.getHeight();
-        double[][] heightMap = context.getHeightMap();
+        
+        PerlinNoise noiseGen = new PerlinNoise(context.getSeed());
+        
+        boolean[][] waterMap = context.getWaterMap();
+        if (waterMap == null) {
+            waterMap = new boolean[width][height];
+        }
 
         int centerX = width / 2;
         int centerY = height / 2;
@@ -48,41 +66,35 @@ public class IslandMaskFeature implements TerrainFeature {
                 double dy = y - centerY;
                 double dist = Math.sqrt(dx * dx + dy * dy);
                 double normalizedDist = dist / maxDist;
+                
+                // Add noise to the distance to break up the circle
+                double noise = noiseGen.noise(x * config.noiseScale(), y * config.noiseScale());
+                double distortedDist = normalizedDist + noise * config.noiseAmount();
+                
+                // Clamp to valid range for Math.pow
+                distortedDist = Math.max(0.0, distortedDist);
 
                 // Apply mask
                 // As we get closer to the edge (normalizedDist -> 1.0), the mask value
                 // increases
-                // We subtract this mask from the height map to lower the terrain at edges
+                
+                double mask = Math.pow(distortedDist, config.islandFactor());
 
-                // Using a polynomial curve for the mask allows the center to stay intact
-                // while the edges drop off sharply.
-                // Formula: mask = dist ^ factor
-
-                // We want the edges to be definitely water.
-                // If we assume water level is e.g. < 0.3 (handled by
-                // TextureApplicationFeature),
-                // we need to ensure heightMap[x][y] becomes < 0.3 at the edges.
-
-                double mask = Math.pow(normalizedDist, config.islandFactor());
-
-                // Invert the mask logic: We want to multiply the existing height by a gradient
-                // that is 1.0 at center and 0.0 at edges.
-                // gradient = 1.0 - mask
+                // Invert the mask logic: gradient is 1.0 at center and 0.0 at edges.
                 double gradient = 1.0 - mask;
 
-                // Clamp gradient to 0
-                if (gradient < 0)
-                    gradient = 0;
+                // Determine water based on gradient threshold
+                if (gradient < WATER_THRESHOLD) {
+                    waterMap[x][y] = true;
+                }
 
-                // Apply gradient to existing height
-                heightMap[x][y] *= gradient;
-
-                // Optional: Force very edges to be 0 (deep water)
-                // If we are in the outer 5% of the map, force 0
+                // Force very edges to be water
                 if (x < width * config.deepWaterStartPercentage() || x > width * (1 - config.deepWaterStartPercentage()) || y < height * config.deepWaterStartPercentage() || y > height * (1 - config.deepWaterStartPercentage())) {
-                    heightMap[x][y] *= 0.5; // Reduce even further
+                    waterMap[x][y] = true;
                 }
             }
         }
+        
+        context.setWaterMap(waterMap);
     }
 }
