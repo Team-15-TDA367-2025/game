@@ -1,7 +1,5 @@
 package se.chalmers.tda367.team15.game.model.world.terrain.features;
 
-import com.badlogic.gdx.math.GridPoint2;
-
 import se.chalmers.tda367.team15.game.model.world.Tile;
 import se.chalmers.tda367.team15.game.model.world.TileType;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
