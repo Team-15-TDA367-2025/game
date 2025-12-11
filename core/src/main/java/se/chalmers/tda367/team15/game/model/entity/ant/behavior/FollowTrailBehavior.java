@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
@@ -20,14 +21,16 @@ public class FollowTrailBehavior extends AntBehavior {
     // Threshold as fraction of pheromone cell size (must be < 1 to avoid reaching
     // multiple cells)
     private static final float REACHED_THRESHOLD_FRACTION = 0.3f;
+    private GameWorld gameWorld;
 
     private boolean returningToColony = false;
     private Pheromone lastPheromone = null;
     private Pheromone currentTarget = null;
     private float reachedThresholdSq;
 
-    public FollowTrailBehavior(Ant ant) {
+    public FollowTrailBehavior(Ant ant, GameWorld gameWorld) {
         super(ant);
+        this.gameWorld = gameWorld;
         // Calculate threshold based on pheromone cell size
         float cellSize = ant.getSystem().getConverter().getPheromoneCellSize();
         float threshold = cellSize * REACHED_THRESHOLD_FRACTION;
@@ -53,7 +56,7 @@ public class FollowTrailBehavior extends AntBehavior {
     @Override
     public void update(PheromoneSystem system, float deltaTime) {
         if (enemiesInSight()) {
-            ant.setBehavior(new AttackBehavior(ant, ant.getPosition()));
+            ant.setBehavior(new AttackBehavior(ant, ant.getPosition(), gameWorld));
             return;
         }
 
@@ -68,7 +71,7 @@ public class FollowTrailBehavior extends AntBehavior {
                     .orElse(null);
 
             if (lastPheromone == null) {
-                ant.setBehavior(new WanderBehavior(ant));
+                ant.setBehavior(new WanderBehavior(ant, gameWorld));
                 return;
             }
         }
@@ -89,7 +92,7 @@ public class FollowTrailBehavior extends AntBehavior {
 
             // If still no target, we lost the trail
             if (currentTarget == null) {
-                ant.setBehavior(new WanderBehavior(ant));
+                ant.setBehavior(new WanderBehavior(ant, gameWorld));
                 return;
             }
         }

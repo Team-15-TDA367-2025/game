@@ -36,7 +36,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
         super(position, type.textureName());
         this.type = type;
-        this.behavior = new WanderBehavior(this);
+        this.gameWorld = gameWorld;
+        this.behavior = new WanderBehavior(this, gameWorld);
         this.system = system;
         this.hunger = 2; // test value
 
@@ -48,7 +49,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.gameWorld = gameWorld;
         setMovementStrategy(new AntMovementStrategy(gameWorld.getWorldMap()));
     }
 
@@ -77,15 +77,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         if (inventory.isEmpty()) {
             setTextureName(baseTextureName);
         } else {
-            // For now hardcode carrying texture logic, or we could add carryingTextureName
-            // to AntType
-            // But "AntCarryingFood" seems to be the convention for now
-            if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
-                setTextureName("AntCarryingFood");
-            } else {
-                // Fallback or specific logic for other types carrying things
-                setTextureName(baseTextureName);
-            }
+            // TODO: This should be a more generic solution
+            setTextureName("resource");
         }
     }
 

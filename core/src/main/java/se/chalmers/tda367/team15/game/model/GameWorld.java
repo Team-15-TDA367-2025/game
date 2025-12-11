@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -39,7 +40,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private float secondsPerTick;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
-        this.timeObservers = new ArrayList<>();
+        this.timeObservers = new CopyOnWriteArrayList<>();
         this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
 

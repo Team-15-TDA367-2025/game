@@ -33,7 +33,7 @@ public class WorldRenderer {
 
         terrainRenderer.render(batch, model.getWorldMap(), cameraView);
         drawables.forEach(this::draw);
-        fogRenderer.render(batch, fog);
+        fogRenderer.render(batch, fog, cameraView);
 
         batch.end();
 
@@ -58,7 +58,7 @@ public class WorldRenderer {
                 originX, originY,
                 width, height,
                 1f, 1f,
-                MathUtils.radiansToDegrees * drawable.getRotation());
+                MathUtils.radiansToDegrees * (drawable.getRotation() - (MathUtils.PI / 2f)));
     }
 
     public void dispose() {
