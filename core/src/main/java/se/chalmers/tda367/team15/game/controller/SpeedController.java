@@ -12,17 +12,16 @@ public class SpeedController implements SpeedControlsListener {
     }
 
     @Override
-    public void onFastSpeed() {
-        System.out.println("fast");
+    public void onFastSpeed() {gameModel.setTimeFast();
     }
 
     @Override
     public void onNormalSpeed() {
-        System.out.println("normal");
+        gameModel.setTimeNormal();
     }
 
     @Override
     public void onPause() {
-        System.out.println("pause");
+        gameModel.setTimePaused();
     }
 }

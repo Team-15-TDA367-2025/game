@@ -39,11 +39,20 @@ public class GameModel {
 
     public void spawnTermite(Vector2 position) {
         // Temperory before we have EnemyWaveSystem
-        EnemyFactory enemyFactory = new EnemyFactory(world);
+        EnemyFactory enemyFactory = new EnemyFactory(world,simulationHandler);
         Termite termite = enemyFactory.createTermite(position);
         world.addEntity(termite);
     }
 
+    public void setTimeFast() {
+        simulationHandler.setTimeFast();
+    }
+    public void setTimeNormal() {
+        simulationHandler.setTimeNormal();
+    }
+    public void setTimePaused(){
+        simulationHandler.setTimePaused();
+    }
 
     public void update() {
         simulationHandler.handleSimulation();

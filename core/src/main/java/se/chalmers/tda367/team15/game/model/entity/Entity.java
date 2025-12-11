@@ -37,8 +37,7 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
         }
 
     @Override
-    public void update() {
-        float deltaTime = (float) SimulationHandler.getInGameTimePerTickMs() * 1000;
+    public void update(float deltaTime) {
         position.add(velocity.cpy().scl(deltaTime));
         updateRotation();
         Vector2 velocityStep = velocity.cpy().scl(deltaTime);

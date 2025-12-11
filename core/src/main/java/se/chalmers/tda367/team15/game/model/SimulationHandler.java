@@ -30,15 +30,37 @@ public class SimulationHandler {
        updateObservers.add(u);
    }
 
+  public void setTimeFast() {
+      setTicksPerSecond(baseTickPerSecond * 3);
+  }
+  public void setTimePaused() {
+       setTicksPerSecond(0);
+  }
+  public void setTimeNormal() {
+       setTicksPerSecond(baseTickPerSecond);
+  }
+
+
+
+   // TODO BAD!
    public static double getInGameTimePerTickMs() {
        return inGameTimePerTickMs;
    }
 
-    public void setTicksPerSecond(int ticksPerSecond) {
+    private void setTicksPerSecond(int ticksPerSecond) {
         if(ticksPerSecond < 0) {
             throw new IllegalArgumentException("ticks per second can't be negative");
         }
         this.iRLTicksPerSecond = ticksPerSecond;
+
+        // We want to prevent "catch up" when exiting pause
+        boolean oldPause = paused;
+        paused= iRLTicksPerSecond == 0;
+        if(oldPause && !paused) {
+            accumulator=0;
+            previous=System.currentTimeMillis();
+        }
+
     }
 
     public TimeCycle getTimeCycle() {
@@ -46,16 +68,9 @@ public class SimulationHandler {
     }
 
     public void handleSimulation() {
-       boolean oldPause = paused;
-       paused= iRLTicksPerSecond == 0;
-        // Only update this.now if we aren't exiting out of pause, use old value instead.
-        // This prevents "catch up" when exiting pause.
-        if(!(oldPause && !paused)) {
-            now=System.currentTimeMillis();
-        }
-
-        if(!(iRLTicksPerSecond==0)) {
+        if(iRLTicksPerSecond!=0) {
             long mSPerTick = mSPerTick();
+            now=System.currentTimeMillis();
             long difference = now - previous;
             previous = now;
 
@@ -65,7 +80,7 @@ public class SimulationHandler {
                 timeCycle.tick(); // time cycle needs to update first
 
                 for(Updatable u: updateObservers) {
-                    u.update();
+                    u.update(inGameTimeDifference);
                 }
 
                 accumulator -= mSPerTick;

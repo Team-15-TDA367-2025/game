@@ -11,15 +11,19 @@ public class AntFactory {
     private final PheromoneSystem pheromoneSystem;
     private final Colony colony;
     private final GameWorld world;
+    private final SimulationHandler simulationHandler;
 
-    public AntFactory(PheromoneSystem pheromoneSystem, Colony colony, GameWorld world) {
+    public AntFactory(PheromoneSystem pheromoneSystem, Colony colony, GameWorld world,SimulationHandler simulationHandler) {
         this.pheromoneSystem = pheromoneSystem;
         this.colony = colony;
         this.world = world;
+        this.simulationHandler = simulationHandler;
     }
 
     public Ant createAnt(AntType type) {
         Vector2 position = colony.getPosition();
-        return new Ant(position, pheromoneSystem, type, world);
+        Ant a = new Ant(position, pheromoneSystem, type, world);
+        simulationHandler.addUpdateObserver(a);
+        return a;
     }
 }

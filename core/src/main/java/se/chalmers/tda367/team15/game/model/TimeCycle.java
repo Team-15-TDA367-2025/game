@@ -21,7 +21,6 @@ public class TimeCycle  {
 
 
     public void tick() {
-
         if(minutes % ticksPerMinute == 0) {
             boolean oldIsDay = getIsDay();
             minutes++;

@@ -42,7 +42,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         timeCycle.addTimeObserver(this);
         // Register to receive ant death notifications
         DestructionListener.getInstance().addEntityDeathObserver(this);
-        antFactory = new AntFactory(world.getPheromoneSystem(), this, world);
+        antFactory = new AntFactory(world.getPheromoneSystem(), this, world,simulationHandler);
     }
 
     public void addAnt(Ant ant) {

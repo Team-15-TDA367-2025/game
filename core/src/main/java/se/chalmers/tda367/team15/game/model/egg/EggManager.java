@@ -39,7 +39,7 @@ public class EggManager implements Updatable {
     }
 
     @Override
-    public void update() {
+    public void update(float deltaTime) {
         for (Egg egg : eggs) {
             egg.tick();
 

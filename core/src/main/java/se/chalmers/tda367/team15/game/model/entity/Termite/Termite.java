@@ -41,11 +41,11 @@ public class Termite extends Entity implements CanBeAttacked {
      *
      */
     @Override
-    public void update() {
+    public void update(float deltaTime) {
         List<Entity> entities = world.getEntities();
         List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities, structures);
-        super.update();
+        super.update(deltaTime);
         if (target != null) {
             attackComponent.attack(target);
         }

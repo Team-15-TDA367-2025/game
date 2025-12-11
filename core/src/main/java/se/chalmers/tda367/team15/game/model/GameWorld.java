@@ -24,7 +24,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceSystem;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
-public class GameWorld implements Updatable,EntityDeathObserver, StructureDeathObserver {
+public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private final Colony colony;
     private final PheromoneSystem pheromoneSystem;
     private List<Entity> worldEntities; // Floating positions and can move around.
@@ -36,21 +36,21 @@ public class GameWorld implements Updatable,EntityDeathObserver, StructureDeathO
     private DestructionListener destructionListener;
 
     public GameWorld(TimeCycle timeCycle, SimulationHandler simulationHandler , int mapWidth, int mapHeight, TerrainGenerator generator) {
-        simulationHandler.addUpdateObserver(this);
-        this.colony = new Colony(new GridPoint2(0,0),this,timeCycle ,simulationHandler);
         this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
         this.fogOfWar = new FogOfWar(worldMap);
-        this.fogSystem = new FogSystem(fogOfWar, worldMap);
+        this.fogSystem = new FogSystem(this,simulationHandler,fogOfWar, worldMap);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
-        this.resourceSystem = new ResourceSystem();
-
+        this.resourceSystem = new ResourceSystem(this, simulationHandler);
         destructionListener = DestructionListener.getInstance();
 
         destructionListener.addEntityDeathObserver(this);
         destructionListener.addStructureDeathObserver(this);
+        this.colony = new Colony(new GridPoint2(0,0),this,timeCycle,simulationHandler);
         structures.add(colony);
+
+        //simulationHandler.addUpdateObserver(this);
     }
 
     public Colony getColony() {
@@ -105,19 +105,14 @@ public class GameWorld implements Updatable,EntityDeathObserver, StructureDeathO
         updatables.addAll(structures);
         return updatables;
     }
-    @Override
+
+    /*
     public void update() {
         List<Entity> entities = getEntities();
-        // Update all entities and structures
-        for (Updatable updatable : getUpdatables()) {
-            updatable.update();
-        }
-
         // Update fog after movement
-        fogSystem.updateFog(entities);
-        resourceSystem.update(colony, entities, structures);
-    }
 
+    }
+    */
 
     public void addEntity(Entity entity) {
         worldEntities.add(entity);
