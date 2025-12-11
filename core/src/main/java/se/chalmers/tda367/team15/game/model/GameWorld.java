@@ -47,7 +47,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
-        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
+        pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4), 4);
         this.colony = new Colony(new GridPoint2(0, 0), this);
         this.resourceSystem = new ResourceSystem();
         this.timeCycle = timeCycle;

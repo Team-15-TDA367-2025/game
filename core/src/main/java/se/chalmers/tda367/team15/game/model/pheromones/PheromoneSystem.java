@@ -11,13 +11,15 @@ public class PheromoneSystem {
     private static final int[][] NEIGHBOR_OFFSETS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
 
     private final PheromoneGrid pheromoneGrid;
-    private final GridPoint2 colonyPosition;
+    private final GridPoint2 colonyPheromoneGridPosition;
     private final PheromoneGridConverter converter;
+    private final int colonyGridSize;
 
-    public PheromoneSystem(GridPoint2 colonyPosition, PheromoneGridConverter converter) {
+    public PheromoneSystem(GridPoint2 colonyWorldPosition, PheromoneGridConverter converter, int colonySizeInTiles) {
         this.pheromoneGrid = new PheromoneGrid();
-        this.colonyPosition = colonyPosition;
         this.converter = converter;
+        this.colonyPheromoneGridPosition = colonyWorldPosition.cpy();
+        this.colonyGridSize = colonySizeInTiles * converter.getPheromonesPerTile();
     }
 
     public PheromoneGridConverter getConverter() {
@@ -125,7 +127,7 @@ public class PheromoneSystem {
         for (int[] offset : NEIGHBOR_OFFSETS) {
             GridPoint2 neighborPos = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
 
-            if (neighborPos.equals(colonyPosition)) {
+            if (isInsideColony(neighborPos)) {
                 minDistance = 0;
                 foundValidParent = true;
             } else {
@@ -139,6 +141,10 @@ public class PheromoneSystem {
         }
 
         return foundValidParent ? minDistance : -1;
+    }
+
+    private boolean isInsideColony(GridPoint2 pos) {
+        return pos.dst(colonyPheromoneGridPosition) < colonyGridSize / 2;
     }
 
     /**
