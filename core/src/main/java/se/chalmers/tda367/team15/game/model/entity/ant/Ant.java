@@ -75,15 +75,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         if (inventory.isEmpty()) {
             setTextureName(baseTextureName);
         } else {
-            // For now hardcode carrying texture logic, or we could add carryingTextureName
-            // to AntType
-            // But "AntCarryingFood" seems to be the convention for now
-            if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
-                setTextureName("AntCarryingFood");
-            } else {
-                // Fallback or specific logic for other types carrying things
-                setTextureName(baseTextureName);
-            }
+            // TODO: This should be a more generic solution
+            setTextureName("resource");
         }
     }
 

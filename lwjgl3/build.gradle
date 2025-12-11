@@ -63,7 +63,6 @@ tasks.register('runWithProfiling', JavaExec) {
   // JFR configuration - records until game closes
   def jfrFile = new File(rootProject.projectDir, "profile-${System.currentTimeMillis()}.jfr")
   jvmArgs = [
-    "-XX:+FlightRecorder",
     "-XX:StartFlightRecording=filename=${jfrFile.absolutePath},dumponexit=true"
   ]
   

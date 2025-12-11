@@ -33,7 +33,7 @@ public class WorldRenderer {
 
         terrainRenderer.render(batch, model.getWorldMap(), cameraView);
         drawables.forEach(this::draw);
-        fogRenderer.render(batch, fog);
+        fogRenderer.render(batch, fog, cameraView);
 
         batch.end();
 
