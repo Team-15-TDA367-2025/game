@@ -55,6 +55,7 @@ public class FollowTrailBehavior extends AntBehavior {
 
     @Override
     public void update(PheromoneSystem system) {
+
         if (enemiesInSight()) {
             ant.setBehavior(new AttackBehavior(ant, ant.getPosition(), gameWorld));
             return;
@@ -95,8 +96,9 @@ public class FollowTrailBehavior extends AntBehavior {
                 ant.setBehavior(new WanderBehavior(ant, gameWorld));
                 return;
             }
-        }
 
+        }
+        System.out.println(currentTarget);
         // 3. Movement
         Vector2 targetPos = getCenterPos(currentTarget);
         Vector2 diff = new Vector2(targetPos).sub(ant.getPosition());

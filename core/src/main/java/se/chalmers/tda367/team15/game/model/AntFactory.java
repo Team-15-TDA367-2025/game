@@ -22,7 +22,7 @@ public class AntFactory {
 
     public Ant createAnt(AntType type) {
         Vector2 position = colony.getPosition();
-        Ant a = new Ant(position, pheromoneSystem, type, world);
+        Ant a = new Ant(position, pheromoneSystem, type, world,simulationHandler);
         simulationHandler.addUpdateObserver(a);
         return a;
     }

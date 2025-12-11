@@ -68,7 +68,7 @@ public class WanderBehavior extends AntBehavior {
             return;
         }
 
-        changeTrajectory();
+       changeTrajectory();
 
         GridPoint2 gridPos = ant.getGridPosition();
         List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos);
