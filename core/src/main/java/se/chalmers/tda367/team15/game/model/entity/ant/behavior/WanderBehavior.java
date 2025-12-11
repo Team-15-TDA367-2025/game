@@ -82,4 +82,9 @@ public class WanderBehavior extends AntBehavior implements TimeObserver {
         }
 
     }
+
+    @Override
+    public void handleCollision() {
+        ant.pickRandomDirection();
+    }
 }

@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,8 +15,11 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
+import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
+
 public class GameModel {
     private final GameWorld world;
+    @SuppressWarnings("unused")
     private final WaveManager waveManager;
 
     public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
@@ -22,12 +27,33 @@ public class GameModel {
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
         this.waveManager = new WaveManager(world, this);
 
-        this.world.addResourceNode(new ResourceNode(world, new GridPoint2(-50, 30), "node", 1,
-                ResourceType.FOOD, 10, 20));
-        this.world.addResourceNode(new ResourceNode(world, new GridPoint2(50, -40), "node", 1,
-                ResourceType.FOOD, 10, 20));
-        this.world.addResourceNode(new ResourceNode(world, new GridPoint2(10, 10), "node", 1,
-                ResourceType.FOOD, 10, 20));
+        // Spawn structures based on terrain generation features
+        spawnTerrainStructures();
+    }
+
+    /**
+     * Spawns structures determined by terrain generation features.
+     */
+    private void spawnTerrainStructures() {
+        WorldMap worldMap = world.getWorldMap();
+        List<StructureSpawn> spawns = worldMap.getStructureSpawns();
+
+        for (StructureSpawn spawn : spawns) {
+            if ("resource_node".equals(spawn.getType())) {
+                Vector2 worldPos = worldMap.tileToWorld(spawn.getPosition());
+                GridPoint2 worldGridPos = new GridPoint2((int) worldPos.x, (int) worldPos.y);
+
+                world.addResourceNode(new ResourceNode(
+                        world,
+                        worldGridPos,
+                        "node",
+                        1,
+                        ResourceType.FOOD,
+                        10,
+                        20));
+            }
+            // Add other structure types here
+        }
     }
 
     public PheromoneGridConverter getPheromoneGridConverter() {

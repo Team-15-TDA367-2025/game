@@ -46,7 +46,6 @@ public class GameScreen extends ScreenAdapter {
     private final HudController hudController;
 
     private final Game game;
-
     public GameScreen(
             Game game,
             GameModel gameModel,

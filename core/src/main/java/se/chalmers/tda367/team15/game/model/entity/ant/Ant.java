@@ -52,14 +52,14 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         setMovementStrategy(new AntMovementStrategy(gameWorld.getWorldMap()));
     }
 
-    private void pickRandomDirection() {
+    public void pickRandomDirection() {
         float angle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
         velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(speed);
     }
 
     @Override
     public void handleCollision() {
-        pickRandomDirection();
+        behavior.handleCollision();
     }
 
     @Override

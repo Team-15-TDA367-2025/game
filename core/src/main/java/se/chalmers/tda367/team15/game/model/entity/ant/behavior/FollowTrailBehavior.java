@@ -140,4 +140,11 @@ public class FollowTrailBehavior extends AntBehavior {
         PheromoneGridConverter converter = ant.getSystem().getConverter();
         return converter.pheromoneGridToWorld(p.getPosition());
     }
+
+    @Override
+    public void handleCollision() {
+        returningToColony = true;
+        List<Pheromone> neighbors = ant.getSystem().getPheromonesIn3x3(ant.getGridPosition());
+        currentTarget = findNextPheromone(neighbors, returningToColony);
+    }
 }
