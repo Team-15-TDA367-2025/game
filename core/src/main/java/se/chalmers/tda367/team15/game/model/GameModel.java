@@ -16,12 +16,13 @@ import se.chalmers.tda367.team15.game.model.world.WorldMap;
 public class GameModel {
     private final GameWorld world;
     private final WaveManager waveManager;
+    private final SimulationHandler simulationHandler;
 
-    public GameModel(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
+    public GameModel(TimeCycle timeCycle, SimulationHandler simulationHandler, int mapWidth, int mapHeight, TerrainGenerator generator) {
 
         this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
-        this.waveManager = new WaveManager(world, this);
-
+        this.waveManager = new WaveManager(timeCycle,this);
+        this.simulationHandler=simulationHandler;
         this.world.addResourceNode(new ResourceNode(world, new GridPoint2(-50, 30), "node", 1,
                 ResourceType.FOOD, 10, 20));
         this.world.addResourceNode(new ResourceNode(world, new GridPoint2(50, -40), "node", 1,
@@ -43,22 +44,13 @@ public class GameModel {
         world.addEntity(termite);
     }
 
-    public void setGameSpeedFast(){
 
-    }
-    public void setGameSpeedNormal(){
-
-    }
-    public void setGameSpeedPaused(){
-
-    }
-
-    public void update(float deltaTime) {
-        world.update(deltaTime);
+    public void update() {
+        simulationHandler.handleSimulation();
     }
 
     public TimeCycle.GameTime getGameTime() {
-        return world.getTimeCycle().getGameTime();
+        return simulationHandler.getTimeCycle().getGameTime();
     }
 
     public Iterable<Drawable> getDrawables() {
@@ -82,7 +74,7 @@ public class GameModel {
     }
 
     public int getTotalDays() {
-        return world.getTimeCycle().getTotalDays();
+        return simulationHandler.getTimeCycle().getTotalDays();
     }
 
     public int getTotalAnts() {

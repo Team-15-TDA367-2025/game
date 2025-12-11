@@ -34,7 +34,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     private AntFactory antFactory;
     private Faction faction;
 
-    public Colony(GridPoint2 position, GameWorld world) {
+    public Colony(GridPoint2 position, GameWorld world,TimeCycle timeCycle) {
         super(position, "colony", 4);
         this.ants = new ArrayList<>();
         this.health = MAX_HEALTH;
@@ -42,8 +42,9 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         this.inventory = new Inventory(1000); // test value for now
         this.eggManager = new EggManager(world);
         this.eggManager.addObserver(this);
+
+        timeCycle.addTimeObserver(this);
         // Register to receive ant death notifications
-        world.addTimeObserver(this);
         DestructionListener.getInstance().addEntityDeathObserver(this);
         antFactory = new AntFactory(world.getPheromoneSystem(), this, world);
     }

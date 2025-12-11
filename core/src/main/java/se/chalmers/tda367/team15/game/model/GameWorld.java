@@ -33,13 +33,9 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
     private final FogSystem fogSystem;
     private final FogOfWar fogOfWar;
     private DestructionListener destructionListener;
-    private TimeCycle timeCycle;
-    private List<TimeObserver> timeObservers;
-    private float tickAccumulator = 0f;
-    private float secondsPerTick;
 
     public GameWorld(TimeCycle timeCycle, int mapWidth, int mapHeight, TerrainGenerator generator) {
-        this.timeObservers = new ArrayList<>();
+
         this.worldEntities = new ArrayList<>();
         this.structures = new ArrayList<>();
 
@@ -47,10 +43,8 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.fogOfWar = new FogOfWar(worldMap);
         this.fogSystem = new FogSystem(fogOfWar, worldMap);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4));
-        this.colony = new Colony(new GridPoint2(0, 0), this);
+        this.colony = new Colony(new GridPoint2(0, 0), this,timeCycle);
         this.resourceSystem = new ResourceSystem();
-        this.timeCycle = timeCycle;
-        this.secondsPerTick = 60f / timeCycle.getTicksPerMinute();
 
         destructionListener = DestructionListener.getInstance();
 
@@ -105,48 +99,19 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         return worldMap;
     }
 
-    public TimeCycle getTimeCycle() {
-        return timeCycle;
-    }
-
-    public void addTimeObserver(TimeObserver observer) {
-        timeObservers.add(observer);
-    }
-
-    public void removeTimeObserver(TimeObserver observer) {
-        timeObservers.remove(observer);
-    }
-
-    private void notifyTimeObservers(boolean nightJustStarted, boolean dayJustStarted) {
-        for (TimeObserver observer : timeObservers) {
-            observer.onTimeUpdate(timeCycle);
-
-            if (nightJustStarted) {
-                observer.onNightStart(timeCycle);
-            } else if (dayJustStarted) {
-                observer.onDayStart(timeCycle);
-            }
-        }
-    }
-
-    private List<Updatable> getUpdatables() {
+    public List<Updatable> getUpdatables() {
         List<Updatable> updatables = new ArrayList<>();
         updatables.addAll(getEntities());
         updatables.addAll(structures);
         return updatables;
     }
 
+    public void updateTimeCycle(){
+
+    }
+
     public void update(float deltaTime) {
         List<Entity> entities = getEntities();
-        tickAccumulator += deltaTime; // add real seconds
-        while (tickAccumulator >= secondsPerTick) {
-            boolean wasDay = timeCycle.getIsDay();
-            timeCycle.tick();
-            boolean isDay = timeCycle.getIsDay();
-            notifyTimeObservers(wasDay && !isDay, !wasDay && isDay);
-            tickAccumulator -= secondsPerTick; // remove the processed time
-        }
-
         // Update all entities and structures
         for (Updatable updatable : getUpdatables()) {
             updatable.update(deltaTime);
@@ -156,6 +121,7 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         fogSystem.updateFog(entities);
         resourceSystem.update(colony, entities, structures);
     }
+
 
     public void addEntity(Entity entity) {
         worldEntities.add(entity);
