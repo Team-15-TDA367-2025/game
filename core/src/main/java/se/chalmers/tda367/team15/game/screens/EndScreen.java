@@ -28,7 +28,6 @@ public class EndScreen extends ScreenAdapter {
     private Stage stage;
     GameEndReason reason;
     String endMessage;
-
     public EndScreen(Game game, GameEndReason reason) {
         this.game = game;
         this.reason = reason;
@@ -42,7 +41,7 @@ public class EndScreen extends ScreenAdapter {
                 endMessage = "All your ants are dead!";
                 break;
             case STARVATION:
-                endMessage = "Your colony has starved!";
+                endMessage = "Your colony dies of starvation!";
                 break;
             default:
                 endMessage = "Unknown reason";

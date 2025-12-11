@@ -13,7 +13,6 @@ public final class UiTheme {
     public static final float UI_SCALE = 1.0f;
     public static final float NINE_PATCH_SCALE = 4.0f;
 
-    public static final float TOP_BAR_WIDTH = 800f;
     public static final float TOP_BAR_HEIGHT = 140f;
     public static final float DAY_LABEL_MIN_WIDTH = 100f;
     public static final float TIME_LABEL_MIN_WIDTH = 80f;

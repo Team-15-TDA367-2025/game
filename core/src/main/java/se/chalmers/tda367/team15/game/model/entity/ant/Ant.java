@@ -18,6 +18,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
+    AntType type;
     private final int visionRadius = 4;
     protected Faction faction;
     private final int hunger;
@@ -34,7 +35,9 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
         super(position, type.textureName());
-        this.behavior = new WanderBehavior(this);
+        this.type = type;
+        this.gameWorld = gameWorld;
+        this.behavior = new WanderBehavior(this, gameWorld);
         this.system = system;
         this.hunger = 2; // test value
 
@@ -46,18 +49,17 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.gameWorld = gameWorld;
         setMovementStrategy(new AntMovementStrategy(gameWorld.getWorldMap()));
     }
 
-    private void pickRandomDirection() {
+    public void pickRandomDirection() {
         float angle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
         velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(speed);
     }
 
     @Override
     public void handleCollision() {
-        pickRandomDirection();
+        behavior.handleCollision();
     }
 
     @Override
@@ -75,15 +77,8 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         if (inventory.isEmpty()) {
             setTextureName(baseTextureName);
         } else {
-            // For now hardcode carrying texture logic, or we could add carryingTextureName
-            // to AntType
-            // But "AntCarryingFood" seems to be the convention for now
-            if (baseTextureName.equals("ant") || baseTextureName.equals("worker")) {
-                setTextureName("AntCarryingFood");
-            } else {
-                // Fallback or specific logic for other types carrying things
-                setTextureName(baseTextureName);
-            }
+            // TODO: This should be a more generic solution
+            setTextureName("resource");
         }
     }
 
@@ -110,6 +105,10 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     public int getHunger() {
         return hunger;
+    }
+
+    public AntType getType() {
+        return type;
     }
 
     public boolean leaveResources(Colony colony) {
