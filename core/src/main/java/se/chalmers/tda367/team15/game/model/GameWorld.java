@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -50,7 +51,6 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
         this.colony = new Colony(new GridPoint2(0, 0), this, timeCycle, simulationHandler);
         structures.add(colony);
 
-        //simulationHandler.addUpdateObserver(this);
     }
 
     public Colony getColony() {

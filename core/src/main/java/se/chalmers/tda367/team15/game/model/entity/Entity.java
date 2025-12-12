@@ -38,7 +38,6 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
 
     @Override
     public void update(float deltaTime) {
-        position.add(velocity.cpy().scl(deltaTime));
         updateRotation();
         Vector2 velocityStep = velocity.cpy().scl(deltaTime);
         Vector2 nextPosition = position.cpy().add(velocityStep);
@@ -64,7 +63,7 @@ public abstract class Entity implements Drawable, Updatable, HasPosition {
 
     private void updateRotation() {
         if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
+            rotation = getVelocity().angleRad(); //- MathUtils.PI / 2f;
         }
     }
 

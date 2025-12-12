@@ -41,6 +41,6 @@ public class HudController implements PheromoneSelectionListener {
 
     public void update(float dt) {
         view.updateData(model.getGameTime(), model.getColony().getAntCount(),
-                model.getColony().getTotalResources(ResourceType.FOOD));
+                model.getColony().getTotalResources(ResourceType.FOOD), model.getColony().calculateConsumption());
     }
 }

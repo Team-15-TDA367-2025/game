@@ -1,21 +1,29 @@
 package se.chalmers.tda367.team15.game.model.world;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+
+import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
 public class WorldMap {
     private final int width;
     private final int height;
     private final Tile[][] tiles;
     private final Set<String> textureNames;
+    private final List<StructureSpawn> structureSpawns;
 
     public WorldMap(int width, int height, TerrainGenerator generator) {
         this.width = width;
         this.height = height;
-        this.tiles = generator.generate(width, height);
+        TerrainGenerationResult result = generator.generate(width, height);
+        this.tiles = result.getTiles();
+        this.structureSpawns = new ArrayList<>(result.getStructureSpawns());
         this.textureNames = collectTextureNames();
     }
 
@@ -76,5 +84,12 @@ public class WorldMap {
      */
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    /**
+     * Returns the structure spawns generated during terrain creation.
+     */
+    public List<StructureSpawn> getStructureSpawns() {
+        return Collections.unmodifiableList(structureSpawns);
     }
 }

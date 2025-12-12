@@ -34,4 +34,6 @@ public abstract class AntBehavior {
 
     public abstract void update(PheromoneSystem system);
 
+
+    public void handleCollision() {}
 }

@@ -5,11 +5,13 @@ import java.util.Arrays;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
+import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
 import se.chalmers.tda367.team15.game.Main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
     private static boolean unlimitedFps = false;
+    private static boolean noFog = false;
 
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired())
@@ -17,6 +19,9 @@ public class Lwjgl3Launcher {
 
         // Parse launch arguments
         unlimitedFps = Arrays.asList(args).contains("--unlimited-fps");
+        noFog = Arrays.asList(args).contains("--no-fog");
+
+        GameLaunchConfiguration.setCurrent(new GameLaunchConfiguration(unlimitedFps, noFog));
 
         createApplication();
     }
