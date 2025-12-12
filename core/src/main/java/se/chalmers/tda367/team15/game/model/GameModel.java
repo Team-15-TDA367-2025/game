@@ -23,6 +23,7 @@ public class GameModel {
     @SuppressWarnings("unused")
     private final WaveManager waveManager;
     private final SimulationHandler simulationHandler;
+    private final TimeCycle timeCycle;
     private final EntityManager entityManager;
     private final EnemyFactory enemyFactory;
     private final AntFactory antFactory;
@@ -31,6 +32,8 @@ public class GameModel {
     public GameModel(TimeCycle timeCycle, SimulationHandler simulationHandler, GameWorld gameWorld) {
         this.simulationHandler = simulationHandler;
         this.world = gameWorld;
+        this.timeCycle = timeCycle;
+        this.waveManager = new WaveManager(this.timeCycle,this);
         this.entityManager = new EntityManager(simulationHandler);
         gameWorld.setEntityQuery(entityManager);
         this.colony = new Colony(new GridPoint2(0, 0), timeCycle, simulationHandler, entityManager);
@@ -81,6 +84,7 @@ public class GameModel {
                         10,
                         20));
             }
+            // Add other structure types here
         }
     }
 
@@ -110,6 +114,7 @@ public class GameModel {
     public void update() {
         simulationHandler.handleSimulation();
     }
+    public boolean isDay(){return timeCycle.getIsDay();}
 
     public TimeCycle.GameTime getGameTime() {
         return simulationHandler.getTimeCycle().getGameTime();
@@ -135,6 +140,7 @@ public class GameModel {
         return world.getWorldMap();
     }
 
+    public GridPoint2 getWorldSize() {return getWorldMap().getSize();}
     public int getTotalDays() {
         return simulationHandler.getTimeCycle().getTotalDays();
     }
@@ -142,4 +148,5 @@ public class GameModel {
     public int getTotalAnts() {
         return world.getAnts().size();
     }
+
 }

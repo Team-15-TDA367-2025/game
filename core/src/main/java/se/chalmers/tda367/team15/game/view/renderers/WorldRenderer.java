@@ -1,9 +1,14 @@
 package se.chalmers.tda367.team15.game.view.renderers;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
+import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
 import se.chalmers.tda367.team15.game.model.FogOfWar;
 import se.chalmers.tda367.team15.game.model.GameModel;
@@ -18,7 +23,7 @@ public class WorldRenderer {
     private final TerrainRenderer terrainRenderer;
     private final FogRenderer fogRenderer;
     private final GameModel model;
-
+    private final ShapeRenderer shapeRenderer;
     public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, GameModel model) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
@@ -26,6 +31,7 @@ public class WorldRenderer {
         this.terrainRenderer = new TerrainRenderer(textureRegistry);
         this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"));
         this.model = model;
+        this.shapeRenderer = new ShapeRenderer();
     }
 
     public void render(Iterable<Drawable> drawables, FogOfWar fog) {
@@ -39,6 +45,18 @@ public class WorldRenderer {
         }
 
         batch.end();
+
+        if(!model.isDay()) {
+            // at night, we draw a black rectangle over screen 50% opacity
+            GridPoint2 dimensions= model.getWorldSize();
+            Gdx.gl.glEnable(GL20.GL_BLEND); // we want to blend not cover.
+            shapeRenderer.setProjectionMatrix(cameraView.getCombinedMatrix());
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 0, 0, 0.65f);
+            shapeRenderer.rect(-((float) dimensions.x /2), -((float) dimensions.y /2), dimensions.x, dimensions.y);
+            shapeRenderer.end();
+           Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
 
     }
 
@@ -66,5 +84,6 @@ public class WorldRenderer {
 
     public void dispose() {
         batch.dispose();
+        shapeRenderer.dispose();
     }
 }
