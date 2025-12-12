@@ -71,10 +71,10 @@ public class SimulationHandler {
             while (accumulator >= mSPerTick) {
                 float inGameTimeDifference = (float) inGameTimePerTickMs / 1000f;
                 timeCycle.tick(); // time cycle needs to update first
-
-                for(Updatable u: updateObservers) {
-                    u.update(inGameTimeDifference);
-                }
+                List<Updatable> updateThese = new ArrayList<>(updateObservers);
+               for (Updatable u : updateThese) {
+                   u.update(inGameTimeDifference);
+               }
 
                 accumulator -= mSPerTick;
             }

@@ -24,12 +24,9 @@ public class GameModel {
     private final SimulationHandler simulationHandler;
 
     public GameModel(TimeCycle timeCycle, SimulationHandler simulationHandler, GameWorld gameWorld) {
-
+        this.simulationHandler=simulationHandler;
         this.world = gameWorld;
         this.waveManager = new WaveManager(timeCycle,this);
-
-        this.world = new GameWorld(timeCycle, mapWidth, mapHeight, generator);
-        this.waveManager = new WaveManager(world, this);
 
         // Spawn structures based on terrain generation features
         spawnTerrainStructures();
@@ -48,7 +45,7 @@ public class GameModel {
                 GridPoint2 worldGridPos = new GridPoint2((int) worldPos.x, (int) worldPos.y);
 
                 world.addResourceNode(new ResourceNode(
-                        world,
+                        simulationHandler,
                         worldGridPos,
                         "node",
                         1,
