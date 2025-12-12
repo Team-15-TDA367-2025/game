@@ -4,26 +4,22 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class AntFactory {
     private final PheromoneSystem pheromoneSystem;
-    private final Colony colony;
+    private final Home home;
     private final GameWorld world;
-    private final SimulationHandler simulationHandler;
 
-    public AntFactory(PheromoneSystem pheromoneSystem, Colony colony, GameWorld world,SimulationHandler simulationHandler) {
+    public AntFactory(PheromoneSystem pheromoneSystem, Home home, GameWorld world) {
         this.pheromoneSystem = pheromoneSystem;
-        this.colony = colony;
+        this.home = home;
         this.world = world;
-        this.simulationHandler = simulationHandler;
     }
 
     public Ant createAnt(AntType type) {
-        Vector2 position = colony.getPosition();
-        Ant a = new Ant(position, pheromoneSystem, type, world,simulationHandler);
-        simulationHandler.addUpdateObserver(a);
-        return a;
+        Vector2 position = home.getPosition();
+        return new Ant(position, pheromoneSystem, type, world);
     }
 }

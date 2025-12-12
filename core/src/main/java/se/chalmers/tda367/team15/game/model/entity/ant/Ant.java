@@ -7,16 +7,15 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.GameWorld;
-import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     AntType type;
@@ -34,7 +33,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private float health;
     private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld, SimulationHandler s) {
+    public Ant(Vector2 position, PheromoneSystem system, AntType type, GameWorld gameWorld) {
         super(position, type.textureName());
         this.type = type;
         this.gameWorld = gameWorld;
@@ -112,11 +111,11 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return type;
     }
 
-    public boolean leaveResources(Colony colony) {
+    public boolean leaveResources(Home home) {
         if (inventory.isEmpty()) {
             return false;
         }
-        boolean deposited = colony.depositResources(inventory);
+        boolean deposited = home.depositResources(inventory);
         if (deposited) {
             inventory.clear();
             updateTexture();

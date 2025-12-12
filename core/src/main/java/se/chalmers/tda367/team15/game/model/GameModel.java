@@ -6,15 +6,16 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
-import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
-
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
 public class GameModel {
@@ -22,14 +23,41 @@ public class GameModel {
     @SuppressWarnings("unused")
     private final WaveManager waveManager;
     private final SimulationHandler simulationHandler;
+    private final EntityManager entityManager;
+    private final EnemyFactory enemyFactory;
+    private final AntFactory antFactory;
+    private final Colony colony;
 
     public GameModel(TimeCycle timeCycle, SimulationHandler simulationHandler, GameWorld gameWorld) {
-        this.simulationHandler=simulationHandler;
+        this.simulationHandler = simulationHandler;
         this.world = gameWorld;
-        this.waveManager = new WaveManager(timeCycle,this);
+        this.entityManager = new EntityManager(simulationHandler);
+        gameWorld.setEntityQuery(entityManager);
+        this.colony = new Colony(new GridPoint2(0, 0), timeCycle, simulationHandler, entityManager);
+        gameWorld.setColony(colony);
+        this.antFactory = new AntFactory(gameWorld.getPheromoneSystem(), colony, gameWorld);
+
+        colony.setAntHatchListener(this::onAntHatch);
+        this.enemyFactory = new EnemyFactory(gameWorld);
+        this.waveManager = new WaveManager(timeCycle, this);
 
         // Spawn structures based on terrain generation features
         spawnTerrainStructures();
+    }
+
+    private void onAntHatch(AntType type) {
+        Ant ant = antFactory.createAnt(type);
+        entityManager.addEntity(ant);
+    }
+
+    /**
+     * Spawns an initial ant (used at game start).
+     */
+    public void spawnInitialAnts() {
+        AntTypeRegistry registry = AntTypeRegistry.getInstance();
+        AntType type = registry.get("worker");
+        Ant ant = antFactory.createAnt(type);
+        entityManager.addEntity(ant);
     }
 
     /**
@@ -53,7 +81,6 @@ public class GameModel {
                         10,
                         20));
             }
-            // Add other structure types here
         }
     }
 
@@ -64,19 +91,19 @@ public class GameModel {
     // --- FACADE METHODS (Actions) ---
 
     public void spawnTermite(Vector2 position) {
-        // Temperory before we have EnemyWaveSystem
-        EnemyFactory enemyFactory = new EnemyFactory(world,simulationHandler);
         Termite termite = enemyFactory.createTermite(position);
-        world.addEntity(termite);
+        entityManager.addEntity(termite);
     }
 
     public void setTimeFast() {
         simulationHandler.setTimeFast();
     }
+
     public void setTimeNormal() {
         simulationHandler.setTimeNormal();
     }
-    public void setTimePaused(){
+
+    public void setTimePaused() {
         simulationHandler.setTimePaused();
     }
 
@@ -101,7 +128,7 @@ public class GameModel {
     }
 
     public Colony getColony() {
-        return world.getColony();
+        return colony;
     }
 
     public WorldMap getWorldMap() {
@@ -115,5 +142,4 @@ public class GameModel {
     public int getTotalAnts() {
         return world.getAnts().size();
     }
-
 }
