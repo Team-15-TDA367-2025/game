@@ -1,58 +1,57 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import com.badlogic.gdx.math.GridPoint2;
 
-import se.chalmers.tda367.team15.game.model.*;
+import se.chalmers.tda367.team15.game.model.AttackCategory;
+import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.SimulationHandler;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
-import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
-import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver, EggHatchObserver, TimeObserver {
-    private List<Ant> ants;
+public class Colony extends Structure implements CanBeAttacked, Home, EggHatchObserver, TimeObserver {
     private Inventory inventory;
     private EggManager eggManager;
     private float health;
     private float MAX_HEALTH = 600;
-    private AntFactory antFactory;
     private Faction faction;
+    private final EntityQuery entityQuery;
+    private AntHatchListener antHatchListener;
 
-    public Colony(GridPoint2 position, GameWorld world,TimeCycle timeCycle ,SimulationHandler simulationHandler) {
+    /**
+     * Listener for when ants hatch from eggs.
+     * Used to notify external systems (like GameModel) to create and add the ant.
+     */
+    public interface AntHatchListener {
+        void onAntHatch(AntType type);
+    }
+
+    public Colony(GridPoint2 position, TimeCycle timeCycle, SimulationHandler simulationHandler, EntityQuery entityQuery) {
         super(position, "colony", 4);
-        this.ants = new ArrayList<>();
         this.health = MAX_HEALTH;
-        faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.inventory = new Inventory(1000); // test value for now
+        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.inventory = new Inventory(1000000); // test value for now
         this.eggManager = new EggManager(simulationHandler);
         this.eggManager.addObserver(this);
+        this.entityQuery = entityQuery;
 
         timeCycle.addTimeObserver(this);
-        // Register to receive ant death notifications
-        DestructionListener.getInstance().addEntityDeathObserver(this);
-        antFactory = new AntFactory(world.getPheromoneSystem(), this, world,simulationHandler);
     }
 
-    public void addAnt(Ant ant) {
-        ants.add(ant);
+    public void setAntHatchListener(AntHatchListener listener) {
+        this.antHatchListener = listener;
     }
 
-    public void removeAnt(Ant ant) {
-        ants.remove(ant);
-    }
-
+    @Override
     public boolean depositResources(Inventory otherInventory) {
         boolean deposited = false;
 
@@ -68,8 +67,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
 
     public int calculateConsumption() {
         int total = 0;
-
-        for (Ant ant : ants) {
+        for (Ant ant : entityQuery.getEntitiesOfType(Ant.class)) {
             total += ant.getHunger();
         }
         return total;
@@ -77,29 +75,17 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
 
     public void applyConsumption(int amount) {
         inventory.addResource(ResourceType.FOOD, -amount);
-
     }
 
     public int getTotalResources(ResourceType type) {
         return inventory.getAmount(type);
     }
 
-    /**
-     * Gets the egg manager for this colony.
-     *
-     * @return the egg manager
-     */
+    // TODO: Eggs should not be handled here probably
     public EggManager getEggManager() {
         return eggManager;
     }
 
-    /**
-     * Attempts to purchase an egg of the specified type.
-     * Checks if the colony has enough resources and deducts them if successful.
-     *
-     * @param type the type of egg to purchase
-     * @return true if the purchase was successful, false otherwise
-     */
     public boolean purchaseEgg(AntType type) {
         if (type == null) {
             return false;
@@ -110,42 +96,25 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
             return false;
         }
 
-        // Deduct resources
         inventory.addResource(ResourceType.FOOD, -foodCost);
-        // Add egg to manager
         eggManager.addEgg(type);
         return true;
     }
 
     public int getAntCount() {
-        return ants.size();
-    }
-
-    public void spawnInitialAnts() {
-        AntTypeRegistry registry = AntTypeRegistry.getInstance();
-        AntType type = registry.get("worker");
-        Ant ant = antFactory.createAnt(type);
-        addAnt(ant);
+        return entityQuery.getEntitiesOfType(Ant.class).size();
     }
 
     @Override
     public void onEggHatch(AntType type) {
-        // Create the ant directly using AntType
-
-        Ant ant = antFactory.createAnt(type);
-
-        // Add the ant to the colony
-        addAnt(ant);
+        if (antHatchListener != null) {
+            antHatchListener.onAntHatch(type);
+        }
     }
 
     @Override
-    public void onDayStart(TimeCycle timeCycle) {
+    public void onDayStart() {
         applyConsumption(calculateConsumption());
-    }
-
-    @Override
-    public Collection<Entity> getSubEntities() {
-        return Collections.unmodifiableCollection(ants);
     }
 
     @Override
@@ -169,13 +138,5 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     @Override
     public AttackCategory getAttackCategory() {
         return AttackCategory.ANT_COLONY;
-    }
-
-    @Override
-    public void onEntityDeath(Entity e) {
-        // Remove dead ants from our list
-        if (e instanceof Ant) {
-            ants.remove(e);
-        }
     }
 }

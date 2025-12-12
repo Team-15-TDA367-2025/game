@@ -3,7 +3,6 @@ package se.chalmers.tda367.team15.game.screens.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 
 import se.chalmers.tda367.team15.game.controller.*;
@@ -16,7 +15,6 @@ import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.world.TerrainFactory;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
@@ -48,7 +46,7 @@ public class GameFactory {
         CameraModel cameraModel = createCameraModel();
         GameModel gameModel = createGameModel();
 
-        gameModel.getColony().spawnInitialAnts();
+        gameModel.spawnInitialAnts();
 
         // 2. Create Resources
         TextureRegistry textureRegistry = new TextureRegistry();
@@ -106,9 +104,9 @@ public class GameFactory {
             System.currentTimeMillis()
         );
         SimulationHandler simulationHandler = new SimulationHandler(timeCycle);
-        GameWorld gameWorld = new GameWorld(timeCycle,simulationHandler, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
+        GameWorld gameWorld = new GameWorld(simulationHandler, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
 
-        return new GameModel(timeCycle, simulationHandler,gameWorld);
+        return new GameModel(timeCycle, simulationHandler, gameWorld);
     }
 
     private static CameraView createCameraView(CameraModel cameraModel) {

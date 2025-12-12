@@ -1,6 +1,5 @@
 package se.chalmers.tda367.team15.game.model;
 
-import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 import java.util.ArrayList;
@@ -87,4 +86,7 @@ public class SimulationHandler {
         return 1000/iRLTicksPerSecond;
     }
 
+    public void removeUpdateObserver(Updatable u) {
+        updateObservers.remove(u);
+    }
 }

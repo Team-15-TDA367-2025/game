@@ -12,14 +12,14 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     AntType type;
-    private final int visionRadius = 4;
+    private final int visionRadius = 8;
     protected Faction faction;
     private final int hunger;
 
@@ -111,11 +111,11 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return type;
     }
 
-    public boolean leaveResources(Colony colony) {
+    public boolean leaveResources(Home home) {
         if (inventory.isEmpty()) {
             return false;
         }
-        boolean deposited = colony.depositResources(inventory);
+        boolean deposited = home.depositResources(inventory);
         if (deposited) {
             inventory.clear();
             updateTexture();

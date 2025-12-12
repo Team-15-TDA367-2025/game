@@ -26,7 +26,7 @@ public class ResourceNode extends Structure implements Updatable {
         this.cooldownTicks = cooldownTicks;
         this.ticksRemaining = 0;
         this.depleted = false;
-        //simulationHandler.addUpdateObserver(this);
+        simulationHandler.addUpdateObserver(this);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ResourceNode extends Structure implements Updatable {
         return super.getTextureName();
     }
 
-   @Override
+    @Override
     public void update(float deltaTime) {
         if (depleted) {
             ticksRemaining--;
