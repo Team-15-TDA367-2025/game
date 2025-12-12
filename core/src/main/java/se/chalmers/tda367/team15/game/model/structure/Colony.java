@@ -139,7 +139,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     }
 
     @Override
-    public void onDayStart(TimeCycle timeCycle) {
+    public void onDayStart() {
         applyConsumption(calculateConsumption());
     }
 

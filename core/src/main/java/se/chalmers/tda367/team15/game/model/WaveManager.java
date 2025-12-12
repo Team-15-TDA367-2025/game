@@ -59,7 +59,7 @@ public class WaveManager implements TimeObserver {
     }
 
     @Override
-    public void onNightStart(TimeCycle timeCycle) {
+    public void onNightStart() {
         nightNumber++;
         spawnWave();
     }

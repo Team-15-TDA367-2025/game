@@ -1,7 +1,6 @@
 package se.chalmers.tda367.team15.game.model;
 
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +32,12 @@ public class TimeCycle  {
 
                 if(oldIsDay && !newIsDay) {
                     for (TimeObserver observer : timeObservers) {
-                        observer.onNightStart(this);
+                        observer.onNightStart();
                     }
                 }
                 if(!oldIsDay && newIsDay) {
                     for (TimeObserver observer : timeObservers) {
-                        observer.onDayStart(this);
+                        observer.onDayStart();
                     }
                 }
             }
