@@ -37,7 +37,7 @@ public class EggManager implements TimeObserver {
     }
 
     @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
+    public void onTimeUpdate() {
         for (Egg egg : eggs) {
             egg.tick();
 

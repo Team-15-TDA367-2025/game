@@ -63,7 +63,7 @@ public class WanderBehavior extends AntBehavior implements TimeObserver {
     }
 
     @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
+    public void onTimeUpdate() {
         changeTrajectory();
     }
 

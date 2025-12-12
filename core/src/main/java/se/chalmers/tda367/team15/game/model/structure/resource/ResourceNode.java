@@ -36,7 +36,7 @@ public class ResourceNode extends Structure implements TimeObserver {
     }
 
     @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
+    public void onTimeUpdate() {
         if (depleted) {
             ticksRemaining--;
             if (ticksRemaining <= 0) {

@@ -120,12 +120,12 @@ public class GameWorld implements EntityDeathObserver, StructureDeathObserver {
 
     private void notifyTimeObservers(boolean nightJustStarted, boolean dayJustStarted) {
         for (TimeObserver observer : timeObservers) {
-            observer.onTimeUpdate(timeCycle);
+            observer.onTimeUpdate();
 
             if (nightJustStarted) {
-                observer.onNightStart(timeCycle);
+                observer.onNightStart();
             } else if (dayJustStarted) {
-                observer.onDayStart(timeCycle);
+                observer.onDayStart();
             }
         }
     }
