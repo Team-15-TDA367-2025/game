@@ -11,34 +11,37 @@ public class TimeCycle  {
     private int ticksPerMinute;
     private final List<TimeObserver> timeObservers = new ArrayList<>();
 
+    private int tickCountDown;
     public record GameTime(int totalDays, int currentHour, int currentMinute, int ticks) {
     }
 
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
+        tickCountDown= ticksPerMinute;
         this.minutes = 0;
+
     }
 
 
     public void tick() {
-        if(minutes % ticksPerMinute == 0) {
-            boolean oldIsDay = getIsDay();
-            minutes++;
-            boolean newIsDay = getIsDay();
+            tickCountDown--;
+            if(tickCountDown==0) {
+                tickCountDown=ticksPerMinute;
+                boolean oldIsDay = getIsDay();
+                minutes++;
+                boolean newIsDay = getIsDay();
 
-            if(oldIsDay && !newIsDay) {
-                for (TimeObserver observer : timeObservers) {
-                    observer.onNightStart(this);
+                if(oldIsDay && !newIsDay) {
+                    for (TimeObserver observer : timeObservers) {
+                        observer.onNightStart(this);
+                    }
+                }
+                if(!oldIsDay && newIsDay) {
+                    for (TimeObserver observer : timeObservers) {
+                        observer.onDayStart(this);
+                    }
                 }
             }
-            if(!oldIsDay && newIsDay) {
-                for (TimeObserver observer : timeObservers) {
-                    observer.onDayStart(this);
-                }
-            }
-        }
-
-
     }
 
     public void addTimeObserver(TimeObserver observer) {
