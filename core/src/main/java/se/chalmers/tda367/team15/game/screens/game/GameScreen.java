@@ -86,7 +86,7 @@ public class GameScreen extends ScreenAdapter {
         // Update
         cameraController.update(delta);
         cameraView.updateCamera();
-        gameModel.update(delta);
+        gameModel.update();
         hudController.update(delta);
 
         GameEndReason endReason = gameHasEnded();

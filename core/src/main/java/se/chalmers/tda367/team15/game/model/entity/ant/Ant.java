@@ -12,10 +12,10 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     AntType type;
@@ -64,13 +64,13 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     @Override
     public void update(float deltaTime) {
-        updateBehavior(deltaTime);
+        updateBehavior();
         super.update(deltaTime);
         updateTexture();
     }
 
-    public void updateBehavior(float deltaTime) {
-        behavior.update(system, deltaTime);
+    public void updateBehavior() {
+        behavior.update(system);
     }
 
     private void updateTexture() {
@@ -111,11 +111,11 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return type;
     }
 
-    public boolean leaveResources(Colony colony) {
+    public boolean leaveResources(Home home) {
         if (inventory.isEmpty()) {
             return false;
         }
-        boolean deposited = colony.depositResources(inventory);
+        boolean deposited = home.depositResources(inventory);
         if (deposited) {
             inventory.clear();
             updateTexture();

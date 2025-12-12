@@ -15,9 +15,9 @@ public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
     private GameModel gameModel;
 
-    WaveManager(GameWorld gameWorld, GameModel gameModel) {
+    WaveManager(TimeCycle timeCycle, GameModel gameModel) {
         this.gameModel = gameModel;
-        gameWorld.addTimeObserver(this);
+        timeCycle.addTimeObserver(this);
     }
 
     public int getNightNumber() {
@@ -59,7 +59,7 @@ public class WaveManager implements TimeObserver {
     }
 
     @Override
-    public void onNightStart(TimeCycle timeCycle) {
+    public void onNightStart() {
         nightNumber++;
         spawnWave();
     }

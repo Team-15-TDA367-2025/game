@@ -38,8 +38,7 @@ public class Termite extends Entity implements CanBeAttacked {
 
     /**
      * Updates the termite
-     * 
-     * @param deltaTime the real time change between frames
+     *
      */
     @Override
     public void update(float deltaTime) {

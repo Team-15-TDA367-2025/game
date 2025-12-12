@@ -1,23 +1,58 @@
 package se.chalmers.tda367.team15.game.model;
 
-public class TimeCycle {
-    private int ticks;
-    private int ticksPerMinute;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
+import java.util.ArrayList;
+import java.util.List;
+
+public class TimeCycle  {
+    private int minutes;
+    private int ticksPerMinute;
+    private final List<TimeObserver> timeObservers = new ArrayList<>();
+
+    private int tickCountDown;
     public record GameTime(int totalDays, int currentHour, int currentMinute, int ticks) {
     }
 
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
-        this.ticks = 0;
+        tickCountDown= ticksPerMinute;
+        this.minutes = 0;
+
     }
 
+
     public void tick() {
-        ticks++;
+            tickCountDown--;
+            if(tickCountDown==0) {
+                tickCountDown=ticksPerMinute;
+                boolean oldIsDay = getIsDay();
+                minutes++;
+                boolean newIsDay = getIsDay();
+
+                if(oldIsDay && !newIsDay) {
+                    for (TimeObserver observer : timeObservers) {
+                        observer.onNightStart();
+                    }
+                }
+                if(!oldIsDay && newIsDay) {
+                    for (TimeObserver observer : timeObservers) {
+                        observer.onDayStart();
+                    }
+                }
+            }
+    }
+
+    public void addTimeObserver(TimeObserver observer) {
+        timeObservers.add(observer);
+    }
+
+    public void removeTimeObserver(TimeObserver observer) {
+        timeObservers.remove(observer);
     }
 
     public int getTotalMinutes() {
-        return ticks;
+        return minutes;
     }
 
     public int getHour() {
@@ -37,7 +72,7 @@ public class TimeCycle {
     }
 
     public GameTime getGameTime() {
-        return new GameTime((getTotalMinutes() / (24 * 60)) + 1, getHour(), getMinute(), ticks);
+        return new GameTime((getTotalMinutes() / (24 * 60)) + 1, getHour(), getMinute(), minutes);
     }
 
     public boolean getIsDay() {

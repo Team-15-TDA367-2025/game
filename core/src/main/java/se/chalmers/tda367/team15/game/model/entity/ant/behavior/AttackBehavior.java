@@ -30,7 +30,7 @@ public class AttackBehavior extends AntBehavior {
     }
 
     @Override
-    public void update(PheromoneSystem system, float deltaTime) {
+    public void update(PheromoneSystem system) {
         AttackTarget target = findTarget();
 
         if (target == null) {

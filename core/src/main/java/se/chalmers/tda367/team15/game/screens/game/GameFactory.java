@@ -5,11 +5,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import se.chalmers.tda367.team15.game.controller.CameraController;
-import se.chalmers.tda367.team15.game.controller.HudController;
-import se.chalmers.tda367.team15.game.controller.InputManager;
-import se.chalmers.tda367.team15.game.controller.PheromoneController;
+import se.chalmers.tda367.team15.game.controller.*;
 import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
@@ -34,7 +33,7 @@ public class GameFactory {
     public static final float WORLD_VIEWPORT_WIDTH = 15f;
     public static final float MIN_ZOOM = 0.05f;
     public static final float MAX_ZOOM = 4.0f;
-    public static final int TICKS_PER_MINUTE = 600;
+    public static final int TICKS_PER_MINUTE = 6;
 
     private GameFactory() {
     }
@@ -47,7 +46,7 @@ public class GameFactory {
         CameraModel cameraModel = createCameraModel();
         GameModel gameModel = createGameModel();
 
-        gameModel.getColony().spawnInitialAnts();
+        gameModel.spawnInitialAnts();
 
         // 2. Create Resources
         TextureRegistry textureRegistry = new TextureRegistry();
@@ -64,7 +63,8 @@ public class GameFactory {
         InputManager inputManager = new InputManager(); // Used for wiring but not stored in screen
         CameraController cameraController = new CameraController(cameraModel, cameraView);
         PheromoneController pheromoneController = new PheromoneController(gameModel, cameraView);
-        HudController hudController = new HudController(hudView, gameModel, pheromoneController, uiFactory);
+        SpeedController speedController = new SpeedController(gameModel);
+        HudController hudController = new HudController(hudView, gameModel, pheromoneController, speedController, uiFactory);
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);
@@ -103,7 +103,10 @@ public class GameFactory {
         TerrainGenerator terrainGenerator = TerrainFactory.createStandardPerlinGenerator(
             System.currentTimeMillis()
         );
-        return new GameModel(timeCycle, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
+        SimulationHandler simulationHandler = new SimulationHandler(timeCycle);
+        GameWorld gameWorld = new GameWorld(simulationHandler, MAP_WIDTH, MAP_HEIGHT, terrainGenerator);
+
+        return new GameModel(timeCycle, simulationHandler, gameWorld);
     }
 
     private static CameraView createCameraView(CameraModel cameraModel) {

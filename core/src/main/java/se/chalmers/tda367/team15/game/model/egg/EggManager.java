@@ -5,22 +5,24 @@ import java.util.Collections;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 /**
  * Manages the collection of eggs and their development lifecycle.
  * Implements TimeObserver to tick eggs on game time updates.
  */
-public class EggManager implements TimeObserver {
+public class EggManager implements Updatable {
     private final List<Egg> eggs;
     private final List<EggHatchObserver> observers;
 
-    public EggManager(GameWorld world) {
+    public EggManager(SimulationHandler simulationHandler) {
         this.eggs = new ArrayList<>();
         this.observers = new ArrayList<>();
-        world.addTimeObserver(this);
+        simulationHandler.addUpdateObserver(this);
     }
 
     public void addEgg(AntType type) {
@@ -37,7 +39,7 @@ public class EggManager implements TimeObserver {
     }
 
     @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
+    public void update(float deltaTime) {
         for (Egg egg : eggs) {
             egg.tick();
 

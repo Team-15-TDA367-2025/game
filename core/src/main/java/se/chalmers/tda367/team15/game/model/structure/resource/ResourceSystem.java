@@ -8,8 +8,11 @@ import java.util.Map;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
@@ -17,19 +20,27 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
  * Manages resource interactions using persistent spatial grid.
  * Grid is maintained internally and only modified when resources change.
  */
-public class ResourceSystem {
+public class ResourceSystem implements Updatable {
     private static final int PICKUP_RADIUS = 2;
     private static final int DEPOSIT_RADIUS = 2;
+    GameWorld gameWorld;
 
     private Map<GridPoint2, Resource> resourceGrid;
     private Map<GridPoint2, ResourceNode> resourceNodeGrid;
 
-    public ResourceSystem() {
+    public ResourceSystem(GameWorld gameWorld, SimulationHandler simulationHandler) {
+        this.gameWorld = gameWorld;
         this.resourceGrid = new HashMap<>();
         this.resourceNodeGrid = new HashMap<>();
+        simulationHandler.addUpdateObserver(this);
     }
+    @Override
+    public void update(float deltaTime) {
 
-    public void update(Colony colony, List<Entity> entities, List<Structure> structures) {
+        Colony colony = gameWorld.getColony();
+        List<Entity> entities = new ArrayList<>(gameWorld.getEntities());
+        List<Structure> structures = new ArrayList<>(gameWorld.getStructures());
+
         List<Ant> ants = filterAnts(entities);
         handleResourcePickup(ants);
         handleResourceDeposit(ants, colony);

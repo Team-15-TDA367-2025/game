@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.view.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 
 import se.chalmers.tda367.team15.game.model.TimeCycle;
@@ -19,6 +21,7 @@ public class TopBarView extends Table {
     private final Label timeLabel;
     private final Label resource1Value;
     private final Label resource2Value;
+    private SpeedControlsListener speedControlsListener;
 
     public TopBarView(UiFactory uiFactory) {
         this.uiFactory = uiFactory;
@@ -51,7 +54,7 @@ public class TopBarView extends Table {
 
         left();
         add(dayLabel).left().padRight(UiTheme.PADDING_MEDIUM)
-                .minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
+            .minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
         add(timeLabel).left().padRight(UiTheme.PADDING_MEDIUM).minWidth(UiTheme.TIME_LABEL_MIN_WIDTH);
         add(speedTable).padRight(UiTheme.PADDING_MEDIUM);
         add(resourceStack).growY().padRight(UiTheme.PADDING_MEDIUM);
@@ -62,6 +65,25 @@ public class TopBarView extends Table {
         TextButton pauseBtn = uiFactory.createToggleTextButton("Pause");
         TextButton playBtn = uiFactory.createToggleTextButton("Play");
         TextButton fastBtn = uiFactory.createToggleTextButton("Fast");
+
+        pauseBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                speedControlsListener.onPause();
+            }
+        });
+        playBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                speedControlsListener.onNormalSpeed();
+            }
+        });
+        fastBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                speedControlsListener.onFastSpeed();
+            }
+        });
 
         ButtonGroup<TextButton> group = new ButtonGroup<>();
         group.setMinCheckCount(1);
@@ -122,5 +144,9 @@ public class TopBarView extends Table {
         resource1Value.setText(String.valueOf(antCount));
         resource2Value.setText(String.format("%d (%d/d)", resourceCount, consumption));
 
+    }
+
+    public void setSpeedControlsListener(SpeedControlsListener speedControlsListener) {
+        this.speedControlsListener = speedControlsListener;
     }
 }

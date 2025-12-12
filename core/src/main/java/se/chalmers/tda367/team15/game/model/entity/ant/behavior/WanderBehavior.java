@@ -8,19 +8,20 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.GameWorld;
+import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
-public class WanderBehavior extends AntBehavior implements TimeObserver {
+public class WanderBehavior extends AntBehavior{
     private GameWorld gameWorld;
 
     public WanderBehavior(Ant ant, GameWorld world) {
         super(ant);
         this.gameWorld = world;
-        gameWorld.addTimeObserver(this);
+
     }
 
     private void changeTrajectory() {
@@ -62,17 +63,15 @@ public class WanderBehavior extends AntBehavior implements TimeObserver {
         return homeTurn;
     }
 
-    @Override
-    public void onTimeUpdate(TimeCycle timeCycle) {
-        changeTrajectory();
-    }
 
     @Override
-    public void update(PheromoneSystem system, float deltaTime) {
+    public void update(PheromoneSystem system) {
+
         if (enemiesInSight()) {
             ant.setBehavior(new AttackBehavior(ant, ant.getPosition(), gameWorld));
             return;
         }
+        changeTrajectory();
 
         GridPoint2 gridPos = ant.getGridPosition();
         List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos);
