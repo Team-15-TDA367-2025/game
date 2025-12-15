@@ -16,6 +16,7 @@ import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.StructureManager;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
+import se.chalmers.tda367.team15.game.model.WaveManager;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -78,6 +79,9 @@ public class GameFactory {
         HudController hudController = new HudController(hudView, gameModel, pheromoneController, speedController,
                 uiFactory, gameModel.getTimeCycle(), gameModel.getColonyUsageProvider());
 
+        WaveManager waveManager = new WaveManager(gameModel);
+        gameModel.getTimeCycle().addTimeObserver(waveManager);
+
         // 5. Wire Input
         inputManager.addProcessor(cameraController);
         inputManager.addProcessor(hudView.getStage());
@@ -129,7 +133,7 @@ public class GameFactory {
         simulationHandler.addUpdateObserver(structureManager);
         destructionListener.addStructureDeathObserver(structureManager);
 
-        ResourceSystem resourceSystem = new ResourceSystem( entityManager);
+        ResourceSystem resourceSystem = new ResourceSystem(entityManager);
         simulationHandler.addUpdateObserver(resourceSystem);
 
         GameWorld gameWorld = new GameWorld(simulationHandler, MAP_WIDTH, MAP_HEIGHT, terrainGenerator, entityManager,
@@ -141,9 +145,11 @@ public class GameFactory {
         FogSystem fogSystem = new FogSystem(entityManager, gameWorld.getWorldMap());
         simulationHandler.addUpdateObserver(fogSystem);
 
-        AntFactory antFactory = new AntFactory(gameWorld.getPheromoneSystem(), gameWorld.getWorldMap(), entityManager, destructionListener);
+        AntFactory antFactory = new AntFactory(gameWorld.getPheromoneSystem(), gameWorld.getWorldMap(), entityManager,
+                destructionListener);
 
-        Colony colony = createColony(gameWorld.getPheromoneSystem(), gameWorld, timeCycle, entityManager, eggManager, structureManager, antFactory, destructionListener);
+        Colony colony = createColony(gameWorld.getPheromoneSystem(), gameWorld, timeCycle, entityManager, eggManager,
+                structureManager, antFactory, destructionListener);
 
         spawnInitialAnts(entityManager, colony, antFactory);
 
@@ -157,8 +163,11 @@ public class GameFactory {
         entityManager.addEntity(ant);
     }
 
-    private static Colony createColony(PheromoneSystem pheromoneSystem, GameWorld gameWorld, TimeCycle timeCycle, EntityManager entityManager, EggManager eggManager, StructureManager structureManager, AntFactory antFactory, DestructionListener destructionListener) {
-        Colony colony = new Colony(new GridPoint2(0, 0), timeCycle, entityManager, eggManager, antFactory, entityManager, destructionListener);
+    private static Colony createColony(PheromoneSystem pheromoneSystem, GameWorld gameWorld, TimeCycle timeCycle,
+            EntityManager entityManager, EggManager eggManager, StructureManager structureManager,
+            AntFactory antFactory, DestructionListener destructionListener) {
+        Colony colony = new Colony(new GridPoint2(0, 0), timeCycle, entityManager, eggManager, antFactory,
+                entityManager, destructionListener);
         structureManager.addStructure(colony);
         eggManager.addObserver(colony);
         return colony;

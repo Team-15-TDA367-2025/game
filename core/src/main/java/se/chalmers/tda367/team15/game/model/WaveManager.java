@@ -15,9 +15,8 @@ public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
     private GameModel gameModel;
 
-    WaveManager(TimeCycle timeCycle, GameModel gameModel) {
+    public WaveManager(GameModel gameModel) {
         this.gameModel = gameModel;
-        timeCycle.addTimeObserver(this);
     }
 
     public int getNightNumber() {

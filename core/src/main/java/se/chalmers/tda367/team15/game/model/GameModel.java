@@ -22,7 +22,6 @@ public class GameModel {
     private final GameWorld world;
     private final ColonyUsageProvider colonyUsageProvider;
     // TODO: Fix
-    private final WaveManager waveManager;
     private final TimeCycle timeCycle;
     private final EntityManager entityManager;
     private final FogSystem fogSystem;
@@ -35,7 +34,6 @@ public class GameModel {
         this.world = gameWorld;
         this.colonyUsageProvider = colonyDataProvider;
         this.timeCycle = timeCycle;
-        this.waveManager = new WaveManager(this.timeCycle, this);
         this.entityManager = entityManager;
         this.fogSystem = fogSystem;
         this.enemyFactory = enemyFactory;
