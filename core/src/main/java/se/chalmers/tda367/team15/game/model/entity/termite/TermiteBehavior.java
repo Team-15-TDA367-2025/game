@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.entity.Termite;
+package se.chalmers.tda367.team15.game.model.entity.termite;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,12 +15,12 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
 /**
  * Component that handles the behaviour of {@link Termite}
  */
-public class TermiteBehaviour {
+public class TermiteBehavior {
     Termite termite;
 
     HashMap<AttackCategory, Integer> targetPriority = new HashMap<>();
 
-    TermiteBehaviour(Termite termite) {
+    TermiteBehavior(Termite termite) {
         this.termite = termite;
         targetPriority.put(AttackCategory.WORKER_ANT, 2);
         targetPriority.put(AttackCategory.ANT_COLONY, 1);

@@ -5,10 +5,10 @@ import java.util.List;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
+import se.chalmers.tda367.team15.game.model.entity.termite.Termite;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.fog.FogSystem;

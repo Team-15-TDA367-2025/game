@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.entity.Termite;
+package se.chalmers.tda367.team15.game.model.entity.termite;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
 public class Termite extends Entity implements CanBeAttacked {
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
     private final float SPEED = 2.9f;
-    private final TermiteBehaviour termiteBehaviour;
+    private final TermiteBehavior termiteBehaviour;
     private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
     private final float MAX_HEALTH = 1;
     private float health;
@@ -32,7 +32,7 @@ public class Termite extends Entity implements CanBeAttacked {
     public Termite(Vector2 position, GameWorld world) {
         super(position, "termite");
         this.world = world;
-        this.termiteBehaviour = new TermiteBehaviour(this);
+        this.termiteBehaviour = new TermiteBehavior(this);
         health = MAX_HEALTH;
     }
 

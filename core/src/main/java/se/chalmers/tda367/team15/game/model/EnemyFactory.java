@@ -2,7 +2,7 @@ package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
+import se.chalmers.tda367.team15.game.model.entity.termite.Termite;
 
 public class EnemyFactory {
     private GameWorld world;
