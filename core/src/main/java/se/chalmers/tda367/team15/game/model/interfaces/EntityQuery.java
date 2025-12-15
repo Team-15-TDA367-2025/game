@@ -2,13 +2,17 @@ package se.chalmers.tda367.team15.game.model.interfaces;
 
 import java.util.List;
 
-import se.chalmers.tda367.team15.game.model.entity.Entity;
-
 /**
  * Generic interface for querying entities by type.
  * Allows consumers to request entities without knowing the concrete EntityManager.
  */
 public interface EntityQuery {
-    <T extends Entity> List<T> getEntitiesOfType(Class<T> type);
+    /**
+     * Returns all entities that are instances of the given type.
+     *
+     * Note: {@code type} may be a concrete class (e.g. {@code Ant.class}) or an interface
+     * implemented by one or more entities (e.g. {@code VisionProvider.class}).
+     */
+    <T> List<T> getEntitiesOfType(Class<T> type);
 }
 

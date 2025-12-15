@@ -1,9 +1,11 @@
-package se.chalmers.tda367.team15.game.model;
+package se.chalmers.tda367.team15.game.model.fog;
 
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 
+
+// Data store for fog of war, only used by FogSystem
 public class FogOfWar {
     private final boolean[][] discovered;
     private final WorldMap worldMap;

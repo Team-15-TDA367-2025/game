@@ -9,6 +9,8 @@ import se.chalmers.tda367.team15.game.model.entity.Termite.Termite;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
+import se.chalmers.tda367.team15.game.model.fog.FogProvider;
+import se.chalmers.tda367.team15.game.model.fog.FogSystem;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
@@ -25,6 +27,7 @@ public class GameModel {
     private final SimulationHandler simulationHandler;
     private final TimeCycle timeCycle;
     private final EntityManager entityManager;
+    private final FogSystem fogSystem;
     private final EnemyFactory enemyFactory;
     private final AntFactory antFactory;
     private final Colony colony;
@@ -39,7 +42,7 @@ public class GameModel {
         this.colony = new Colony(new GridPoint2(0, 0), timeCycle, simulationHandler, entityManager);
         gameWorld.setColony(colony);
         this.antFactory = new AntFactory(gameWorld.getPheromoneSystem(), colony, gameWorld);
-
+        this.fogSystem = new FogSystem(entityManager, simulationHandler, gameWorld.getWorldMap());
         colony.setAntHatchListener(this::onAntHatch);
         this.enemyFactory = new EnemyFactory(gameWorld);
 
@@ -123,8 +126,8 @@ public class GameModel {
         return world.getDrawables();
     }
 
-    public FogOfWar getFog() {
-        return world.getFog();
+    public FogProvider getFogProvider() {
+        return fogSystem;
     }
 
     public PheromoneSystem getPheromoneSystem() {

@@ -99,7 +99,7 @@ public class GameScreen extends ScreenAdapter {
         // Render
         ScreenUtils.clear(0.227f, 0.643f, 0.239f, 1f);
 
-        sceneView.render(gameModel.getDrawables(), gameModel.getFog());
+        sceneView.render(gameModel.getDrawables());
         pheromoneView.render();
         hudView.render(Gdx.graphics.getDeltaTime());
     }

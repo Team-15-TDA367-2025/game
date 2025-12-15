@@ -5,18 +5,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.FogOfWar;
+import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 
 public class FogRenderer {
     private final TextureRegion pixelTexture;
+    private final FogProvider fogProvider;
 
-    public FogRenderer(TextureRegion pixelTexture) {
+    public FogRenderer(TextureRegion pixelTexture, FogProvider fogProvider) {
         this.pixelTexture = pixelTexture;
+        this.fogProvider = fogProvider;
     }
 
-    public void render(SpriteBatch batch, FogOfWar fogOfWar, CameraView cameraView) {
-        GridPoint2 size = fogOfWar.getSize();
+    public void render(SpriteBatch batch, CameraView cameraView) {
+        GridPoint2 size = fogProvider.getSize();
 
         batch.setColor(0.09f, 0.188f, 0.11f, 1f);
         float offsetX = -size.x / 2f;
@@ -40,7 +42,7 @@ public class FogRenderer {
 
         for (int x = startX; x < endX; x++) {
             for (int y = startY; y < endY; y++) {
-                if (!fogOfWar.isDiscovered(new GridPoint2(x, y))) {
+                if (!fogProvider.isDiscovered(new GridPoint2(x, y))) {
                     float worldX = x + offsetX;
                     float worldY = y + offsetY;
                     batch.draw(pixelTexture, worldX, worldY, 1, 1);

@@ -27,15 +27,11 @@ public class GameWorld implements StructureDeathObserver {
     private List<Structure> structures;
     private ResourceSystem resourceSystem;
     private final WorldMap worldMap;
-    private final FogSystem fogSystem;
-    private final FogOfWar fogOfWar;
     private EntityQuery entityQuery;
 
     public GameWorld(SimulationHandler simulationHandler, int mapWidth, int mapHeight, TerrainGenerator generator) {
         this.structures = new ArrayList<>();
         this.worldMap = new WorldMap(mapWidth, mapHeight, generator);
-        this.fogOfWar = new FogOfWar(worldMap);
-        this.fogSystem = new FogSystem(this, simulationHandler, fogOfWar, worldMap);
         pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), new PheromoneGridConverter(4), 4);
         this.resourceSystem = new ResourceSystem(this, simulationHandler);
 
@@ -81,10 +77,6 @@ public class GameWorld implements StructureDeathObserver {
 
     public PheromoneSystem getPheromoneSystem() {
         return pheromoneSystem;
-    }
-
-    public FogOfWar getFog() {
-        return fogOfWar;
     }
 
     public WorldMap getWorldMap() {

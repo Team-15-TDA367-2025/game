@@ -55,7 +55,7 @@ public class GameFactory {
 
         // 3. Create Views
         CameraView cameraView = createCameraView(cameraModel);
-        WorldRenderer sceneView = new WorldRenderer(cameraView, textureRegistry, gameModel);
+        WorldRenderer sceneView = new WorldRenderer(cameraView, textureRegistry, gameModel, gameModel.getFogProvider());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneSystem());
         HudView hudView = new HudView(hudBatch, uiFactory);
 

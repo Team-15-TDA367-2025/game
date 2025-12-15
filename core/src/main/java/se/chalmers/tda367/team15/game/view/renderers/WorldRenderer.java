@@ -8,10 +8,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
-import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
-import se.chalmers.tda367.team15.game.model.FogOfWar;
 import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
@@ -24,24 +23,25 @@ public class WorldRenderer {
     private final FogRenderer fogRenderer;
     private final GameModel model;
     private final ShapeRenderer shapeRenderer;
-    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, GameModel model) {
+
+    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, GameModel model, FogProvider fogProvider) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
         this.terrainRenderer = new TerrainRenderer(textureRegistry);
-        this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"));
+        this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"), fogProvider);
         this.model = model;
         this.shapeRenderer = new ShapeRenderer();
     }
 
-    public void render(Iterable<Drawable> drawables, FogOfWar fog) {
+    public void render(Iterable<Drawable> drawables) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
         terrainRenderer.render(batch, model.getWorldMap(), cameraView);
         drawables.forEach(this::draw);
         if (!GameLaunchConfiguration.getCurrent().noFog()) {
-            fogRenderer.render(batch, fog, cameraView);
+            fogRenderer.render(batch, cameraView);
         }
 
         batch.end();

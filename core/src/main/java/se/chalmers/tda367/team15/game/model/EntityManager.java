@@ -30,7 +30,7 @@ public class EntityManager implements Updatable, EntityDeathObserver, EntityQuer
     }
 
     @Override
-    public <T extends Entity> List<T> getEntitiesOfType(Class<T> type) {
+    public <T> List<T> getEntitiesOfType(Class<T> type) {
         List<T> result = new ArrayList<>();
         for (Entity entity : entities) {
             if (type.isInstance(entity)) {
