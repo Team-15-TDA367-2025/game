@@ -10,26 +10,26 @@ import se.chalmers.tda367.team15.game.model.SimulationHandler;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
-import se.chalmers.tda367.team15.game.model.world.WorldMap;
+import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class FogSystem implements FogProvider, Updatable {
     private final FogOfWar fogOfWar;
-    private final WorldMap worldMap;
+    private final MapProvider mapProvider;
 
     private final EntityQuery entityQuery;
 
-    public FogSystem(EntityQuery entityQuery, SimulationHandler simulationHandler, WorldMap worldMap) {
-        this.worldMap = worldMap;
-        this.fogOfWar = new FogOfWar(worldMap);
+    public FogSystem(EntityQuery entityQuery, SimulationHandler simulationHandler, MapProvider mapProvider) {
+        this.mapProvider = mapProvider;
+        this.fogOfWar = new FogOfWar(mapProvider);
         this.entityQuery = entityQuery;
         simulationHandler.addUpdateObserver(this);
     }
     @Override
     public void update(float deltaTime) {
-        List<VisionProvider> entities = new ArrayList<>(entityQuery.getEntitiesOfType(VisionProvider.class));
-        for (VisionProvider vp : entities) {
-            Vector2 position = vp.getPosition();
-            fogOfWar.reveal(worldMap.worldToTile(position), vp.getVisionRadius());
+        List<VisionProvider> visionProviders = new ArrayList<>(entityQuery.getEntitiesOfType(VisionProvider.class));
+        for (VisionProvider visionProvider : visionProviders) {
+            Vector2 position = visionProvider.getPosition();
+            fogOfWar.reveal(mapProvider.worldToTile(position), visionProvider.getVisionRadius());
         }
     }
 

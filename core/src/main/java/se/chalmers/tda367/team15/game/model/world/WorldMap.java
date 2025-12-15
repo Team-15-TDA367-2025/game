@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
-public class WorldMap {
+public class WorldMap implements MapProvider {
     private final int width;
     private final int height;
     private final Tile[][] tiles;
