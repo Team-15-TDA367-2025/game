@@ -6,6 +6,7 @@ import java.util.Deque;
 import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector2;
 
 public class PheromoneSystem {
     private static final int[][] NEIGHBOR_OFFSETS = { { 0, 1 }, { 0, -1 }, { 1, 0 }, { -1, 0 } };
@@ -18,7 +19,9 @@ public class PheromoneSystem {
     public PheromoneSystem(GridPoint2 colonyWorldPosition, PheromoneGridConverter converter, int colonySizeInTiles) {
         this.pheromoneGrid = new PheromoneGrid();
         this.converter = converter;
-        this.colonyPheromoneGridPosition = colonyWorldPosition.cpy();
+        // Convert colony world position to pheromone grid coordinates
+        Vector2 colonyWorldVec = new Vector2(colonyWorldPosition.x, colonyWorldPosition.y);
+        this.colonyPheromoneGridPosition = converter.worldToPheromoneGrid(colonyWorldVec);
         this.colonyGridSize = colonySizeInTiles * converter.getPheromonesPerTile();
     }
 
@@ -128,8 +131,13 @@ public class PheromoneSystem {
             GridPoint2 neighborPos = new GridPoint2(pos.x + offset[0], pos.y + offset[1]);
 
             if (isInsideColony(neighborPos)) {
-                minDistance = 0;
-                foundValidParent = true;
+                // Calculate Manhattan distance from colony center (0,0 in grid coordinates)
+                int distanceFromCenter = Math.abs(neighborPos.x - colonyPheromoneGridPosition.x) 
+                                       + Math.abs(neighborPos.y - colonyPheromoneGridPosition.y);
+                if (distanceFromCenter < minDistance) {
+                    minDistance = distanceFromCenter;
+                    foundValidParent = true;
+                }
             } else {
                 Pheromone pheromone = pheromoneGrid.getPheromoneAt(neighborPos);
 
