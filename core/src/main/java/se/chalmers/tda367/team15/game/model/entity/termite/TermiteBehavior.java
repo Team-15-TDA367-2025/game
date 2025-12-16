@@ -10,6 +10,7 @@ import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
@@ -17,11 +18,13 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
  */
 public class TermiteBehavior {
     Termite termite;
+    EntityQuery entityQuery;
+    HashMap<AttackCategory, Integer> targetPriority;
 
-    HashMap<AttackCategory, Integer> targetPriority = new HashMap<>();
-
-    TermiteBehavior(Termite termite) {
+    TermiteBehavior(Termite termite, EntityQuery entityQuery,  HashMap<AttackCategory, Integer> targetPriority) {
         this.termite = termite;
+        this.entityQuery = entityQuery;
+        this.targetPriority = targetPriority;
         targetPriority.put(AttackCategory.WORKER_ANT, 2);
         targetPriority.put(AttackCategory.ANT_COLONY, 1);
     }

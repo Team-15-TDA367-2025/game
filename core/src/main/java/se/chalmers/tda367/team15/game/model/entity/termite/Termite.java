@@ -1,5 +1,6 @@
 package se.chalmers.tda367.team15.game.model.entity.termite;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -12,6 +13,7 @@ import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
@@ -29,12 +31,13 @@ public class Termite extends Entity implements CanBeAttacked {
     private float health;
     private final GameWorld world;
     private final DestructionListener destructionListener;
+    private final EntityQuery entityQuery;
 
-    public Termite(Vector2 position, GameWorld world, DestructionListener destructionListener) {
+    public Termite(Vector2 position, EntityQuery entityQuery, DestructionListener destructionListener, HashMap<AttackCategory, Integer> targetPriority) {
         super(position, "termite");
         this.destructionListener = destructionListener;
-        this.world = world;
-        this.termiteBehaviour = new TermiteBehavior(this);
+        this.termiteBehaviour = new TermiteBehavior(this,entityQuery,targetPriority);
+        this.entityQuery=entityQuery;
         health = MAX_HEALTH;
     }
 
@@ -42,9 +45,10 @@ public class Termite extends Entity implements CanBeAttacked {
      * Updates the termite
      *
      */
+    // TODO world should give these?
     @Override
     public void update(float deltaTime) {
-        List<Entity> entities = world.getEntities();
+        List<Entity> entities = entityQ
         List<Structure> structures = world.getStructures();
         AttackTarget target = termiteBehaviour.update(entities, structures);
         super.update(deltaTime);
