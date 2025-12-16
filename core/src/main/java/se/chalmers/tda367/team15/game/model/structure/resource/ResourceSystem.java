@@ -61,8 +61,6 @@ public class ResourceSystem implements Updatable {
 
     private void tryPickupNearbyResource(Ant ant) {
         GridPoint2 antGrid = getAntGridPosition(ant);
-        GridPoint2 checkCell = new GridPoint2();
-
         List<Structure> structures = structureManager.getStructures();
 
         for (Structure structure : structures) {
