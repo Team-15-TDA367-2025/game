@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
 /**
  * Manages the collection of eggs and their development lifecycle.
  * Implements TimeObserver to tick eggs on game time updates.
  */
-public class EggManager implements Updatable {
+public class EggManager implements TimeObserver {
     private final List<Egg> eggs;
     private final List<EggHatchObserver> observers;
 
@@ -34,7 +34,7 @@ public class EggManager implements Updatable {
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void onMinute() {
         for (Egg egg : eggs) {
             egg.tick();
 

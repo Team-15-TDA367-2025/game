@@ -121,6 +121,10 @@ public class FollowTrailBehavior extends AntBehavior {
     }
 
     private Pheromone findNextPheromone(List<Pheromone> neighbors, boolean returning) {
+        if (lastPheromone == null) {
+            System.err.println("Last pheromone is null");
+            return null;
+        }
         int currentDist = lastPheromone.getDistance();
 
         List<Pheromone> candidates = neighbors.stream()

@@ -5,42 +5,43 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeCycle  {
+public class TimeCycle {
     private int minutes;
     private int ticksPerMinute;
     private final List<TimeObserver> timeObservers = new ArrayList<>();
 
     private int tickCountDown;
+
     public record GameTime(int totalDays, int currentHour, int currentMinute, int ticks) {
     }
 
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
-        tickCountDown= ticksPerMinute;
+        tickCountDown = ticksPerMinute;
         this.minutes = 0;
-
     }
 
-
     public void tick() {
-            tickCountDown--;
-            if(tickCountDown==0) {
-                tickCountDown=ticksPerMinute;
-                boolean oldIsDay = getIsDay();
-                minutes++;
-                boolean newIsDay = getIsDay();
+        tickCountDown--;
+        if (tickCountDown == 0) {
+            tickCountDown = ticksPerMinute;
+            boolean oldIsDay = getIsDay();
+            minutes++;
+            boolean newIsDay = getIsDay();
 
-                if(oldIsDay && !newIsDay) {
-                    for (TimeObserver observer : timeObservers) {
-                        observer.onNightStart();
-                    }
+            for (TimeObserver observer : timeObservers) {
+                observer.onMinute();
+
+                if (oldIsDay && !newIsDay) {
+                    observer.onNightStart();
+
                 }
-                if(!oldIsDay && newIsDay) {
-                    for (TimeObserver observer : timeObservers) {
-                        observer.onDayStart();
-                    }
+                if (!oldIsDay && newIsDay) {
+                    observer.onDayStart();
                 }
             }
+
+        }
     }
 
     public void addTimeObserver(TimeObserver observer) {

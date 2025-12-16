@@ -127,7 +127,7 @@ public class GameFactory {
         destructionListener.addEntityDeathObserver(entityManager);
 
         EggManager eggManager = new EggManager();
-        simulationHandler.addUpdateObserver(eggManager);
+        timeCycle.addTimeObserver(eggManager);
 
         StructureManager structureManager = new StructureManager();
         simulationHandler.addUpdateObserver(structureManager);

@@ -1,11 +1,8 @@
 package se.chalmers.tda367.team15.game.controller;
 
 import se.chalmers.tda367.team15.game.model.GameModel;
-import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
 
 public class EggController {
     private final GameModel model;
