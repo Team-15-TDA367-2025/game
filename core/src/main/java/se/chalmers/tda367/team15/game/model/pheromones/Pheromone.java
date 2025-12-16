@@ -25,4 +25,3 @@ public class Pheromone {
         return distance;
     }
 }
-

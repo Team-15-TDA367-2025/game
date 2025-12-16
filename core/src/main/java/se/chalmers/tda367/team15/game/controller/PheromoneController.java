@@ -68,7 +68,7 @@ public class PheromoneController extends InputAdapter {
         GridPoint2 gridPos = worldToGrid(worldPos);
 
         if (currentType == null) {
-            gameModel.getPheromoneSystem().removePheromone(gridPos);
+            gameModel.getPheromoneManager().removePheromone(gridPos);
             return;
         }
 
@@ -103,8 +103,8 @@ public class PheromoneController extends InputAdapter {
     }
 
     private boolean processPheromoneAction(GridPoint2 pos) {
-        return gameModel.getPheromoneSystem().addPheromone(pos, currentType) ||
-                gameModel.getPheromoneSystem().getPheromoneAt(pos) != null;
+        return gameModel.getPheromoneManager().addPheromone(pos, currentType) ||
+                gameModel.getPheromoneManager().getPheromoneAt(pos) != null;
     }
 
     /**

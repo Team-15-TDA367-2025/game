@@ -15,9 +15,8 @@ public class InputManager {
     public void addProcessor(InputProcessor processor) {
         multiplexer.addProcessor(processor);
     }
-    
+
     public void removeProcessor(InputProcessor processor) {
         multiplexer.removeProcessor(processor);
     }
 }
-

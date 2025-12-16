@@ -5,60 +5,82 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.VisionProvider;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
+import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
-import se.chalmers.tda367.team15.game.model.structure.Colony;
-
+import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
-    private static final float SPEED = 5f;
-    private final float MAX_HEALTH = 6;
-    private final int visionRadius = 4;
-    protected Faction faction;
+    AntType type;
+    private final int visionRadius = 8;
+    protected final Faction faction;
+    private final Home home;
     private final int hunger;
 
+    // Stats from AntType
+    private final float speed;
+    private final String baseTextureName;
+    private final Inventory inventory;
+    private final DestructionListener destructionListener;
+    private final PheromoneManager system;
+
     private AntBehavior behavior;
-    private PheromoneSystem system;
-
     private float health;
-    private Inventory inventory;
 
-    public Ant(Vector2 position, PheromoneSystem system, int capacity) {
-        super(position, "ant");
-        this.behavior = new WanderBehavior(this);
+    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home, EntityQuery entityQuery, DestructionListener destructionListener) {
+        super(position, type.textureName());
+        this.type = type;
+        this.behavior = new WanderBehavior(this, home, entityQuery, system.getConverter());
         this.system = system;
         this.hunger = 2; // test value
-        this.inventory = new Inventory(capacity);
+        this.home = home;
+        // Initialize from AntType
+        this.speed = type.moveSpeed();
+        this.health = type.maxHealth();
+        this.inventory = new Inventory(type.carryCapacity());
+        this.baseTextureName = type.textureName();
+
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.health = MAX_HEALTH;
+        setMovementStrategy(new AntMovementStrategy(map));
+        this.destructionListener = destructionListener;
     }
 
-    private void pickRandomDirection() {
+    public void pickRandomDirection() {
         float angle = MathUtils.random.nextFloat() * 2 * MathUtils.PI;
-        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(SPEED);
+        velocity = new Vector2(MathUtils.cos(angle), MathUtils.sin(angle)).nor().scl(speed);
+    }
+
+    @Override
+    public void handleCollision() {
+        behavior.handleCollision();
     }
 
     @Override
     public void update(float deltaTime) {
-        behavior.update(system, deltaTime);
+        updateBehavior();
         super.update(deltaTime);
-        updateRotation();
         updateTexture();
+    }
+
+    public void updateBehavior() {
+        behavior.update(system);
     }
 
     private void updateTexture() {
         if (inventory.isEmpty()) {
-            setTextureName("ant");
+            setTextureName(baseTextureName);
         } else {
-            setTextureName("AntCarryingFood");
+            // TODO: This should be a more generic solution
+            setTextureName("resource");
         }
     }
 
@@ -66,23 +88,13 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         this.behavior = behavior;
     }
 
-    public void updateRotation() {
-        if (getVelocity().len2() > 0.1f) {
-            rotation = getVelocity().angleRad() - MathUtils.PI / 2f;
-        }
-    }
-
     public float getSpeed() {
-        return SPEED;
+        return speed;
     }
 
     public GridPoint2 getGridPosition() {
         PheromoneGridConverter converter = system.getConverter();
         return converter.worldToPheromoneGrid(position);
-    }
-
-    public PheromoneSystem getSystem() {
-        return system;
     }
 
     public Inventory getInventory() {
@@ -93,11 +105,15 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return hunger;
     }
 
-    public boolean leaveResources(Colony colony) {
+    public AntType getType() {
+        return type;
+    }
+
+    public boolean leaveResources(Home home) {
         if (inventory.isEmpty()) {
             return false;
         }
-        boolean deposited = colony.depositResources(inventory);
+        boolean deposited = home.depositResources(inventory);
         if (deposited) {
             inventory.clear();
             updateTexture();
@@ -115,6 +131,10 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
         return visionRadius;
     }
 
+    public Home getHome() {
+        return home;
+    }
+
     @Override
     public Faction getFaction() {
         return faction;
@@ -130,7 +150,7 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
 
     @Override
     public void die() {
-        DestructionListener.getInstance().notifyEntityDeathObservers(this);
+        destructionListener.notifyEntityDeathObservers(this);
     }
 
     @Override

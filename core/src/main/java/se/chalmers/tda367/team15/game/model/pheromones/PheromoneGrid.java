@@ -37,7 +37,7 @@ public class PheromoneGrid {
 
     public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
         List<Pheromone> pheromonesInArea = new ArrayList<>();
-        
+
         // Check all 9 cells in 3x3 grid (including center and all 8 neighbors)
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
@@ -51,4 +51,3 @@ public class PheromoneGrid {
         return pheromonesInArea;
     }
 }
-

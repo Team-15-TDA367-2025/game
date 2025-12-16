@@ -1,49 +1,48 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.badlogic.gdx.math.GridPoint2;
 
+import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
-import se.chalmers.tda367.team15.game.model.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.EntityDeathObserver;
-import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
+import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
+import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
-import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
+import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.managers.EntityManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked, EntityDeathObserver {
-    private List<Ant> ants;
+public class Colony extends Structure implements CanBeAttacked, Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {
     private Inventory inventory;
-
+    private final EggManager eggManager;
     private float health;
-    private float MAX_HEALTH = 60;
+    private float MAX_HEALTH = 600;
+    private Faction faction;
+    private final EntityQuery entityQuery;
+    private final EntityManager entityManager;
+    private final DestructionListener destructionListener;
 
-    public Colony(GridPoint2 position) {
-        super(position, "colony", 2);
-        this.ants = new ArrayList<>();
+    public Colony(GridPoint2 position, TimeCycle timeCycle, EntityQuery entityQuery, EggManager eggManager, EntityManager entityManager, DestructionListener destructionListener) {
+        super(position, "colony", 4);
         this.health = MAX_HEALTH;
-        faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.inventory = new Inventory(1000); // test value for now
-        // Register to receive ant death notifications
-        DestructionListener.getInstance().addEntityDeathObserver(this);
+        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        this.inventory = new Inventory(1000000); // test value for now
+        this.eggManager = eggManager;
+        this.entityQuery = entityQuery;
+        this.entityManager = entityManager;
+        timeCycle.addTimeObserver(this);
+        this.destructionListener = destructionListener;
     }
 
-    public void addAnt(Ant ant) {
-        ants.add(ant);
-    }
-
-    public void removeAnt(Ant ant) {
-        ants.remove(ant);
-    }
-
+    @Override
     public boolean depositResources(Inventory otherInventory) {
         boolean deposited = false;
 
@@ -57,10 +56,10 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
         return deposited;
     }
 
-    public int calculateConsumption() {
+    @Override
+    public int getConsumption() {
         int total = 0;
-
-        for (Ant ant : ants) {
+        for (Ant ant : entityQuery.getEntitiesOfType(Ant.class)) {
             total += ant.getHunger();
         }
         return total;
@@ -68,22 +67,41 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
 
     public void applyConsumption(int amount) {
         inventory.addResource(ResourceType.FOOD, -amount);
-
     }
 
     public int getTotalResources(ResourceType type) {
         return inventory.getAmount(type);
     }
 
-    @Override
-    public void update(float deltaTime) {
-        // Note: Ants are updated by GameWorld via getSubEntities(), not here
-        applyConsumption(calculateConsumption());
+    // TODO: Eggs should not be handled here probably
+    public EggManager getEggManager() {
+        return eggManager;
+    }
+
+    public boolean purchaseEgg(AntType type) {
+        if (type == null) {
+            return false;
+        }
+
+        int foodCost = type.foodCost();
+        if (getTotalResources(ResourceType.FOOD) < foodCost) {
+            return false;
+        }
+
+        inventory.addResource(ResourceType.FOOD, -foodCost);
+        eggManager.addEgg(type);
+        return true;
     }
 
     @Override
-    public Collection<Entity> getSubEntities() {
-        return Collections.unmodifiableCollection(ants);
+    public void onEggHatch(AntFactory factory, AntType type) {
+        // TODO: Kinda violates SRP
+        Ant ant = factory.createAnt(this, type);
+        this.entityManager.addEntity(ant);
+    }
+
+    public void onDayStart() {
+        applyConsumption(getConsumption());
     }
 
     @Override
@@ -101,7 +119,7 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
 
     @Override
     public void die() {
-        DestructionListener.getInstance().notifyStructureDeathObservers(this);
+        destructionListener.notifyStructureDeathObservers(this);
     }
 
     @Override
@@ -110,10 +128,8 @@ public class Colony extends Structure implements CanBeAttacked, EntityDeathObser
     }
 
     @Override
-    public void onEntityDeath(Entity e) {
-        // Remove dead ants from our list
-        if (e instanceof Ant) {
-            ants.remove(e);
-        }
+    public int getTotalAnts() {
+        // TODO: fix this
+        return entityQuery.getEntitiesOfType(Ant.class).size();
     }
 }

@@ -34,29 +34,32 @@ public class CameraModel {
 
     /**
      * Zooms to a new level while keeping a specific world point visually fixed.
-     * This updates both the zoom level and the camera position to create a "zoom towards" effect.
+     * This updates both the zoom level and the camera position to create a "zoom
+     * towards" effect.
      * 
-     * @param newZoom The new zoom level (magnification)
-     * @param invariantPoint The point in world coordinates that should remain fixed (e.g., mouse cursor)
+     * @param newZoom        The new zoom level (magnification)
+     * @param invariantPoint The point in world coordinates that should remain fixed
+     *                       (e.g., mouse cursor)
      */
     public void zoomTo(float newZoom, Vector2 invariantPoint) {
         float oldZoom = this.zoom;
         float clampedZoom = MathUtils.clamp(newZoom, constraints.getMinZoom(), constraints.getMaxZoom());
-        
-        if (clampedZoom == oldZoom) return;
+
+        if (clampedZoom == oldZoom)
+            return;
 
         // Formula: C_new = P - (P - C_old) * (Zoom_old / Zoom_new)
         float scaleChange = oldZoom / clampedZoom;
-        
+
         // Vector from Camera Center to Invariant Point
         Vector2 relativePoint = invariantPoint.cpy().sub(position);
-        
+
         // Scale that vector
         relativePoint.scl(scaleChange);
-        
+
         // New Center is Invariant Point minus the scaled vector
         position.set(invariantPoint.cpy().sub(relativePoint));
-        
+
         this.zoom = clampedZoom;
     }
 

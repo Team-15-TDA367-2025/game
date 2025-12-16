@@ -106,7 +106,7 @@ void main() {
     
     // Fog color - dark forest green
     vec3 fogColor = vec3(0.09, 0.188, 0.11);
-    float fogAlpha = 0.9;
+    float fogAlpha = 1.0;
     
     // Final output
     gl_FragColor = vec4(fogColor, softMask * fogAlpha) * v_color;
