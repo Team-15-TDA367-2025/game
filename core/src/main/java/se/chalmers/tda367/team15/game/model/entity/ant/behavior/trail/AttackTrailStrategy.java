@@ -37,6 +37,8 @@ public class AttackTrailStrategy implements TrailStrategy {
             return null;
         }
 
+        int currentDistance = current != null ? current.getDistance() : 0;
+
         // Get all soldiers on the same trail
         List<Ant> otherSoldiers = entityQuery.getEntitiesOfType(Ant.class).stream()
                 .filter(a -> a != ant)
@@ -44,17 +46,38 @@ public class AttackTrailStrategy implements TrailStrategy {
                 .filter(a -> a.getPosition().dst(ant.getPosition()) <= ant.getVisionRadius())
                 .toList();
 
+        // Filter out current position to force movement
+        List<Pheromone> movableNeighbors = neighbors.stream()
+                .filter(p -> current == null || p.getDistance() != currentDistance)
+                .toList();
+
+        if (movableNeighbors.isEmpty()) {
+            // Stuck at current position - pick any neighbor to oscillate
+            return neighbors.stream()
+                    .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
+                    .findAny()
+                    .orElse(null);
+        }
+
         if (otherSoldiers.isEmpty()) {
             // No soldiers in sight - prefer higher distance (outward)
-            return neighbors.stream()
+            // But occasionally patrol back for entropy (20% chance)
+            if (Math.random() < 0.2) {
+                return movableNeighbors.stream()
+                        .min(Comparator.comparingInt(Pheromone::getDistance))
+                        .orElse(movableNeighbors.get(0));
+            }
+            return movableNeighbors.stream()
                     .max(Comparator.comparingInt(Pheromone::getDistance))
-                    .orElse(neighbors.get(0));
+                    .orElse(movableNeighbors.get(0));
         }
 
         // Pick pheromone that maximizes minimum distance to any soldier
-        return neighbors.stream()
-                .max(Comparator.comparingDouble(p -> minDistanceToSoldiers(p, otherSoldiers)))
-                .orElse(neighbors.get(0));
+        // Break ties by preferring higher distance (outward)
+        return movableNeighbors.stream()
+                .max(Comparator.<Pheromone>comparingDouble(p -> minDistanceToSoldiers(p, otherSoldiers))
+                        .thenComparingInt(Pheromone::getDistance))
+                .orElse(movableNeighbors.get(0));
     }
 
     private double minDistanceToSoldiers(Pheromone pheromone, List<Ant> soldiers) {

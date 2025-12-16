@@ -34,7 +34,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private final Inventory inventory;
     private final DestructionListener destructionListener;
     private final PheromoneManager system;
-    private final TrailStrategy trailStrategy;
 
     private AntBehavior behavior;
     private float health;
@@ -43,7 +42,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
             EntityQuery entityQuery, DestructionListener destructionListener, TrailStrategy trailStrategy) {
         super(position, type.textureName());
         this.type = type;
-        this.trailStrategy = trailStrategy;
         this.behavior = new WanderBehavior(this, home, entityQuery, system.getConverter(), trailStrategy, system);
         this.system = system;
         // TODO - Antigravity: Magic number - hunger should be in AntType
