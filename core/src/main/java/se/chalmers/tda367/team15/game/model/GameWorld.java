@@ -9,6 +9,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureDeathObserver;
+import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;

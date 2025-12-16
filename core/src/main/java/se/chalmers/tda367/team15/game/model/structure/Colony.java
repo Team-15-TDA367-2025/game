@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.GridPoint2;
 import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.EntityManager;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
@@ -18,6 +17,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.managers.EntityManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 public class Colony extends Structure implements CanBeAttacked, Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {

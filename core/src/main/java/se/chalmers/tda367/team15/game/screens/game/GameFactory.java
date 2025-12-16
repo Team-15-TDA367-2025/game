@@ -10,13 +10,9 @@ import se.chalmers.tda367.team15.game.controller.*;
 import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.EnemyFactory;
-import se.chalmers.tda367.team15.game.model.EntityManager;
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.GameWorld;
-import se.chalmers.tda367.team15.game.model.SimulationHandler;
-import se.chalmers.tda367.team15.game.model.StructureManager;
 import se.chalmers.tda367.team15.game.model.TimeCycle;
-import se.chalmers.tda367.team15.game.model.WaveManager;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -25,6 +21,10 @@ import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.fog.FogSystem;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.managers.EntityManager;
+import se.chalmers.tda367.team15.game.model.managers.SimulationManager;
+import se.chalmers.tda367.team15.game.model.managers.StructureManager;
+import se.chalmers.tda367.team15.game.model.managers.WaveManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
@@ -120,19 +120,19 @@ public class GameFactory {
         TerrainGenerator terrainGenerator = TerrainFactory.createStandardPerlinGenerator(
                 System.currentTimeMillis());
         // TODO: break this down
-        SimulationHandler simulationHandler = new SimulationHandler(timeCycle);
+        SimulationManager simulationManager = new SimulationManager(timeCycle);
 
         DestructionListener destructionListener = new DestructionListener();
         EntityManager entityManager = new EntityManager();
-        simulationHandler.addUpdateObserver(entityManager);
+        simulationManager.addUpdateObserver(entityManager);
         destructionListener.addEntityDeathObserver(entityManager);
 
         StructureManager structureManager = new StructureManager();
-        simulationHandler.addUpdateObserver(structureManager);
+        simulationManager.addUpdateObserver(structureManager);
         destructionListener.addStructureDeathObserver(structureManager);
 
         ResourceSystem resourceSystem = new ResourceSystem(entityManager);
-        simulationHandler.addUpdateObserver(resourceSystem);
+        simulationManager.addUpdateObserver(resourceSystem);
 
         GameWorld gameWorld = new GameWorld(MAP_WIDTH, MAP_HEIGHT, terrainGenerator, entityManager,
                 structureManager, resourceSystem);
@@ -143,7 +143,7 @@ public class GameFactory {
 
         EnemyFactory enemyFactory = new EnemyFactory(gameWorld, destructionListener);
         FogSystem fogSystem = new FogSystem(entityManager, worldMap);
-        simulationHandler.addUpdateObserver(fogSystem);
+        simulationManager.addUpdateObserver(fogSystem);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
         PheromoneSystem pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), pheromoneGridConverter, 4);
@@ -158,7 +158,7 @@ public class GameFactory {
 
         spawnInitialAnts(entityManager, colony, antFactory, antTypeRegistry);
 
-        return new GameModel(simulationHandler, timeCycle, gameWorld, fogSystem, entityManager, colony, enemyFactory,
+        return new GameModel(simulationManager, timeCycle, gameWorld, fogSystem, entityManager, colony, enemyFactory,
                 pheromoneSystem, worldMap, antTypeRegistry);
     }
 

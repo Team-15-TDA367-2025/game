@@ -1,11 +1,13 @@
-package se.chalmers.tda367.team15.game.model;
+package se.chalmers.tda367.team15.game.model.managers;
 
+import se.chalmers.tda367.team15.game.model.SimulationProvider;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimulationHandler implements SimulationProvider {
+public class SimulationManager implements SimulationProvider {
     private final TimeCycle timeCycle;
 
     private static final int baseTickPerSecond = 100; // Do not set lower than 50
@@ -21,7 +23,7 @@ public class SimulationHandler implements SimulationProvider {
     private final List<Updatable> updateObservers = new ArrayList<>();
 
 
-   public SimulationHandler(TimeCycle timeCycle) {
+   public SimulationManager(TimeCycle timeCycle) {
         this.timeCycle = timeCycle;
    }
 

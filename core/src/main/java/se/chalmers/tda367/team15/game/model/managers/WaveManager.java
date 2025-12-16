@@ -1,10 +1,12 @@
-package se.chalmers.tda367.team15.game.model;
+package se.chalmers.tda367.team15.game.model.managers;
 
 import java.util.Random;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
 /**

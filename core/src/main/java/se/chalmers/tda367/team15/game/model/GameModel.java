@@ -12,6 +12,7 @@ import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.fog.FogSystem;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.managers.EntityManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
