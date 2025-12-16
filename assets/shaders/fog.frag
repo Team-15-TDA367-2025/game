@@ -1,3 +1,5 @@
+// We just wanted it to look cool, this is mostly AI generated and ugly code-wise, please ignore
+
 #ifdef GL_ES
 precision mediump float;
 #endif
