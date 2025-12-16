@@ -17,7 +17,7 @@ public class TimeCycle  {
     public TimeCycle(int ticksPerMinute) {
         this.ticksPerMinute = ticksPerMinute;
         tickCountDown= ticksPerMinute;
-        this.minutes = 0;
+        this.minutes = 360;
 
     }
 

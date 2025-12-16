@@ -28,6 +28,7 @@ public class GameModel {
     private final EnemyFactory enemyFactory;
     private final AntFactory antFactory;
     private final Colony colony;
+    private final ResourceNodeFactory resourceNodeFactory;
 
     public GameModel(TimeCycle timeCycle, SimulationHandler simulationHandler, GameWorld gameWorld) {
         this.simulationHandler = simulationHandler;
@@ -42,6 +43,8 @@ public class GameModel {
 
         colony.setAntHatchListener(this::onAntHatch);
         this.enemyFactory = new EnemyFactory(gameWorld);
+
+        this.resourceNodeFactory = new ResourceNodeFactory(simulationHandler, colony.getPosition());
 
         // Spawn structures based on terrain generation features
         spawnTerrainStructures();
@@ -71,17 +74,9 @@ public class GameModel {
 
         for (StructureSpawn spawn : spawns) {
             if ("resource_node".equals(spawn.getType())) {
-                Vector2 worldPos = worldMap.tileToWorld(spawn.getPosition());
-                GridPoint2 worldGridPos = new GridPoint2((int) worldPos.x, (int) worldPos.y);
+                Vector2 resourcePos = worldMap.tileToWorld(spawn.getPosition());
 
-                world.addResourceNode(new ResourceNode(
-                        simulationHandler,
-                        worldGridPos,
-                        "node",
-                        1,
-                        ResourceType.FOOD,
-                        10,
-                        20));
+                world.addResourceNode(resourceNodeFactory.createResourceNode(resourcePos));
             }
             // Add other structure types here
         }
