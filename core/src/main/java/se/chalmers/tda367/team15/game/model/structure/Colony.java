@@ -36,7 +36,6 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000000); // test value for now
         this.eggManager = eggManager;
-        this.eggManager.addObserver(this);
         this.entityQuery = entityQuery;
         this.entityManager = entityManager;
         timeCycle.addTimeObserver(this);
