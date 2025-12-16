@@ -40,6 +40,8 @@ public class ResourcePlacementFeature implements TerrainFeature {
 
         // 1. Colony Nucleation (Center area)
         GridPoint2 colonyPoint = placeInitialResource(context, nucRandom);
+        System.out.println(colonyPoint.x + " : " + colonyPoint.y);
+
         if (colonyPoint != null) points.add(colonyPoint.add(new GridPoint2(width/2, height/2)));
         else points.add(new GridPoint2(width/2, height/2)); // Fallback
 
@@ -60,8 +62,12 @@ public class ResourcePlacementFeature implements TerrainFeature {
         for (GridPoint2 point : points) {
             StructureSpawn structureSpawn = new StructureSpawn(point, "resource_node");
 
-            structureSpawn.getProperties().put("amount", 10);
 
+            float distanceToMiddle = point.dst(0,0);
+
+            System.out.println(point.x + " : " + point.y + " : " + distanceToMiddle);
+
+            structureSpawn.getProperties().put("amount", Math.toIntExact((long) distanceToMiddle));
             context.addStructureSpawn(structureSpawn);
             applyNucleationZone(context, point);
         }
