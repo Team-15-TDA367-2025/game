@@ -1,13 +1,16 @@
 package se.chalmers.tda367.team15.game.controller;
 
-import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
+import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
 
 public class EggController {
-    private final GameModel model;
+    private final AntTypeRegistry antTypeRegistry;
+    private final ColonyUsageProvider colonyUsageProvider;
 
-    public EggController(GameModel model) {
-        this.model = model;
+    public EggController(AntTypeRegistry antTypeRegistry, ColonyUsageProvider colonyUsageProvider) {
+        this.antTypeRegistry = antTypeRegistry;
+        this.colonyUsageProvider = colonyUsageProvider;
     }
 
     /**
@@ -17,13 +20,12 @@ public class EggController {
      * @return true if the purchase was successful, false otherwise
      */
     public boolean purchaseEgg(String typeId) {
-        //TODO: this is kinda ugly
-        AntType type = model.getAntTypeRegistry().get(typeId);
+        AntType type = antTypeRegistry.get(typeId);
 
         if (type == null) {
             return false;
         }
 
-        return model.getColonyUsageProvider().purchaseEgg(type);
+        return colonyUsageProvider.purchaseEgg(type);
     }
 }

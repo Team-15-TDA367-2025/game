@@ -1,8 +1,6 @@
-package se.chalmers.tda367.team15.game.model.structure.resource;
+package se.chalmers.tda367.team15.game.model.managers;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
@@ -11,23 +9,25 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.structure.Structure;
+import se.chalmers.tda367.team15.game.model.structure.resource.Resource;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 
 /**
  * Manages resource interactions using persistent spatial grid.
  * Grid is maintained internally and only modified when resources change.
  */
-public class ResourceSystem implements Updatable {
+public class ResourceManager implements Updatable {
     private static final int PICKUP_RADIUS = 2;
     private static final int DEPOSIT_RADIUS = 2;
     private EntityQuery entityQuery;
-    private Map<GridPoint2, Resource> resourceGrid;
-    private Map<GridPoint2, ResourceNode> resourceNodeGrid;
+    private StructureManager structureManager;
 
-    public ResourceSystem(EntityQuery entityQuery) {
+    public ResourceManager(EntityQuery entityQuery, StructureManager structureManager) {
         this.entityQuery = entityQuery;
-        this.resourceGrid = new HashMap<>();
-        this.resourceNodeGrid = new HashMap<>();
+        this.structureManager = structureManager;
     }
+
     @Override
     public void update(float deltaTime) {
         List<Ant> ants = entityQuery.getEntitiesOfType(Ant.class);
@@ -37,21 +37,15 @@ public class ResourceSystem implements Updatable {
     }
 
     public void addResource(Resource resource) {
-        GridPoint2 pos = resource.getGridPosition();
-        resourceGrid.put(pos, resource);
+        structureManager.addStructure(resource);
     }
 
     public void addResourceNode(ResourceNode resourceNode) {
-        GridPoint2 pos = resourceNode.getGridPosition();
-        resourceNodeGrid.put(pos, resourceNode);
+        structureManager.addStructure(resourceNode);
     }
 
     public void removeResource(Resource resource) {
-        GridPoint2 pos = resource.getGridPosition();
-        Resource cellResource = resourceGrid.get(pos);
-        if (cellResource != null && cellResource.equals(resource)) {
-            resourceGrid.remove(pos);
-        }
+        structureManager.removeStructure(resource);
     }
 
     private void handleResourcePickup(List<Ant> ants) {
@@ -64,21 +58,21 @@ public class ResourceSystem implements Updatable {
 
     private void tryPickupNearbyResource(Ant ant) {
         GridPoint2 antGrid = getAntGridPosition(ant);
-        GridPoint2 checkCell = new GridPoint2();
+        List<Structure> structures = structureManager.getStructures();
 
-        for (int dx = -PICKUP_RADIUS; dx <= PICKUP_RADIUS; dx++) {
-            for (int dy = -PICKUP_RADIUS; dy <= PICKUP_RADIUS; dy++) {
-                checkCell.set(antGrid.x + dx, antGrid.y + dy);
-                Resource resource = resourceGrid.get(checkCell);
-                if (resource != null && tryPickupResource(ant, resource)) {
-                    return;
-                }
-
-                ResourceNode node = resourceNodeGrid.get(checkCell);
-                if (node != null && tryHarvestNode(ant, node)) {
-                    return;
-                }
-
+        for (Structure structure : structures) {
+            GridPoint2 structureGrid = structure.getGridPosition();
+            int distance = Math.abs(antGrid.x - structureGrid.x) +
+                    Math.abs(antGrid.y - structureGrid.y);
+            if (distance > PICKUP_RADIUS) {
+                continue;
+            }
+            // TODO: Breaks Open closed a bit maybe kinda?
+            if (structure instanceof Resource) {
+                tryPickupResource(ant, (Resource) structure);
+            }
+            if (structure instanceof ResourceNode) {
+                tryHarvestNode(ant, (ResourceNode) structure);
             }
         }
     }

@@ -6,12 +6,13 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.GameWorld;
 import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
@@ -27,13 +28,15 @@ public class Termite extends Entity implements CanBeAttacked {
     private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
     private final float MAX_HEALTH = 1;
     private float health;
-    private final GameWorld world;
+    private final EntityQuery entityQuery;
+    private final StructureProvider structureProvider;
     private final DestructionListener destructionListener;
 
-    public Termite(Vector2 position, GameWorld world, DestructionListener destructionListener) {
+    public Termite(Vector2 position, EntityQuery entityQuery, StructureProvider structureProvider, DestructionListener destructionListener) {
         super(position, "termite");
         this.destructionListener = destructionListener;
-        this.world = world;
+        this.entityQuery = entityQuery;
+        this.structureProvider = structureProvider;
         this.termiteBehaviour = new TermiteBehavior(this);
         health = MAX_HEALTH;
     }
@@ -44,8 +47,8 @@ public class Termite extends Entity implements CanBeAttacked {
      */
     @Override
     public void update(float deltaTime) {
-        List<Entity> entities = world.getEntities();
-        List<Structure> structures = world.getStructures();
+        List<Entity> entities = entityQuery.getEntitiesOfType(Entity.class);
+        List<Structure> structures = structureProvider.getStructures();
         AttackTarget target = termiteBehaviour.update(entities, structures);
         super.update(deltaTime);
         if (target != null) {

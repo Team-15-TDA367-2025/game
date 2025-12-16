@@ -5,5 +5,4 @@ public interface SimulationProvider {
     void setTimeNormal();
     void setTimePaused();
     void handleSimulation();
-    TimeCycle getTimeCycle();
 }

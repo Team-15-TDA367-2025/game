@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
+import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 
 public abstract class AntBehavior {
     protected Ant ant;
@@ -34,7 +34,7 @@ public abstract class AntBehavior {
         return false;
     }
 
-    public abstract void update(PheromoneSystem system);
+    public abstract void update(PheromoneManager system);
 
 
     public void handleCollision() {}

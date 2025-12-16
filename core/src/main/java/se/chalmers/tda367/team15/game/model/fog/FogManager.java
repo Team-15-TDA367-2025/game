@@ -11,12 +11,12 @@ import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
-public class FogSystem implements FogProvider, Updatable {
+public class FogManager implements FogProvider, Updatable {
     private final FogOfWar fogOfWar;
     private final MapProvider mapProvider;
     private final EntityQuery entityQuery;
 
-    public FogSystem(EntityQuery entityQuery, MapProvider mapProvider) {
+    public FogManager(EntityQuery entityQuery, MapProvider mapProvider) {
         this.mapProvider = mapProvider;
         this.entityQuery = entityQuery;
         this.fogOfWar = new FogOfWar(mapProvider);

@@ -1,52 +1,61 @@
 package se.chalmers.tda367.team15.game.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
+import se.chalmers.tda367.team15.game.model.entity.Entity;
+import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.entity.termite.Termite;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
-import se.chalmers.tda367.team15.game.model.fog.FogSystem;
+import se.chalmers.tda367.team15.game.model.fog.FogManager;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
-import se.chalmers.tda367.team15.game.model.managers.EntityManager;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
 public class GameModel {
-    private final GameWorld world;
     private final ColonyUsageProvider colonyUsageProvider;
     // TODO: Fix
     private final TimeCycle timeCycle;
-    private final EntityManager entityManager;
-    private final FogSystem fogSystem;
-    private final EnemyFactory enemyFactory;
+    private final FogManager fogManager;
     private final SimulationProvider simulationProvider;
-    private final PheromoneSystem pheromoneSystem;
+    private final PheromoneManager pheromoneManager;
     private final WorldMap worldMap;
     private final AntTypeRegistry antTypeRegistry;
+    private final StructureManager structureManager;
+    private final EntityQuery entityQuery;
 
-    public GameModel(SimulationProvider simulationProvider, TimeCycle timeCycle, GameWorld gameWorld,
-            FogSystem fogSystem, EntityManager entityManager, ColonyUsageProvider colonyDataProvider, EnemyFactory enemyFactory, PheromoneSystem pheromoneSystem, WorldMap worldMap, AntTypeRegistry antTypeRegistry) {
+    public GameModel(SimulationProvider simulationProvider, TimeCycle timeCycle,
+            FogManager fogManager, ColonyUsageProvider colonyUsageProvider, PheromoneManager pheromoneManager,
+            WorldMap worldMap, AntTypeRegistry antTypeRegistry, StructureManager structureManager, EntityQuery entityQuery) {
         this.simulationProvider = simulationProvider;
-        this.world = gameWorld;
-        this.colonyUsageProvider = colonyDataProvider;
+        this.colonyUsageProvider = colonyUsageProvider;
         this.timeCycle = timeCycle;
-        this.entityManager = entityManager;
-        this.fogSystem = fogSystem;
-        this.enemyFactory = enemyFactory;
-        this.pheromoneSystem = pheromoneSystem;
+        this.fogManager = fogManager;
+        this.pheromoneManager = pheromoneManager;
         this.worldMap = worldMap;
         this.antTypeRegistry = antTypeRegistry;
+        this.structureManager = structureManager;
+        this.entityQuery = entityQuery;
         // Spawn structures based on terrain generation features
         spawnTerrainStructures();
+    }
+
+    public Iterable<Drawable> getDrawables() {
+        List<Drawable> allDrawables = new ArrayList<>(structureManager.getStructures());
+        allDrawables.addAll(entityQuery.getEntitiesOfType(Entity.class));
+        return Collections.unmodifiableList(allDrawables);
     }
 
     /**
@@ -60,7 +69,7 @@ public class GameModel {
                 Vector2 worldPos = worldMap.tileToWorld(spawn.getPosition());
                 GridPoint2 worldGridPos = new GridPoint2((int) worldPos.x, (int) worldPos.y);
 
-                world.addResourceNode(new ResourceNode(
+                structureManager.addStructure(new ResourceNode(
                         worldGridPos,
                         "node",
                         1,
@@ -77,15 +86,10 @@ public class GameModel {
     }
 
     public PheromoneGridConverter getPheromoneGridConverter() {
-        return pheromoneSystem.getConverter();
+        return pheromoneManager.getConverter();
     }
 
     // --- FACADE METHODS (Actions) ---
-
-    public void spawnTermite(Vector2 position) {
-        Termite termite = enemyFactory.createTermite(position);
-        entityManager.addEntity(termite);
-    }
 
     public void setTimeFast() {
         simulationProvider.setTimeFast();
@@ -108,23 +112,19 @@ public class GameModel {
     }
 
     public TimeCycle.GameTime getGameTime() {
-        return simulationProvider.getTimeCycle().getGameTime();
-    }
-
-    public Iterable<Drawable> getDrawables() {
-        return world.getDrawables();
+        return timeCycle.getGameTime();
     }
 
     public FogProvider getFogProvider() {
-        return fogSystem;
+        return fogManager;
     }
 
     public AntTypeRegistry getAntTypeRegistry() {
         return antTypeRegistry;
     }
 
-    public PheromoneSystem getPheromoneSystem() {
-        return pheromoneSystem;
+    public PheromoneManager getPheromoneManager() {
+        return pheromoneManager;
     }
 
     public WorldMap getWorldMap() {
@@ -136,7 +136,7 @@ public class GameModel {
     }
 
     public int getTotalDays() {
-        return simulationProvider.getTimeCycle().getTotalDays();
+        return timeCycle.getTotalDays();
     }
 
     public EggManager getEggManager() {
@@ -149,6 +149,6 @@ public class GameModel {
     }
 
     public int getTotalAnts() {
-        return world.getAnts().size();
+        return entityQuery.getEntitiesOfType(Ant.class).size();
     }
 }

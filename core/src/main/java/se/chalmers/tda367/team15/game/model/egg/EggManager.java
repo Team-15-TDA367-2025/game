@@ -43,17 +43,17 @@ public class EggManager implements TimeObserver {
     public void onMinute() {
         for (Egg egg : eggs) {
             egg.tick();
-
-            if (egg.isHatched()) {
-                AntType type = egg.getType();
-                if (type == null) {
-                    continue;
-                }
-
-                for (EggHatchObserver observer : observers) {
-                    observer.onEggHatch(antFactory, type);
-                }
+            if (!egg.isHatched()) {
+                continue;
             }
+
+            AntType type = egg.getType();
+
+            if (type == null) {
+                throw new IllegalArgumentException("Egg type is null");
+            }
+
+            observers.forEach(observer -> observer.onEggHatch(antFactory, type));
         }
         eggs.removeIf(Egg::isHatched);
     }
