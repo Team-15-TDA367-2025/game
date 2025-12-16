@@ -197,41 +197,42 @@ public class GameFactory {
      */
     private static AntTypeRegistry createAntTypeRegistry() {
         AntTypeRegistry registry = new AntTypeRegistry();
+
         // Scout: High speed, low HP, 0 capacity, cheap/fast to hatch
-        registry.register(new AntType(
-                "scout",
-                "Scout",
-                5, // Food Cost
-                30, // 30 ticks (0.5 min)
-                4f, // Max Health
-                8f, // Speed
-                0, // Capacity
-                "scout" // Texture
-        ));
+        registry.register(AntType.with()
+                .id("scout")
+                .displayName("Scout")
+                .foodCost(5)
+                .developmentTicks(30)
+                .maxHealth(4f)
+                .moveSpeed(8f)
+                .carryCapacity(0)
+                .textureName("scout")
+                .build());
 
         // Soldier: Low speed, high HP, 0 capacity, expensive
-        registry.register(new AntType(
-                "soldier",
-                "Soldier",
-                40, // Food Cost
-                300, // 5 min
-                20f, // Max Health
-                2f, // Speed
-                0, // Capacity
-                "ant" // Texture
-        ));
+        registry.register(AntType.with()
+                .id("soldier")
+                .displayName("Soldier")
+                .foodCost(40)
+                .developmentTicks(300)
+                .maxHealth(20f)
+                .moveSpeed(2f)
+                .carryCapacity(0)
+                .textureName("ant")
+                .build());
 
         // Worker: Medium speed, medium HP, some capacity
-        registry.register(new AntType(
-                "worker",
-                "Worker",
-                10, // Food Cost
-                60, // 1 min
-                6f, // Max Health
-                5f, // Speed
-                10, // Capacity
-                "ant" // Texture
-        ));
+        registry.register(AntType.with()
+                .id("worker")
+                .displayName("Worker")
+                .foodCost(10)
+                .developmentTicks(60)
+                .maxHealth(6f)
+                .moveSpeed(5f)
+                .carryCapacity(10)
+                .textureName("ant")
+                .build());
 
         return registry;
     }
