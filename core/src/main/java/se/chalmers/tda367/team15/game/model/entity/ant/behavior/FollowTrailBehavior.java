@@ -38,6 +38,8 @@ public class FollowTrailBehavior extends AntBehavior {
         this.reachedThresholdSq = threshold * threshold;
         this.converter = converter;
         String typeId = ant.getType().id();
+        // TODO - Antigravity: OCP violation - move type-to-pheromone mapping to AntType
+        // instead of switch on string
         switch (typeId) {
             case "scout" -> {
                 allowedType = PheromoneType.EXPLORE;
@@ -98,9 +100,11 @@ public class FollowTrailBehavior extends AntBehavior {
             }
         }
         // TODO Movement logic breaks at low tick speed
-        // This breaks when tick speed is low. Ants will endlessly overshoot their destination because distance change is to high at low tick speed
+        // This breaks when tick speed is low. Ants will endlessly overshoot their
+        // destination because distance change is to high at low tick speed
         // Before the big refactor we can just set the tick rate to something high...
-        // but it is weird that the simulation behaves differently at different tick speeds...hmmm...
+        // but it is weird that the simulation behaves differently at different tick
+        // speeds...hmmm...
 
         // 3. Movement
         Vector2 targetPos = getCenterPos(currentTarget);
@@ -123,6 +127,7 @@ public class FollowTrailBehavior extends AntBehavior {
 
     private Pheromone findNextPheromone(List<Pheromone> neighbors, boolean returning) {
         if (lastPheromone == null) {
+            // TODO - Antigravity: Debug output in production code - use proper logging
             System.err.println("Last pheromone is null");
             return null;
         }

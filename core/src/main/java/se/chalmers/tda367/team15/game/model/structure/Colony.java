@@ -20,7 +20,9 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.managers.EntityManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked, Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {
+// TODO - Antigravity: SRP violation - implements 5 interfaces, consider extracting ColonyResourceManager, ColonyEggHandler, ColonyCombat
+public class Colony extends Structure
+        implements CanBeAttacked, Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {
     private Inventory inventory;
     private final EggManager eggManager;
     private float health;
@@ -30,10 +32,12 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
     private final EntityManager entityManager;
     private final DestructionListener destructionListener;
 
-    public Colony(GridPoint2 position, TimeCycle timeCycle, EntityQuery entityQuery, EggManager eggManager, EntityManager entityManager, DestructionListener destructionListener) {
+    public Colony(GridPoint2 position, TimeCycle timeCycle, EntityQuery entityQuery, EggManager eggManager,
+            EntityManager entityManager, DestructionListener destructionListener) {
         super(position, "colony", 4);
         this.health = MAX_HEALTH;
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
+        // TODO - Antigravity: Magic number - extract to constant or config
         this.inventory = new Inventory(1000000); // test value for now
         this.eggManager = eggManager;
         this.entityQuery = entityQuery;

@@ -19,6 +19,8 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class Ant extends Entity implements VisionProvider, CanBeAttacked {
+    // TODO - Antigravity: Magic number - visionRadius should be in AntType or
+    // config
     AntType type;
     private final int visionRadius = 8;
     protected final Faction faction;
@@ -35,11 +37,15 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked {
     private AntBehavior behavior;
     private float health;
 
-    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home, EntityQuery entityQuery, DestructionListener destructionListener) {
+    // TODO - Antigravity: Long parameter list (7 params) - consider Builder pattern
+    // or parameter object
+    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
+            EntityQuery entityQuery, DestructionListener destructionListener) {
         super(position, type.textureName());
         this.type = type;
         this.behavior = new WanderBehavior(this, home, entityQuery, system.getConverter());
         this.system = system;
+        // TODO - Antigravity: Magic number - hunger should be in AntType
         this.hunger = 2; // test value
         this.home = home;
         // Initialize from AntType

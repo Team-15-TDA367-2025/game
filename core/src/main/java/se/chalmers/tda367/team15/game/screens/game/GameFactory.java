@@ -114,6 +114,8 @@ public class GameFactory {
         return new CameraModel(constraints);
     }
 
+    // TODO - Antigravity: Long method (47 lines) - break into createSimulation(),
+    // createWorldAndTerrain(), createEntitySystem()
     private static GameModel createGameModel() {
         AntTypeRegistry antTypeRegistry = createAntTypeRegistry();
 
