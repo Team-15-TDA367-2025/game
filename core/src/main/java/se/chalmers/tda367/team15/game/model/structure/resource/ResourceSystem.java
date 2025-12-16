@@ -70,6 +70,7 @@ public class ResourceSystem implements Updatable {
             if (distance > PICKUP_RADIUS) {
                 continue;
             }
+            // TODO: Breaks Open closed a bit maybe kinda?
             if (structure instanceof Resource) {
                 tryPickupResource(ant, (Resource) structure);
             }
