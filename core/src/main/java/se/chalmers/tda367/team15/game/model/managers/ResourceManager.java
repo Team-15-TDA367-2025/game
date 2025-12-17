@@ -121,10 +121,6 @@ public class ResourceManager implements Updatable {
     }
 
     private boolean tryHarvestNode(Ant ant, ResourceNode node) {
-        if (node.isDepleted()) {
-            return false;
-        }
-
         int amountToPickup = Math.min(
                 node.getCurrentAmount(),
                 ant.getInventory().getRemainingCapacity());

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 
+import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
@@ -32,9 +33,14 @@ import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.managers.WaveManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNodeFactory;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
+import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.model.world.TerrainFactory;
 import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
+import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
@@ -147,6 +153,8 @@ public class GameFactory {
         AntFactory antFactory = new AntFactory(pheromoneManager, worldMap, entityManager,
                 destructionListener);
 
+        ResourceNodeFactory resourceNodeFactory = new ResourceNodeFactory(structureManager);
+
         EggManager eggManager = new EggManager(antTypeRegistry, antFactory);
         timeCycle.addTimeObserver(eggManager);
 
@@ -154,6 +162,8 @@ public class GameFactory {
                 structureManager, destructionListener);
 
         spawnInitialAnts(entityManager, colony, antFactory, antTypeRegistry);
+
+        spawnTerrainStructures(resourceNodeFactory, worldMap);
 
         WaveManager waveManager = new WaveManager(enemyFactory, entityManager);
         timeCycle.addTimeObserver(waveManager);
@@ -167,6 +177,20 @@ public class GameFactory {
         AntType type = antTypeRegistry.get("worker");
         Ant ant = antFactory.createAnt(home, type);
         entityManager.addEntity(ant);
+    }
+
+    /**
+     * Spawns structures determined by terrain generation features.
+     */
+    private static void spawnTerrainStructures(ResourceNodeFactory resourceNodeFactory, MapProvider map) {
+        for (StructureSpawn spawn : map.getStructureSpawns()) {
+            if ("resource_node".equals(spawn.getType())) {
+                Vector2 structurePos = map.tileToWorld(spawn.getPosition());
+
+                resourceNodeFactory.createResourceNode(structurePos, spawn);
+            }
+            // Add other structure types here
+        }
     }
 
     private static Colony createColony(TimeCycle timeCycle,

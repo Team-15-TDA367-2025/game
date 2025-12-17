@@ -16,6 +16,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 public class WanderBehavior extends AntBehavior{
     private final Home home;
     private final PheromoneGridConverter converter;
+    private int accumulator = 0;
 
     // TODO: we should not need to pass along everything to all behaviors
     public WanderBehavior(Ant ant, Home home, EntityQuery entityQuery, PheromoneGridConverter converter) {
@@ -71,7 +72,12 @@ public class WanderBehavior extends AntBehavior{
             ant.setBehavior(new AttackBehavior(home, ant, ant.getPosition(), entityQuery, converter));
             return;
         }
-        changeTrajectory();
+
+        accumulator += 1;
+        if (accumulator >= 20) {
+            changeTrajectory();
+            accumulator = 0;
+        }
 
         GridPoint2 gridPos = ant.getGridPosition();
         List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos);
