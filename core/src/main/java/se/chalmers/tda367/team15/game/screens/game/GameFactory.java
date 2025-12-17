@@ -146,9 +146,13 @@ public class GameFactory {
         simulationManager.addUpdateObserver(fogSystem);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
+        //Ant target priority
+        HashMap<AttackCategory, Integer> antTargetPriority = new HashMap<>();
+        termiteTargetPriority.put(AttackCategory.TERMITE, 2);
+
         PheromoneSystem pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), pheromoneGridConverter, 4);
         AntFactory antFactory = new AntFactory(pheromoneSystem, worldMap, entityManager,
-                destructionListener);
+                destructionListener, structureManager, antTargetPriority);
 
         EggManager eggManager = new EggManager(antTypeRegistry, antFactory);
         timeCycle.addTimeObserver(eggManager);
