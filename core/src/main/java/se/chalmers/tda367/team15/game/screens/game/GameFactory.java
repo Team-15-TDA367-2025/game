@@ -75,7 +75,7 @@ public class GameFactory {
 
         // 3. Create Views
         CameraView cameraView = createCameraView(cameraModel);
-        WorldRenderer sceneView = new WorldRenderer(cameraView, textureRegistry, gameModel, gameModel.getFogProvider());
+        WorldRenderer worldRenderer = new WorldRenderer(cameraView, textureRegistry, gameModel.getMapProvider(), gameModel.getTimeProvider(), gameModel.getFogProvider());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneManager());
         HudView hudView = new HudView(hudBatch, uiFactory);
 
@@ -86,7 +86,7 @@ public class GameFactory {
         SpeedController speedController = new SpeedController(gameModel);
         HudController hudController = new HudController(hudView, gameModel.getAntTypeRegistry(),
                 gameModel.getEggManager(), pheromoneController, speedController,
-                uiFactory, gameModel.getTimeCycle(), gameModel.getColonyUsageProvider());
+                uiFactory, gameModel.getTimeProvider(), gameModel.getColonyUsageProvider());
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);
@@ -101,7 +101,7 @@ public class GameFactory {
                 game,
                 gameModel,
                 cameraView,
-                sceneView,
+                worldRenderer,
                 pheromoneView,
                 hudView,
                 textureRegistry,
@@ -175,10 +175,8 @@ public class GameFactory {
     public static void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
         AntType type = antTypeRegistry.get("worker");
-        for (int i = 0; i < 10000; i++) {
-            Ant ant = antFactory.createAnt(home, type);
-            entityManager.addEntity(ant);
-        }
+        Ant ant = antFactory.createAnt(home, type);
+        entityManager.addEntity(ant);
     }
 
     /**
@@ -198,10 +196,11 @@ public class GameFactory {
     private static Colony createColony(TimeCycle timeCycle,
             EntityManager entityManager, EggManager eggManager, StructureManager structureManager,
             DestructionListener destructionListener) {
-        Colony colony = new Colony(new GridPoint2(0, 0), timeCycle, entityManager, eggManager,
+        Colony colony = new Colony(new GridPoint2(0, 0), entityManager, eggManager,
                 entityManager, destructionListener);
         structureManager.addStructure(colony);
         eggManager.addObserver(colony);
+        timeCycle.addTimeObserver(colony);
         return colony;
     }
 

@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 
-import se.chalmers.tda367.team15.game.model.TimeCycle;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 
 public class TopBarView extends Table {
     private final UiFactory uiFactory;
@@ -138,9 +138,9 @@ public class TopBarView extends Table {
         return rightButtons;
     }
 
-    public void update(TimeCycle.GameTime gameTime, int antCount, int resourceCount, int consumption) {
-        dayLabel.setText("Day " + gameTime.totalDays());
-        timeLabel.setText(String.format("%02d:%02d", gameTime.currentHour(), gameTime.currentMinute()));
+    public void update(TimeCycleDataProvider timeProvider, int antCount, int resourceCount, int consumption) {
+        dayLabel.setText("Day " + timeProvider.getGameTime().totalDays());
+        timeLabel.setText(String.format("%02d:%02d", timeProvider.getGameTime().currentHour(), timeProvider.getGameTime().currentMinute()));
         resource1Value.setText(String.valueOf(antCount));
         resource2Value.setText(String.format("%d (%d/d)", resourceCount, consumption));
 

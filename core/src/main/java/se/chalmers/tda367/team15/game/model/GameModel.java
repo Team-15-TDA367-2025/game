@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
@@ -16,35 +17,36 @@ import se.chalmers.tda367.team15.game.model.fog.FogManager;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
-import se.chalmers.tda367.team15.game.model.world.WorldMap;
+import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
 public class GameModel {
     private final ColonyUsageProvider colonyUsageProvider;
     // TODO: Fix
-    private final TimeCycle timeCycle;
+    private final TimeCycleDataProvider timeProvider;
     private final FogManager fogManager;
     private final SimulationProvider simulationProvider;
     private final PheromoneManager pheromoneManager;
-    private final WorldMap worldMap;
+    private final MapProvider mapProvider;
     private final AntTypeRegistry antTypeRegistry;
     private final StructureManager structureManager;
     private final EntityQuery entityQuery;
 
-    public GameModel(SimulationProvider simulationProvider, TimeCycle timeCycle,
+    public GameModel(SimulationProvider simulationProvider, TimeCycleDataProvider timeProvider,
             FogManager fogManager, ColonyUsageProvider colonyUsageProvider, PheromoneManager pheromoneManager,
-            WorldMap worldMap, AntTypeRegistry antTypeRegistry, StructureManager structureManager, EntityQuery entityQuery) {
+            MapProvider mapProvider, AntTypeRegistry antTypeRegistry, StructureManager structureManager, EntityQuery entityQuery) {
         this.simulationProvider = simulationProvider;
         this.colonyUsageProvider = colonyUsageProvider;
-        this.timeCycle = timeCycle;
+        this.timeProvider = timeProvider;
         this.fogManager = fogManager;
         this.pheromoneManager = pheromoneManager;
-        this.worldMap = worldMap;
+        this.mapProvider = mapProvider;
         this.antTypeRegistry = antTypeRegistry;
         this.structureManager = structureManager;
         this.entityQuery = entityQuery;
@@ -58,6 +60,10 @@ public class GameModel {
 
     public ColonyUsageProvider getColonyUsageProvider() {
         return colonyUsageProvider;
+    }
+
+    public TimeCycleDataProvider getTimeProvider() {
+        return timeProvider;
     }
 
     public PheromoneGridConverter getPheromoneGridConverter() {
@@ -82,14 +88,6 @@ public class GameModel {
         simulationProvider.handleSimulation();
     }
 
-    public boolean isDay() {
-        return timeCycle.getIsDay();
-    }
-
-    public TimeCycle.GameTime getGameTime() {
-        return timeCycle.getGameTime();
-    }
-
     public FogProvider getFogProvider() {
         return fogManager;
     }
@@ -102,25 +100,12 @@ public class GameModel {
         return pheromoneManager;
     }
 
-    public WorldMap getWorldMap() {
-        return worldMap;
-    }
-
-    public GridPoint2 getWorldSize() {
-        return getWorldMap().getSize();
-    }
-
-    public int getTotalDays() {
-        return timeCycle.getTotalDays();
+    public MapProvider getMapProvider() {
+        return mapProvider;
     }
 
     public EggManager getEggManager() {
         return colonyUsageProvider.getEggManager();
-    }
-
-    // TODO: Fix this
-    public TimeCycle getTimeCycle() {
-        return timeCycle;
     }
 
     public int getTotalAnts() {

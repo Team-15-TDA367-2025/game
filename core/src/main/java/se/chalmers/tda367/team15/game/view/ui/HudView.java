@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.Gdx;
 
-import se.chalmers.tda367.team15.game.model.TimeCycle;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 
 public class HudView {
     private final Stage stage;
@@ -66,15 +66,15 @@ public class HudView {
         bottomBar.updateLayout(stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
     }
 
-    public void updateData(TimeCycle.GameTime gameTime, int antCount, int resourceCount, int consumption) {
-        topBar.update(gameTime, antCount, resourceCount, consumption);
+    public void updateData(TimeCycleDataProvider timeProvider, int antCount, int resourceCount, int consumption) {
+        topBar.update(timeProvider, antCount, resourceCount, consumption);
     }
 
     public void setPheromoneSelectionListener(PheromoneSelectionListener listener) {
         bottomBar.setPheromoneSelectionListener(listener);
     }
 
-    public void SetSpeedControlsListener(SpeedControlsListener speedControlsListener){
+    public void SetSpeedControlsListener(SpeedControlsListener speedControlsListener) {
         topBar.setSpeedControlsListener(speedControlsListener);
     }
 

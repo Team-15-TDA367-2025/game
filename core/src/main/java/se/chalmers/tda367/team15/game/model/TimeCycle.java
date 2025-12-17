@@ -1,12 +1,13 @@
 package se.chalmers.tda367.team15.game.model;
 
+import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeCycle implements Updatable {
+public class TimeCycle implements Updatable, TimeCycleDataProvider {
     private int minutes;
     private final float timePerMinute;
     private final List<TimeObserver> timeObservers = new ArrayList<>();
