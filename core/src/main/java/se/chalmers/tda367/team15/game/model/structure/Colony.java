@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.GridPoint2;
 import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.egg.EggHatchObserver;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -30,7 +29,7 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
     private final EntityManager entityManager;
     private final DestructionListener destructionListener;
 
-    public Colony(GridPoint2 position, TimeCycle timeCycle, EntityQuery entityQuery, EggManager eggManager, EntityManager entityManager, DestructionListener destructionListener) {
+    public Colony(GridPoint2 position, EntityQuery entityQuery, EggManager eggManager, EntityManager entityManager, DestructionListener destructionListener) {
         super(position, "colony", 4);
         this.health = MAX_HEALTH;
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
@@ -38,7 +37,6 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
         this.eggManager = eggManager;
         this.entityQuery = entityQuery;
         this.entityManager = entityManager;
-        timeCycle.addTimeObserver(this);
         this.destructionListener = destructionListener;
     }
 

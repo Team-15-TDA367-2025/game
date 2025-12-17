@@ -9,9 +9,10 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
 import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
-import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 
@@ -21,26 +22,29 @@ public class WorldRenderer {
     private final TextureRegistry textureRegistry;
     private final TerrainRenderer terrainRenderer;
     private final FogRenderer fogRenderer;
-    private final GameModel model;
+    private final MapProvider mapProvider;
     private final ShapeRenderer shapeRenderer;
     private final FogProvider fogProvider;
+    private final TimeCycleDataProvider timeProvider;
 
-    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, GameModel model, FogProvider fogProvider) {
+    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, MapProvider mapProvider,
+            TimeCycleDataProvider timeProvider, FogProvider fogProvider) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
         this.terrainRenderer = new TerrainRenderer(textureRegistry);
         this.fogProvider = fogProvider;
         this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"));
-        this.model = model;
+        this.mapProvider = mapProvider;
         this.shapeRenderer = new ShapeRenderer();
+        this.timeProvider = timeProvider;
     }
 
     public void render(Iterable<Drawable> drawables) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
-        terrainRenderer.render(batch, model.getWorldMap(), cameraView);
+        terrainRenderer.render(batch, mapProvider, cameraView);
         drawables.forEach(this::draw);
 
         batch.end();
@@ -50,16 +54,16 @@ public class WorldRenderer {
             fogRenderer.render(fogProvider, cameraView.getCombinedMatrix(), cameraView);
         }
 
-        if(!model.isDay()) {
+        if (!timeProvider.getIsDay()) {
             // at night, we draw a black rectangle over screen 50% opacity
-            GridPoint2 dimensions= model.getWorldSize();
+            GridPoint2 dimensions = mapProvider.getSize();
             Gdx.gl.glEnable(GL20.GL_BLEND); // we want to blend not cover.
             shapeRenderer.setProjectionMatrix(cameraView.getCombinedMatrix());
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(0, 0, 0, 0.65f);
-            shapeRenderer.rect(-((float) dimensions.x /2), -((float) dimensions.y /2), dimensions.x, dimensions.y);
+            shapeRenderer.rect(-((float) dimensions.x / 2), -((float) dimensions.y / 2), dimensions.x, dimensions.y);
             shapeRenderer.end();
-           Gdx.gl.glDisable(GL20.GL_BLEND);
+            Gdx.gl.glDisable(GL20.GL_BLEND);
         }
 
     }

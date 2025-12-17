@@ -91,7 +91,7 @@ public class GameScreen extends ScreenAdapter {
 
         GameEndReason endReason = gameHasEnded();
         if (endReason != GameEndReason.STILL_PLAYING) {
-            GameStats gameStats = new GameStats(gameModel.getTotalDays());
+            GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); //TODO long line
             gameStats.saveIfNewHighScore();
             game.setScreen(new EndScreen(game, endReason));
         }

@@ -2,6 +2,9 @@ package se.chalmers.tda367.team15.game.model.world;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
+
+import java.util.List;
 
 public interface MapProvider {
     /** Converts a world position to the closest tile */
@@ -19,4 +22,6 @@ public interface MapProvider {
     Tile getTile(GridPoint2 pos);
     /** Gets the tile at the given world position */
     Tile getTile(Vector2 worldPos);
+
+    List<StructureSpawn> getStructureSpawns();
 }

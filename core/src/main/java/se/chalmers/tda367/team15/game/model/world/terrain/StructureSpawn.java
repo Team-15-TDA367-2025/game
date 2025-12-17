@@ -1,5 +1,6 @@
 package se.chalmers.tda367.team15.game.model.world.terrain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.math.GridPoint2;
@@ -13,7 +14,7 @@ public class StructureSpawn {
     private final Map<String, Object> properties;
 
     public StructureSpawn(GridPoint2 position, String type) {
-        this(position, type, null);
+        this(position, type, new HashMap<>());
     }
 
     public StructureSpawn(GridPoint2 position, String type, Map<String, Object> properties) {
