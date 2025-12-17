@@ -17,6 +17,7 @@ public class EggManager implements TimeObserver {
     private final List<Egg> eggs;
     private final List<EggHatchObserver> observers;
     private final AntTypeRegistry antTypeRegistry;
+    // TODO: Do we really need this here?
     private final AntFactory antFactory;
 
     public EggManager(AntTypeRegistry antTypeRegistry, AntFactory antFactory) {

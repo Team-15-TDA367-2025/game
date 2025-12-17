@@ -8,4 +8,31 @@ dependencies {
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+
+  // Testing
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+  useJUnitPlatform()
+  
+  testLogging {
+    events "passed", "skipped", "failed", "standardOut", "standardError"
+    showExceptions = true
+    showCauses = true
+    showStackTraces = true
+    exceptionFormat = "full"
+  }
+
+  afterSuite { desc, result ->
+    if (!desc.parent) {
+      println "\n-------- Test Results --------"
+      println "Tests: ${result.testCount}"
+      println "Passed: ${result.successfulTestCount}"
+      println "Failed: ${result.failedTestCount}"
+      println "Skipped: ${result.skippedTestCount}"
+      println "------------------------------"
+    }
+  }
 }
