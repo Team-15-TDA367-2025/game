@@ -9,7 +9,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.view.ui.EggPanelView;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
 import se.chalmers.tda367.team15.game.view.ui.PheromoneSelectionListener;
-import se.chalmers.tda367.team15.game.view.ui.UiFactory;
+import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 public class HudController implements PheromoneSelectionListener {
     private final HudView view;
@@ -21,7 +21,7 @@ public class HudController implements PheromoneSelectionListener {
     private final TimeCycleDataProvider timeProvider;
 
     public HudController(HudView view, AntTypeRegistry antTypeRegistry, EggManager eggManager,
-            PheromoneController pheromoneController, SpeedController speedController, UiFactory uiFactory,
+            PheromoneController pheromoneController, SpeedController speedController, UiSkin uiFactory,
             TimeCycleDataProvider timeProvider, ColonyUsageProvider colonyUsageProvider) {
         this.view = view;
         this.timeProvider = timeProvider;

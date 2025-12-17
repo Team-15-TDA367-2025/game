@@ -20,7 +20,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
  * Dynamically builds UI based on registered ant types in the registry.
  */
 public class EggPanelView {
-    private final UiFactory uiFactory;
+    private final UiSkin uiFactory;
     private final EggController eggController;
     private final EggManager eggManager;
     private final Table panelTable;
@@ -28,7 +28,7 @@ public class EggPanelView {
     private final ColonyDataProvider colonyDataProvider;
     private final AntTypeRegistry antTypeRegistry;
 
-    public EggPanelView(UiFactory uiFactory, EggController eggController, EggManager eggManager, ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry) {
+    public EggPanelView(UiSkin uiFactory, EggController eggController, EggManager eggManager, ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry) {
         this.uiFactory = uiFactory;
         this.eggController = eggController;
         this.eggManager = eggManager;

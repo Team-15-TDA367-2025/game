@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Scaling;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 
 public class TopBarView extends Table {
-    private final UiFactory uiFactory;
+    private final UiSkin uiFactory;
 
     private final Label dayLabel;
     private final Label timeLabel;
@@ -23,7 +23,7 @@ public class TopBarView extends Table {
     private final Label resource2Value;
     private SpeedControlsListener speedControlsListener;
 
-    public TopBarView(UiFactory uiFactory) {
+    public TopBarView(UiSkin uiFactory) {
         this.uiFactory = uiFactory;
 
         setBackground(uiFactory.getPanelBackground());
@@ -50,15 +50,12 @@ public class TopBarView extends Table {
         resourceStack.add(resourceBar2).width(200f).growY();
         resourceStack.row();
 
-        Table rightButtons = createRightButtons();
-
         left();
         add(dayLabel).left().padRight(UiTheme.PADDING_MEDIUM)
-            .minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
+                .minWidth(UiTheme.DAY_LABEL_MIN_WIDTH);
         add(timeLabel).left().padRight(UiTheme.PADDING_MEDIUM).minWidth(UiTheme.TIME_LABEL_MIN_WIDTH);
         add(speedTable).padRight(UiTheme.PADDING_MEDIUM);
         add(resourceStack).growY().padRight(UiTheme.PADDING_MEDIUM);
-        add(rightButtons).right();
     }
 
     private Table createSpeedControls() {
@@ -127,20 +124,10 @@ public class TopBarView extends Table {
         return stack;
     }
 
-    private Table createRightButtons() {
-        TextButton statsBtn = uiFactory.createTextButton("Stats", null);
-        TextButton settingsBtn = uiFactory.createTextButton("Settings", null);
-
-        Table rightButtons = new Table();
-        rightButtons.add(statsBtn).padRight(UiTheme.PADDING_SMALL);
-        rightButtons.add(settingsBtn);
-
-        return rightButtons;
-    }
-
     public void update(TimeCycleDataProvider timeProvider, int antCount, int resourceCount, int consumption) {
         dayLabel.setText("Day " + timeProvider.getGameTime().totalDays());
-        timeLabel.setText(String.format("%02d:%02d", timeProvider.getGameTime().currentHour(), timeProvider.getGameTime().currentMinute()));
+        timeLabel.setText(String.format("%02d:%02d", timeProvider.getGameTime().currentHour(),
+                timeProvider.getGameTime().currentMinute()));
         resource1Value.setText(String.valueOf(antCount));
         resource2Value.setText(String.format("%d (%d/d)", resourceCount, consumption));
 

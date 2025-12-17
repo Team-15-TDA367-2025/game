@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 
-public class UiFactory {
+public class UiSkin {
     private final TextureRegistry textures;
     private final BitmapFont defaultFont;
     private NinePatchDrawable buttonBackground;
@@ -26,7 +26,7 @@ public class UiFactory {
     private NinePatchDrawable panelBackground;
     private NinePatchDrawable areaBackground;
 
-    public UiFactory(TextureRegistry textures) {
+    public UiSkin(TextureRegistry textures) {
         this.textures = textures;
         this.defaultFont = new BitmapFont();
     }

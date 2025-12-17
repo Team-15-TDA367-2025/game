@@ -45,7 +45,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
-import se.chalmers.tda367.team15.game.view.ui.UiFactory;
+import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 /**
  * Factory for creating and wiring the GameScreen.
@@ -68,7 +68,7 @@ public class GameFactory {
 
         // 2. Create Resources
         TextureRegistry textureRegistry = new TextureRegistry();
-        UiFactory uiFactory = new UiFactory(textureRegistry);
+        UiSkin uiFactory = new UiSkin(textureRegistry);
         SpriteBatch hudBatch = new SpriteBatch();
 
         // 3. Create Views

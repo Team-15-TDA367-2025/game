@@ -18,7 +18,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
-import se.chalmers.tda367.team15.game.view.ui.UiFactory;
+import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 /**
  * Main game screen.
@@ -38,7 +38,7 @@ public class GameScreen extends ScreenAdapter {
 
     // Resources
     private final TextureRegistry textureRegistry;
-    private final UiFactory uiFactory;
+    private final UiSkin uiFactory;
     private final ViewportListener viewportListener;
 
     // Controllers
@@ -54,7 +54,7 @@ public class GameScreen extends ScreenAdapter {
             PheromoneRenderer pheromoneView,
             HudView hudView,
             TextureRegistry textureRegistry,
-            UiFactory uiFactory,
+            UiSkin uiFactory,
             ViewportListener viewportListener,
             CameraController cameraController,
             HudController hudController) {
