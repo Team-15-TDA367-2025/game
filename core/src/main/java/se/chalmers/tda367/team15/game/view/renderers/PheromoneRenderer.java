@@ -81,8 +81,7 @@ public class PheromoneRenderer {
         float cellSize = converter.getPheromoneCellSize();
         // Draw at 4x size so balls can overflow into neighboring cells
         float drawSize = cellSize * 4f;
-        float halfDrawSize = drawSize / 2f;
-
+        
         for (Pheromone pheromone : pheromoneManager.getPheromones()) {
             float distanceRatio = (float) pheromone.getDistance() / maxDistance;
             
@@ -102,12 +101,11 @@ public class PheromoneRenderer {
             batch.setColor(tempColor);
             Vector2 worldPos = converter.pheromoneGridToWorld(gridPos);
 
-            float thisDrawSize = drawSize * trailStrength;
-            float halfThisDrawSize = thisDrawSize / 2f;
+            float thisDrawSize = ((float) Math.log(trailStrength + 1) + 0.5f) * drawSize;
             
             batch.draw(pheromoneRegion, 
-                worldPos.x - halfThisDrawSize, 
-                worldPos.y - halfThisDrawSize, 
+                worldPos.x - thisDrawSize / 2f, 
+                worldPos.y - thisDrawSize / 2f, 
                 thisDrawSize, 
                 thisDrawSize);
         }

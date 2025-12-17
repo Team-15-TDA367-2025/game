@@ -40,4 +40,19 @@ public class FogManager implements FogProvider, Updatable {
     public boolean isDiscovered(GridPoint2 pos) {
         return fogOfWar.isDiscovered(pos);
     }
+
+    @Override
+    public boolean[][] getDiscoveredArray() {
+        return fogOfWar.getDiscoveredArray();
+    }
+
+    @Override
+    public boolean isDirty() {
+        return fogOfWar.isDirty();
+    }
+
+    @Override
+    public void clearDirty() {
+        fogOfWar.clearDirty();
+    }
 }

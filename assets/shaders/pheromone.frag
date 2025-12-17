@@ -18,13 +18,12 @@ vec3 getTypeColor(float typeIndex) {
     }
 }
 
-// Deterministic hash for consistent randomness
+// Deterministic hash for consistent randomness [0, 1)
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
 
 void main() {
-    // Decode packed data
     float trailStrength = v_color.g;  // 1.0 at start, 0.0 at end
     float seedVal = v_color.b;        // Random seed per pheromone
     vec3 baseColor = getTypeColor(v_color.r);
@@ -33,32 +32,23 @@ void main() {
     
     float alpha = 0.0;
     
-    // Number of squares based on strength (distance)
-    // Strong trails (1.0) get more squares, weak trails get fewer
-    float count = 2000.0;
-    
-    // Spread radius relative to texture size
-    // Texture covers 4x4 cells. We want spread around 1 tile (0.25 texture units)
-    float spread = 0.15; 
+    // Max spread radius relative to texture size
+    float spread = 0.5; 
     
     // Size of each square (in UV units)
-    // 0.04 is roughly 1/25 of texture, or ~1/6 of a tile width
     float size = 0.04; 
 
-    for (int i = 0; i < 8; i++) {
-        if (float(i) >= count) break;
-        
-        // Use seed + index to generate unique random position
+    for (int i = 0; i < 10; i++) {
         vec2 p = vec2(seedVal * 100.0 + float(i) * 13.0, seedVal * 50.0 + float(i) * 7.0);
-        
-        vec2 offset = vec2(hash(p), hash(p + 17.0));
-        
-        // Map 0..1 to -spread..+spread
-        offset = (offset - 0.5) * spread * 2.0;
-        
-        // Center of this square
-        vec2 center = vec2(0.5) + offset;
-        
+
+        // Calculate a random distance and angle + offset by time that's smoothly changing
+        float dist = hash(p) * spread;
+        float angle = hash(p + 23.0) * 6.28318530718;
+        vec2 offset = vec2(cos(angle), sin(angle)) * dist * cos(u_time * hash(p));
+
+        // Center of this square, offset by half the size of one square
+        vec2 center = vec2(0.5) + offset + vec2(size / 2.0);
+
         // Check if current pixel is inside this square
         vec2 d = abs(uv - center);
         if (d.x < size && d.y < size) {
@@ -69,6 +59,5 @@ void main() {
     
     if (alpha < 0.1) discard;
     
-    // Solid color squares
-    gl_FragColor = vec4(baseColor, 0.8);
+    gl_FragColor = vec4(baseColor, 0.6);
 }

@@ -1,4 +1,4 @@
-// We just wanted it to look cool, this is mostly AI generated and ugly code-wise, please ignore
+// Fog shader with optimized 3D Simplex noise
 
 #ifdef GL_ES
 precision mediump float;
@@ -12,104 +12,117 @@ uniform float u_time;
 uniform vec2 u_resolution;
 
 // Camera/world uniforms
-uniform vec2 u_cameraPos;      // Camera position in world
-uniform float u_cameraZoom;    // Camera zoom level
-uniform vec2 u_viewportSize;   // Viewport size in world units (before zoom)
+uniform vec2 u_cameraPos;
+uniform float u_cameraZoom;
+uniform vec2 u_viewportSize;
 
 //--------------------------------------------------
-// Perlin Noise
+// 3D Simplex Noise (faster than Perlin)
 //--------------------------------------------------
-float rand3(vec3 p) {
-    return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453123);
+vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+vec4 permute(vec4 x) { return mod289(((x * 34.0) + 1.0) * x); }
+vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float snoise(vec3 v) {
+    const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+    const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+    
+    vec3 i  = floor(v + dot(v, C.yyy));
+    vec3 x0 = v - i + dot(i, C.xxx);
+    
+    vec3 g = step(x0.yzx, x0.xyz);
+    vec3 l = 1.0 - g;
+    vec3 i1 = min(g.xyz, l.zxy);
+    vec3 i2 = max(g.xyz, l.zxy);
+    
+    vec3 x1 = x0 - i1 + C.xxx;
+    vec3 x2 = x0 - i2 + C.yyy;
+    vec3 x3 = x0 - D.yyy;
+    
+    i = mod289(i);
+    vec4 p = permute(permute(permute(
+        i.z + vec4(0.0, i1.z, i2.z, 1.0))
+      + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+      + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+      
+    float n_ = 0.142857142857;
+    vec3 ns = n_ * D.wyz - D.xzx;
+    
+    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+    vec4 x_ = floor(j * ns.z);
+    vec4 y_ = floor(j - 7.0 * x_);
+    
+    vec4 x = x_ * ns.x + ns.yyyy;
+    vec4 y = y_ * ns.x + ns.yyyy;
+    vec4 h = 1.0 - abs(x) - abs(y);
+    
+    vec4 b0 = vec4(x.xy, y.xy);
+    vec4 b1 = vec4(x.zw, y.zw);
+    
+    vec4 s0 = floor(b0) * 2.0 + 1.0;
+    vec4 s1 = floor(b1) * 2.0 + 1.0;
+    vec4 sh = -step(h, vec4(0.0));
+    
+    vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+    vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+    
+    vec3 p0 = vec3(a0.xy, h.x);
+    vec3 p1 = vec3(a0.zw, h.y);
+    vec3 p2 = vec3(a1.xy, h.z);
+    vec3 p3 = vec3(a1.zw, h.w);
+    
+    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+    p0 *= norm.x;
+    p1 *= norm.y;
+    p2 *= norm.z;
+    p3 *= norm.w;
+    
+    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+    m = m * m;
+    return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
 }
 
-vec3 randomGradient(vec3 p) {
-    float x = rand3(p);
-    float y = rand3(p + 13.37);
-    float z = rand3(p + 42.69);
-    return normalize(vec3(x, y, z) * 2.0 - 1.0);
-}
-
-vec3 fade(vec3 t) {
-    return t * t * t * (t * (t * 6.0 - 15.0) + 10.0);
-}
-
-float perlin3(vec3 p) {
-    vec3 pi = floor(p);
-    vec3 pf = fract(p);
-    vec3 w = fade(pf);
-
-    float n000 = dot(randomGradient(pi + vec3(0,0,0)), pf - vec3(0,0,0));
-    float n100 = dot(randomGradient(pi + vec3(1,0,0)), pf - vec3(1,0,0));
-    float n010 = dot(randomGradient(pi + vec3(0,1,0)), pf - vec3(0,1,0));
-    float n110 = dot(randomGradient(pi + vec3(1,1,0)), pf - vec3(1,1,0));
-    float n001 = dot(randomGradient(pi + vec3(0,0,1)), pf - vec3(0,0,1));
-    float n101 = dot(randomGradient(pi + vec3(1,0,1)), pf - vec3(1,0,1));
-    float n011 = dot(randomGradient(pi + vec3(0,1,1)), pf - vec3(0,1,1));
-    float n111 = dot(randomGradient(pi + vec3(1,1,1)), pf - vec3(1,1,1));
-
-    float nx00 = mix(n000, n100, w.x);
-    float nx10 = mix(n010, n110, w.x);
-    float nx01 = mix(n001, n101, w.x);
-    float nx11 = mix(n011, n111, w.x);
-    float nxy0 = mix(nx00, nx10, w.y);
-    float nxy1 = mix(nx01, nx11, w.y);
-    return mix(nxy0, nxy1, w.z);
-}
-
+// FBM with 3 octaves
 float fbm(vec3 p) {
-    float sum = 0.0;
-    float amp = 0.5;
-    for (int i = 0; i < 5; i++) {
-        sum += perlin3(p) * amp;
-        p *= 2.0;
-        amp *= 0.5;
-    }
-    return sum;
+    float f = 0.0;
+    f += 0.5000 * snoise(p); p *= 2.0;
+    f += 0.2500 * snoise(p); p *= 2.0;
+    f += 0.1250 * snoise(p);
+    return f;
 }
 
 void main() {
     // Calculate world coordinates from screen UV
-    // Screen UV (0,0) to (1,1) maps to camera view
-    vec2 screenOffset = v_texCoords - 0.5;  // -0.5 to 0.5
-    
-    // Effective viewport size (what we see after zoom)
+    vec2 screenOffset = v_texCoords - 0.5;
     vec2 effectiveViewport = u_viewportSize / u_cameraZoom;
-    
-    // World position = camera position + offset scaled by viewport
     vec2 worldPos = u_cameraPos + screenOffset * effectiveViewport;
     
-    // Noise parameters - now in WORLD units
-    float noiseScale = 1.5;  // Noise frequency in world space
+    // Noise parameters - in WORLD space
+    float noiseScale = 1.5;
     float animTime = u_time * 0.1;
     
-    // Generate 2D noise offset using world coordinates
+    // 3D noise with time as Z axis - computed per pixel for full resolution
     float noiseX = fbm(vec3(worldPos * noiseScale, animTime));
     float noiseY = fbm(vec3(worldPos * noiseScale + 100.0, animTime + 50.0));
     
-    // Distortion amount in UV space
-    // Convert world-space distortion to UV distortion
-    float distortWorld = 2.0;  // Distort by up to 2 world units
+    // Distortion in UV space
+    float distortWorld = 2.0;
     vec2 distortUV = vec2(noiseX, noiseY) * (distortWorld / effectiveViewport);
     
     // Sample fog mask with distorted coordinates
     vec2 distortedUV = v_texCoords + distortUV;
     float fogMask = texture2D(u_texture, distortedUV).r;
     
-    // Also sample original for blending
+    // Blend with original for smoother edges
     float originalMask = texture2D(u_texture, v_texCoords).r;
+    float finalMask = mix(originalMask, fogMask, 0.99);
     
-    // Blend between distorted and original
-    float blendFactor = 0.99;
-    float finalMask = mix(originalMask, fogMask, blendFactor);
-    
-    // Apply some edge softening
+    // Apply edge softening
     float softMask = smoothstep(0.3, 0.7, finalMask);
     
     // Fog color - dark forest green
     vec3 fogColor = vec3(0.09, 0.188, 0.11);
-    float fogAlpha = 1.0;
     
-    // Final output
-    gl_FragColor = vec4(fogColor, softMask * fogAlpha) * v_color;
+    gl_FragColor = vec4(fogColor, softMask) * v_color;
 }
