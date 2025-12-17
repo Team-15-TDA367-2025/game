@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.AttackBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.BehaviourAdapter;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
@@ -23,11 +22,6 @@ public class TermiteAttackBehaviour extends AttackBehaviour {
     public void noTargets() {
         Entity host = this.host.getEntity();
         host.setVelocity(new Vector2(0,0));
-    }
-
-    @Override
-    protected void theresStillTargets() {
-        // do nothing
     }
 
 }

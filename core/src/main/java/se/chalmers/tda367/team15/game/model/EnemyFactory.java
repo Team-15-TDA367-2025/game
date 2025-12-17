@@ -21,13 +21,7 @@ public class EnemyFactory {
     }
 
     public Termite createTermite(Vector2 pos) {
-        Termite termite =  new Termite(pos, entityQuery, structureManager, destructionListener);
-        AttackTargetingComponent attackTargetingComponent = new AttackTargetingComponent(termite,entityQuery,structureManager,targetPriority);
-        AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, termite);
-        TermiteAttackBehaviour attackBehaviour = new TermiteAttackBehaviour(termite,attackTargetingComponent,attackComponent);
-        TermiteBehaviourManager termiteBehaviourManager = new TermiteBehaviourManager(attackBehaviour);
-        termite.setManager(termiteBehaviourManager);
+        return new Termite(pos, entityQuery, structureManager,targetPriority, destructionListener);
 
-        return termite;
     }
 }

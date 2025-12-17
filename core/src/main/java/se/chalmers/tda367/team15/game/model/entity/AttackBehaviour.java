@@ -36,7 +36,6 @@ public abstract class AttackBehaviour {
             Vector2 targetV = target.getPosition().sub(this.host.getPosition());
             host.setVelocity(targetV.nor().scl(this.host.getEntity().getSpeed()));
             attack(target);
-            theresStillTargets();
         }
     }
 
