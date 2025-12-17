@@ -30,14 +30,10 @@ public class ResourceManager implements Updatable {
 
     @Override
     public void update(float deltaTime) {
-
-        List<Structure> structures = entityQuery.getEntitiesOfType(Structure.class);
-
         List<Ant> ants = entityQuery.getEntitiesOfType(Ant.class);
 
         handleResourcePickup(ants);
         handleResourceDeposit(ants);
-        structures.removeIf(structure -> structure instanceof Resource && ((Resource) structure).getAmount() <= 0);
     }
 
     public void addResource(Resource resource) {
