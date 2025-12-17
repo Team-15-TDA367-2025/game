@@ -1,15 +1,12 @@
 package se.chalmers.tda367.team15.game.model.entity.termite;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
@@ -19,12 +16,11 @@ import se.chalmers.tda367.team15.game.model.managers.StructureManager;
  * entities
  * then structures, then stand still. Perfect vision of map.
  */
-public class Termite extends Entity implements CanBeAttacked {
-    private final int visionRadius = 8;
+public class Termite extends Entity implements CanAttack {
+    private final int visionRadius = 1000000000;
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
 
 
-    private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
     private final float MAX_HEALTH = 1;
     private float health;
     private final EntityQuery entityQuery;
@@ -95,5 +91,30 @@ public class Termite extends Entity implements CanBeAttacked {
     @Override
     public Vector2 getSize() {
         return new Vector2(1f, 1.5f);
+    }
+
+    @Override
+    public Entity getEntity() {
+        return this;
+    }
+
+    @Override
+    public int getVisionRadius() {
+        return visionRadius;
+    }
+
+    @Override
+    public float getAttackDamage() {
+        return 2;
+    }
+
+    @Override
+    public float getAttackRange() {
+        return 2;
+    }
+
+    @Override
+    public int getAttackCoolDownMs() {
+        return 1000;
     }
 }

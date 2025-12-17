@@ -12,7 +12,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
-public class WanderBehavior extends AntBehavior{
+public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour{
     private final Home home;
 
     public WanderBehavior(Ant ant, Home home, EntityQuery entityQuery) {
@@ -64,8 +64,7 @@ public class WanderBehavior extends AntBehavior{
     public void update(PheromoneSystem system) {
 
         if (enemiesInSight()) {
-            ant.setBehavior(new AttackBehavior(home, ant, ant.getPosition(), entityQuery));
-            return;
+           ant.setAttackBehaviour();
         }
         changeTrajectory();
 
@@ -73,9 +72,10 @@ public class WanderBehavior extends AntBehavior{
         List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos);
 
         if (!neighbors.isEmpty()) {
-            ant.setBehavior(new FollowTrailBehavior(home, entityQuery, ant));
+            ant.setFollowTrailBehaviour();
         }
 
+        return;
     }
 
     @Override

@@ -15,7 +15,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
-public class FollowTrailBehavior extends AntBehavior {
+public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehaviour {
     private final PheromoneType allowedType;
 
     private static final float SPEED_BOOST_ON_TRAIL = 1.5f;
@@ -56,8 +56,7 @@ public class FollowTrailBehavior extends AntBehavior {
     @Override
     public void update(PheromoneSystem system) {
         if (enemiesInSight()) {
-            ant.setBehavior(new AttackBehavior(home, ant, ant.getPosition(), entityQuery));
-            return;
+            ant.setAttackBehaviour();
         }
 
         List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition()).stream()
@@ -71,8 +70,7 @@ public class FollowTrailBehavior extends AntBehavior {
                     .orElse(null);
 
             if (lastPheromone == null) {
-                ant.setBehavior(new WanderBehavior(ant, home, entityQuery));
-                return;
+                ant.setWanderBehaviour();
             }
         }
 
@@ -92,8 +90,7 @@ public class FollowTrailBehavior extends AntBehavior {
 
             // If still no target, we lost the trail
             if (currentTarget == null) {
-                ant.setBehavior(new WanderBehavior(ant, home, entityQuery));
-                return;
+                ant.setWanderBehaviour();
             }
         }
         // TODO Movement logic breaks at low tick speed

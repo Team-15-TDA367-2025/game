@@ -16,6 +16,8 @@ public abstract class AntBehavior {
         this.ant = ant;
         this.entityQuery = entityQuery;
     }
+    // TODO code duplication????
+    public abstract void update(PheromoneSystem system);
 
     public boolean enemiesInSight() {
         List<CanBeAttacked> entities = entityQuery.getEntitiesOfType(CanBeAttacked.class);
@@ -31,9 +33,4 @@ public abstract class AntBehavior {
 
         return !targets.isEmpty();
     }
-
-    public abstract void update(PheromoneSystem system);
-
-
-    public void handleCollision() {}
 }

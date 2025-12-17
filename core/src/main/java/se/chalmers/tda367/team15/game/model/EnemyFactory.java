@@ -2,11 +2,7 @@ package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
-import se.chalmers.tda367.team15.game.model.entity.termite.AttackBehaviour;
-import se.chalmers.tda367.team15.game.model.entity.termite.AttackTargetingComponent;
-import se.chalmers.tda367.team15.game.model.entity.termite.Termite;
-import se.chalmers.tda367.team15.game.model.entity.termite.TermiteBehaviourManager;
+import se.chalmers.tda367.team15.game.model.entity.termite.*;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
@@ -25,10 +21,11 @@ public class EnemyFactory {
     }
 
     public Termite createTermite(Vector2 pos) {
-        Termite termite =  new Termite(pos, entityQuery, structureManager, destructionListener, targetPriority);
-        AttackTargetingComponent attackTargetingComponent = new AttackComponent attackComponent    =
-        AttackBehaviour attackBehaviour = new AttackBehaviour(termite, );
-        TermiteBehaviourManager termiteBehaviourManager = new TermiteBehaviourManager();
+        Termite termite =  new Termite(pos, entityQuery, structureManager, destructionListener);
+        AttackTargetingComponent attackTargetingComponent = new AttackTargetingComponent(termite,entityQuery,structureManager,targetPriority);
+        AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, termite);
+        TermiteAttackBehaviour attackBehaviour = new TermiteAttackBehaviour(termite,attackTargetingComponent,attackComponent);
+        TermiteBehaviourManager termiteBehaviourManager = new TermiteBehaviourManager(attackBehaviour);
         termite.setManager(termiteBehaviourManager);
 
         return termite;

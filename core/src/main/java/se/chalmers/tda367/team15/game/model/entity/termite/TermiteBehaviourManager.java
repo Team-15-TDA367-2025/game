@@ -1,8 +1,8 @@
 package se.chalmers.tda367.team15.game.model.entity.termite;
 
 public class TermiteBehaviourManager {
-    TermiteBehaviour attackBehaviour;
-    TermiteBehaviourManager(TermiteBehaviour attackBehaviour) {
+    TermiteAttackBehaviour attackBehaviour;
+    public TermiteBehaviourManager(TermiteAttackBehaviour attackBehaviour) {
         this.attackBehaviour=attackBehaviour;
     }
 
