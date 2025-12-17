@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 /**
  * Manages the lifecycle of entities in the simulation.
@@ -19,7 +19,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
  * Has a cache of entities by type to avoid lagging when querying entities by
  * type.
  */
-public class EntityManager implements Updatable, EntityDeathObserver, EntityQuery {
+public class EntityManager implements SimulationObserver, EntityDeathObserver, EntityQuery {
     private final CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<>();
     private final Map<Class<?>, List<Entity>> cachedEntities = new HashMap<>();
 
