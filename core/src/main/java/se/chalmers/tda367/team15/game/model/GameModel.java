@@ -104,10 +104,6 @@ public class GameModel {
         return mapProvider;
     }
 
-    public GridPoint2 getWorldSize() {
-        return mapProvider.getSize();
-    }
-
     public EggManager getEggManager() {
         return colonyUsageProvider.getEggManager();
     }
