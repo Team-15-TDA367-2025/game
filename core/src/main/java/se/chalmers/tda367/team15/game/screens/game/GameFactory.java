@@ -184,7 +184,7 @@ public class GameFactory {
     public static void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
         AntType type = antTypeRegistry.get("scout");
-        for (int i = 0; i < 20000; i++) {
+        for (int i = 0; i < 10; i++) {
             Ant ant = antFactory.createAnt(home, type);
             entityManager.addEntity(ant);
         }

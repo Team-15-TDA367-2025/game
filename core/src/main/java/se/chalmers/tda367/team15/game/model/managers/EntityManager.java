@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
@@ -20,7 +21,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
  * type.
  */
 public class EntityManager implements SimulationObserver, EntityDeathObserver, EntityQuery, EntityModificationProvider {
-    private final List<Entity> entities = new ArrayList<>();
+    private final List<Entity> entities = new CopyOnWriteArrayList<>();
     private final Map<Class<?>, List<Entity>> cachedEntities = new HashMap<>();
 
     public void addEntity(Entity entity) {
