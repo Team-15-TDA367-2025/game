@@ -1,7 +1,5 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -25,41 +23,16 @@ public class GatherTrailStrategy extends TrailStrategy {
             return null;
         }
 
-        boolean isFull = ant.getInventory().isFull();
-
-        // If inventory is full, always go home (lower distance)
-        if (isFull) {
+        if (ant.getInventory().isFull()) {
             outwards = false;
             List<Pheromone> homeward = filterByDistance(neighbors, current, false);
             if (homeward.isEmpty()) {
-                // At colony entrance - leave trail
                 return null;
             }
             return getBestByDistance(homeward, false);
         }
 
-        // Not full: wander on trail
-        // Get ALL forward options (strictly higher distance when outwards)
-        List<Pheromone> forward = filterByDistance(neighbors, current, outwards);
-
-        if (forward.isEmpty()) {
-            // Dead end - turn around
-            outwards = !outwards;
-            forward = filterByDistance(neighbors, current, outwards);
-
-            if (forward.isEmpty()) {
-                // Still nothing - pick any neighbor that isn't current
-                return neighbors.stream()
-                        .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
-                        .findAny()
-                        .orElse(neighbors.get(0));
-            }
-        }
-
-        // Pick randomly from ALL forward options (not just best distance)
-        List<Pheromone> shuffled = new ArrayList<>(forward);
-        Collections.shuffle(shuffled, random);
-        return shuffled.get(0);
+        return moveRandomlyOnTrail(neighbors, current, random);
     }
 
     @Override

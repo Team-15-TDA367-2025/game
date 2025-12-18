@@ -150,12 +150,13 @@ public class GameFactory {
         HashMap<AttackCategory, Integer> termiteTargetPriority = new HashMap<>();
         termiteTargetPriority.put(AttackCategory.WORKER_ANT, 2);
 
-        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener, termiteTargetPriority);
+        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener,
+                termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);
         simulationManager.addUpdateObserver(fogManager);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
-        //Ant target priority
+        // Ant target priority
         HashMap<AttackCategory, Integer> antTargetPriority = new HashMap<>();
         antTargetPriority.put(AttackCategory.TERMITE, 2);
 
@@ -182,9 +183,11 @@ public class GameFactory {
 
     public static void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
-        AntType type = antTypeRegistry.get("worker");
-        Ant ant = antFactory.createAnt(home, type);
-        entityManager.addEntity(ant);
+        AntType type = antTypeRegistry.get("soldier");
+        for (int i = 0; i < 500; i++) {
+            Ant ant = antFactory.createAnt(home, type);
+            entityManager.addEntity(ant);
+        }
     }
 
     /**
@@ -242,7 +245,7 @@ public class GameFactory {
                 .textureName("scout")
                 .allowedPheromones(Set.of(PheromoneType.EXPLORE))
                 .homeBias(0.01f) // Low home bias - scouts wander far
-              .build());
+                .build());
 
         // Soldier: Low speed, high HP, 0 capacity, expensive
         registry.register(AntType.with()
@@ -256,7 +259,7 @@ public class GameFactory {
                 .textureName("ant")
                 .allowedPheromones(Set.of(PheromoneType.ATTACK))
                 .homeBias(0.5f)
-              .build());
+                .build());
 
         // Worker: Medium speed, medium HP, some capacity
         registry.register(AntType.with()
@@ -270,7 +273,7 @@ public class GameFactory {
                 .textureName("ant")
                 .allowedPheromones(Set.of(PheromoneType.GATHER))
                 .homeBias(0.1f)
-              .build());
+                .build());
 
         return registry;
     }

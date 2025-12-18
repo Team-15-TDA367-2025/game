@@ -15,7 +15,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 /**
  * This behaviour is used when ants are trying to follow a pheromone trail
  */
-public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehaviour {
+public class FollowTrailBehavior extends AntBehavior {
     private static final float REACHED_THRESHOLD_FRACTION = 0.3f;
     private Pheromone lastPheromone = null;
     private Pheromone currentTarget = null;
@@ -114,6 +114,10 @@ public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehav
 
     private Vector2 getCenterPos(Pheromone p) {
         return converter.pheromoneGridToWorld(p.getPosition());
+    }
+
+    public Pheromone getCurrentPheromone() {
+        return currentTarget;
     }
 
     @Override

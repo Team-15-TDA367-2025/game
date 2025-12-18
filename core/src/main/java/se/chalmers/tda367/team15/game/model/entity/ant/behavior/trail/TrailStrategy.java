@@ -1,7 +1,10 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
@@ -75,5 +78,38 @@ public abstract class TrailStrategy {
         return options.stream()
                 .max(max ? comp : comp.reversed())
                 .orElse(options.get(0));
+    }
+
+    /**
+     * Helper for wandering randomly on a trail with automatic turn-around at dead
+     * ends.
+     * Picks a random pheromone in the current direction, turning around if needed.
+     *
+     * @param neighbors Available neighbor pheromones
+     * @param current   Current pheromone (may be null)
+     * @param random    Random instance for shuffling
+     * @return Selected pheromone, or null if completely stuck
+     */
+    protected Pheromone moveRandomlyOnTrail(List<Pheromone> neighbors, Pheromone current, Random random) {
+        List<Pheromone> forward = filterByDistance(neighbors, current, outwards);
+
+        if (forward.isEmpty()) {
+            // Dead end - turn around
+            outwards = !outwards;
+            forward = filterByDistance(neighbors, current, outwards);
+        }
+
+        if (forward.isEmpty()) {
+            // Still nothing - pick any neighbor that isn't current
+            return neighbors.stream()
+                    .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
+                    .findAny()
+                    .orElse(neighbors.isEmpty() ? null : neighbors.get(0));
+        }
+
+        // Pick randomly from forward options
+        List<Pheromone> shuffled = new ArrayList<>(forward);
+        Collections.shuffle(shuffled, random);
+        return shuffled.get(0);
     }
 }

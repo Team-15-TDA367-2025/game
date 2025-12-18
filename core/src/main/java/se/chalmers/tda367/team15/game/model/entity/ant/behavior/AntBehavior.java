@@ -9,12 +9,14 @@ import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 
-
 /**
- * Used to update the ants, the ants have a specific behaviour programmed. The behaviour is a state machine, behaviour can be unchanged or switch each update.
- * When a behaviour will switch the ant's behaviour or leave it unchanged is controlled based on internal logic of the type of behaviour.
+ * Used to update the ants, the ants have a specific behaviour programmed. The
+ * behaviour is a state machine, behaviour can be unchanged or switch each
+ * update.
+ * When a behaviour will switch the ant's behaviour or leave it unchanged is
+ * controlled based on internal logic of the type of behaviour.
  */
-public abstract class AntBehavior {
+public abstract class AntBehavior implements GeneralizedBehaviour {
     protected Ant ant;
     protected EntityQuery entityQuery;
 
@@ -25,7 +27,7 @@ public abstract class AntBehavior {
 
     public boolean enemiesInSight() {
         List<CanBeAttacked> entities = entityQuery.getEntitiesOfType(CanBeAttacked.class);
-        List <CanBeAttacked> enemies = entities.stream().filter(e -> e.getFaction() != ant.getFaction()).toList();
+        List<CanBeAttacked> enemies = entities.stream().filter(e -> e.getFaction() != ant.getFaction()).toList();
 
         Vector2 antPosition = ant.getPosition();
         float visionRadiusSq = ant.getVisionRadius() * ant.getVisionRadius();
@@ -41,6 +43,6 @@ public abstract class AntBehavior {
 
     public abstract void update(PheromoneManager system);
 
-
-    public void handleCollision() {}
+    public void handleCollision() {
+    }
 }

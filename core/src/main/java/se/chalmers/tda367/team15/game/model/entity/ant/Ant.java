@@ -16,16 +16,16 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.TrailStrategy;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
-public class Ant extends Entity implements VisionProvider, CanBeAttacked, CanAttack {
+public class Ant extends Entity implements VisionProvider, CanAttack {
     // TODO - Antigravity: Magic number - visionRadius should be in AntType or
     // config
     AntType type;
@@ -133,6 +133,13 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked, CanAtt
             updateTexture();
         }
         return deposited;
+    }
+
+    public Pheromone getCurrentPheromone() {
+        if (behavior instanceof FollowTrailBehavior) {
+            return ((FollowTrailBehavior) behavior).getCurrentPheromone();
+        }
+        return null;
     }
 
     @Override
