@@ -13,10 +13,6 @@ public abstract class Entity implements Drawable, SimulationObserver, HasPositio
     private String textureName;
     protected Vector2 velocity;
     private MovementStrategy movementStrategy;
-    // TODO reduce amount of parameters clients need to handle
-    // Some kind of entity factory might help reduce the amount of parameters
-    // GameWorld is useful because it gives entities awareness of the world around
-    // them- singleton???
 
     public Entity(Vector2 position, String textureName) {
         this.position = position;

@@ -44,10 +44,6 @@ public abstract class Structure implements Drawable, SimulationObserver, HasPosi
         return new Vector2(size, size);
     }
 
-    public Collection<Entity> getSubEntities() {
-        return Collections.emptyList();
-    }
-
     public Faction getFaction() {
         return faction;
     }
