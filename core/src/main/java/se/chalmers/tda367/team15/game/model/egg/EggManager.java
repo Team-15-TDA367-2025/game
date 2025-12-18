@@ -18,9 +18,11 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
  * Manages the collection of eggs and their development lifecycle.
  * Implements TimeObserver to tick eggs on game time updates.
  */
+// TODO: Should the egg manager be in /egg not in /managers?
 public class EggManager implements TimeObserver, EggPurchaseProvider {
     private final List<Egg> eggs;
     private final AntTypeRegistry antTypeRegistry;
+    // TODO: Do we really need this here?
     private final AntFactory antFactory;
     private final Home home;
     private final EntityModificationProvider entityManager;
