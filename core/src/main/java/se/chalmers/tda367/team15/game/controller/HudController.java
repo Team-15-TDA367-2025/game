@@ -2,7 +2,8 @@ package se.chalmers.tda367.team15.game.controller;
 
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.EggPurchaseProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
@@ -16,21 +17,21 @@ public class HudController implements PheromoneSelectionListener {
     private final PheromoneController pheromoneController;
     private final EggController eggController;
     private final EggPanelView eggPanelView;
-    private final ColonyUsageProvider colonyUsageProvider;
+    private final ColonyDataProvider colonyDataProvider;
     private final SpeedController speedController;
     private final TimeCycleDataProvider timeProvider;
 
     public HudController(HudView view, AntTypeRegistry antTypeRegistry, EggManager eggManager,
             PheromoneController pheromoneController, SpeedController speedController, UiSkin uiFactory,
-            TimeCycleDataProvider timeProvider, ColonyUsageProvider colonyUsageProvider) {
+            TimeCycleDataProvider timeProvider, ColonyDataProvider colonyDataProvider, EggPurchaseProvider eggPurchaseProvider) {
         this.view = view;
         this.timeProvider = timeProvider;
         this.pheromoneController = pheromoneController;
         this.speedController = speedController;
-        this.colonyUsageProvider = colonyUsageProvider;
+        this.colonyDataProvider = colonyDataProvider;
         // Create egg controller and panel
-        this.eggController = new EggController(antTypeRegistry, colonyUsageProvider);
-        this.eggPanelView = new EggPanelView(uiFactory, eggController, eggManager, colonyUsageProvider,
+        this.eggController = new EggController(antTypeRegistry, eggPurchaseProvider);
+        this.eggPanelView = new EggPanelView(uiFactory, eggController, eggManager, colonyDataProvider,
                 antTypeRegistry);
 
         initializeListeners();
@@ -48,7 +49,7 @@ public class HudController implements PheromoneSelectionListener {
     }
 
     public void update(float dt) {
-        view.updateData(timeProvider, colonyUsageProvider.getTotalAnts(),
-                colonyUsageProvider.getTotalResources(ResourceType.FOOD), colonyUsageProvider.getConsumption());
+        view.updateData(timeProvider, colonyDataProvider.getTotalAnts(),
+                colonyDataProvider.getTotalResources(ResourceType.FOOD), colonyDataProvider.getConsumption());
     }
 }

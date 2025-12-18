@@ -1,44 +1,38 @@
-package se.chalmers.tda367.team15.game.model.entity.termite;
-
-import java.util.List;
+package se.chalmers.tda367.team15.game.model.entity.enemy;
 
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
-import se.chalmers.tda367.team15.game.model.entity.AttackComponent;
-import se.chalmers.tda367.team15.game.model.entity.AttackTarget;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
+import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+
+import java.util.HashMap;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
-import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
  * Termites are hostile to anything not in their {@link Faction}, termites
  * {@link Faction} is "TERMITE_PROTECTORATE". Termites will pursue enemy
  * entities
- * then structures, then stand still. Perfect vision of map.
+ * then structures, then stand still. Very large sight range.
  */
-public class Termite extends Entity implements CanBeAttacked {
+public class Termite extends Entity implements CanBeAttacked, CanAttack {
+    private final int visionRadius = 1000000000;
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
-    private final float SPEED = 2.9f;
-    private final TermiteBehavior termiteBehaviour;
-    private AttackComponent attackComponent = new AttackComponent(5, 1000, 2.0f, this);
-    private final float MAX_HEALTH = 1;
-    private float health;
-    private final EntityQuery entityQuery;
-    private final StructureProvider structureProvider;
-    private final DestructionListener destructionListener;
 
-    public Termite(Vector2 position, EntityQuery entityQuery, StructureProvider structureProvider, DestructionListener destructionListener) {
+    private final float speed= 2.9f;
+    private final float MAX_HEALTH = 1;
+    private float health= MAX_HEALTH;
+    private final DestructionListener destructionListener;
+    private TermiteAttackBehaviour termiteAttackBehaviour;
+
+    public Termite(Vector2 position, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority ,DestructionListener destructionListener) {
         super(position, "termite");
         this.destructionListener = destructionListener;
-        this.entityQuery = entityQuery;
-        this.structureProvider = structureProvider;
-        this.termiteBehaviour = new TermiteBehavior(this);
-        health = MAX_HEALTH;
+        this.termiteAttackBehaviour=new TermiteAttackBehaviour(this,entityQuery,structureProvider,targetPriority);
     }
 
     /**
@@ -47,13 +41,8 @@ public class Termite extends Entity implements CanBeAttacked {
      */
     @Override
     public void update(float deltaTime) {
-        List<Entity> entities = entityQuery.getEntitiesOfType(Entity.class);
-        List<Structure> structures = structureProvider.getStructures();
-        AttackTarget target = termiteBehaviour.update(entities, structures);
+        termiteAttackBehaviour.update();
         super.update(deltaTime);
-        if (target != null) {
-            attackComponent.attack(target);
-        }
 
     }
 
@@ -61,8 +50,9 @@ public class Termite extends Entity implements CanBeAttacked {
      *
      * @return returns termites speed.
      */
+    @Override
     public float getSpeed() {
-        return SPEED;
+        return speed;
     }
 
     /**
@@ -96,5 +86,31 @@ public class Termite extends Entity implements CanBeAttacked {
     @Override
     public Vector2 getSize() {
         return new Vector2(1f, 1.5f);
+    }
+
+    @Override
+    public void setVelocity(Vector2 v) {
+     super.setVelocity(v);
+    }
+
+
+    @Override
+    public int getVisionRadius() {
+        return visionRadius;
+    }
+
+    @Override
+    public float getAttackDamage() {
+        return 2;
+    }
+
+    @Override
+    public float getAttackRange() {
+        return 2;
+    }
+
+    @Override
+    public int getAttackCoolDownMs() {
+        return 1000;
     }
 }

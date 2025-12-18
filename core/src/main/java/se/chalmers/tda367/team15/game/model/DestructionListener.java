@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureDeathObserver;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
@@ -13,11 +12,9 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
  */
 public class DestructionListener {
     private final LinkedHashSet<EntityDeathObserver> entityObservers;
-    private final LinkedHashSet<StructureDeathObserver> structureDeathObservers;
 
     public DestructionListener() {
         this.entityObservers = new LinkedHashSet<>();
-        this.structureDeathObservers = new LinkedHashSet<>();
     }
 
     public void addEntityDeathObserver(EntityDeathObserver obs) {
@@ -28,23 +25,10 @@ public class DestructionListener {
         entityObservers.remove(obs);
     }
 
-    public void addStructureDeathObserver(StructureDeathObserver obs) {
-        structureDeathObservers.add(obs);
-    }
-
-    public void removeStructureDeathObserver(StructureDeathObserver obs) {
-        structureDeathObservers.remove(obs);
-    }
-
     public void notifyEntityDeathObservers(Entity e) {
         for (EntityDeathObserver edo : entityObservers) {
             edo.onEntityDeath(e);
         }
     }
 
-    public void notifyStructureDeathObservers(Structure s) {
-        for (StructureDeathObserver sdo : structureDeathObservers) {
-            sdo.onStructureDeath(s);
-        }
-    }
 }

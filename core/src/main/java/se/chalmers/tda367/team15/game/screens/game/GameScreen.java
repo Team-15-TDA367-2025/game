@@ -26,7 +26,6 @@ import se.chalmers.tda367.team15.game.view.ui.UiSkin;
  * testable.
  */
 public class GameScreen extends ScreenAdapter {
-
     // Models
     private final GameModel gameModel;
 
@@ -75,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
         if (gameModel.getTotalAnts() == 0) {
             return GameEndReason.ALL_ANTS_DEAD;
         }
-        if (gameModel.getColonyUsageProvider().getTotalResources(ResourceType.FOOD) < 0) {
+        if (gameModel.getColonyDataProvider().getTotalResources(ResourceType.FOOD) < 0) {
             return GameEndReason.STARVATION;
         }
         return GameEndReason.STILL_PLAYING;
