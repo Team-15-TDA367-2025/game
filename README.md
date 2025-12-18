@@ -1,33 +1,39 @@
-# Game
+# Unite The Ants
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+This is a project in the course "Objektorienterat programmeringsprojekt" at Chalmers University of Technology.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Description
 
-## Platforms
+Unite The Ants is a strategy game where the player controls an ant colony. The player can buy eggs, place pheromones on the procedurally generated map to guide the ants to their goals.
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+Each night the colony will be attacked by a wave of termites.
 
-## Gradle
+## Technologies
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+- Java (recommended version 21)
+- LibGDX
+- Gradle
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## Controls
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+- Left mouse button - Place pheromones
+- Right mosue button - Pan camera
+- Scroll wheel - Zoom camera
+- WASD - Move camera
+- Use the UI buttons to select pheromone type, and to buy eggs.
+
+## To run the game
+
+The game is run using the `./gradlew run` command in the root directory of the project.
+
+You can also run the following commands:
+
+- `./gradlew jar` - Creates a JAR file (needs the `assets` directory to be present when running)
+- `./gradlew runWithProfiling` - Runs the game with profiling enabled. Creates a `profile-<timestamp>.jfr` file that can be viewed in for example visualvm.
+
+> There's also a few different tasks available from the liftoff template used to create the project. You can run `./gradlew tasks` to see a list of available tasks.
+
+### Flags
+
+- `--no-fog` - Disables fog of war rendering (can be useful when working with terrain generation)
+- `--unlimited-fps` - Disables the FPS limit, which allows you to test performance
