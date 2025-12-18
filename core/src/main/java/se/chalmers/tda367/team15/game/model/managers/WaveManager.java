@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.EnemyFactory;
 import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
 /**
@@ -16,11 +17,11 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
     private EnemyFactory enemyFactory;
-    private EntityManager entityManager;
+    private EntityModificationProvider entityModificationProvider;
 
-    public WaveManager(EnemyFactory enemyFactory, EntityManager entityManager) {
+    public WaveManager(EnemyFactory enemyFactory, EntityModificationProvider entityModificationProvider) {
         this.enemyFactory = enemyFactory;
-        this.entityManager = entityManager;
+        this.entityModificationProvider = entityModificationProvider;
     }
 
     public int getNightNumber() {
@@ -39,7 +40,7 @@ public class WaveManager implements TimeObserver {
         // spawn enemies
         for (int i = 0; i < nEnemies; i++) {
             Termite termite = enemyFactory.createTermite(scatter(spawnLocation, 15));
-            entityManager.addEntity(termite);
+            entityModificationProvider.addEntity(termite);
         }
     }
 

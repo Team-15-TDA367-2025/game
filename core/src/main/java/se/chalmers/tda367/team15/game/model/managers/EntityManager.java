@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 /**
@@ -19,7 +20,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
  * Has a cache of entities by type to avoid lagging when querying entities by
  * type.
  */
-public class EntityManager implements SimulationObserver, EntityDeathObserver, EntityQuery {
+public class EntityManager implements SimulationObserver, EntityDeathObserver, EntityQuery, EntityModificationProvider {
     private final CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<>();
     private final Map<Class<?>, List<Entity>> cachedEntities = new HashMap<>();
 
@@ -62,12 +63,17 @@ public class EntityManager implements SimulationObserver, EntityDeathObserver, E
     }
 
     @Override
-    public void onEntityDeath(Entity e) {
-        entities.remove(e);
+    public void removeEntity(Entity entity) {
+        entities.remove(entity);
         for (Class<?> type : cachedEntities.keySet()) {
-            if (type.isInstance(e)) {
-                cachedEntities.get(type).remove(e);
+            if (type.isInstance(entity)) {
+                cachedEntities.get(type).remove(entity);
             }
         }
+    }
+
+    @Override
+    public void onEntityDeath(Entity entity) {
+        removeEntity(entity);
     }
 }
