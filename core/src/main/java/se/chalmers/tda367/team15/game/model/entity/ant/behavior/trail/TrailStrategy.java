@@ -106,15 +106,22 @@ public abstract class TrailStrategy {
         }
 
         // Still nothing: pick any neighbor not equal to current
-        if (current == null)
+        if (current == null) {
             return neighbors.get(random.nextInt(neighbors.size()));
-        var curPos = current.getPosition();
-        for (int i = 0; i < neighbors.size(); i++) {
-            Pheromone p = neighbors.get(random.nextInt(neighbors.size()));
-            if (!p.getPosition().equals(curPos))
-                return p;
         }
-        return neighbors.get(0);
+
+        var curPos = current.getPosition();
+        // Filter to neighbors that are actually different from current
+        List<Pheromone> validNeighbors = neighbors.stream()
+                .filter(p -> !p.getPosition().equals(curPos))
+                .toList();
+
+        if (!validNeighbors.isEmpty()) {
+            return validNeighbors.get(random.nextInt(validNeighbors.size()));
+        }
+
+        // Truly stuck: only neighbor is current cell
+        return null;
     }
 
 }
