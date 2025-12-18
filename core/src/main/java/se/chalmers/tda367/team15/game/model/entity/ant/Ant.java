@@ -21,7 +21,6 @@ import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
-import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
@@ -135,13 +134,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         return deposited;
     }
 
-    public Pheromone getCurrentPheromone() {
-        if (behavior instanceof FollowTrailBehavior) {
-            return ((FollowTrailBehavior) behavior).getCurrentPheromone();
-        }
-        return null;
-    }
-
     @Override
     public float getSpeed() {
         return this.speed;
@@ -195,7 +187,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void setAttackBehaviour() {
-        behavior = new AntAttackBehavior(this, entityQuery, structureManager, targetPriority);
+        behavior = new AntAttackBehavior(this, entityQuery, structureManager);
     }
 
     @Override

@@ -1,34 +1,28 @@
 package se.chalmers.tda367.team15.game.model.entity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 
 /**
- * This class is used as the attack logic for all things with melee attack behaviour
+ * This class is used as the attack logic for all things with melee attack
+ * behaviour
  */
 public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
 
     private final EntityQuery entityQuery;
-    private final StructureProvider structureProvider;
-    private final HashMap<AttackCategory, Integer> targetPriority;
 
     private long lastAttackTimeMS = 0;
 
-    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority) {
+    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery) {
         this.host = canAttack;
         this.entityQuery = entityQuery;
-        this.structureProvider = structureProvider;
-        this.targetPriority = targetPriority;
     }
 
     public void update() {
@@ -58,7 +52,8 @@ public abstract class MeleeAttackBehaviour {
 
         List<CanBeAttacked> potentialTargets = potentialTargets();
 
-        // determine target, TargetPriority gives us: ants first, then structures, then stand still.
+        // determine target, TargetPriority gives us: ants first, then structures, then
+        // stand still.
         if (!potentialTargets.isEmpty()) {
             target = potentialTargets.getFirst();
             for (CanBeAttacked t : potentialTargets) {
@@ -71,9 +66,7 @@ public abstract class MeleeAttackBehaviour {
     }
 
     private boolean isCloserTarget(CanBeAttacked target, CanBeAttacked currentTarget) {
-        return
-            target.getPosition().dst(host.getPosition())
-                < currentTarget.getPosition().dst(host.getPosition());
+        return target.getPosition().dst(host.getPosition()) < currentTarget.getPosition().dst(host.getPosition());
     }
 
     private List<CanBeAttacked> potentialTargets() {

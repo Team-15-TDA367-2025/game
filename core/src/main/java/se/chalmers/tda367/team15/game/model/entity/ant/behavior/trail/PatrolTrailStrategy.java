@@ -11,21 +11,26 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 /**
  * Trail strategy for soldier ants following ATTACK pheromones.
- * Simple spreading behavior:
+ * Spreading behavior:
  * - Patrol along the trail
- * - Random chance to turn around when seeing another soldier
+ * - Random chance to turn around when seeing soldiers with lower hashCode
  * - Turn around at trail ends
+ * hashCode priority ensures consistent ordering so not everyone turns at once.
  */
-public class AttackTrailStrategy extends TrailStrategy {
+public class PatrolTrailStrategy extends TrailStrategy {
 
     private static final float SPEED_MULTIPLIER = 1.0f;
-    private static final float TURN_CHANCE_PER_SOLDIER = 0.05f; // 5% per visible soldier per tick
+    private static final float TURN_CHANCE_PER_SOLDIER = 0.05f; // 5% per soldier
+    private static final float MAX_TURN_CHANCE = 0.20f; // Cap at 20%
+    private static final float PROXIMITY_CELLS = 1.5f; // React to soldiers within this many pheromone cells
 
     private final EntityQuery entityQuery;
+    private final PheromoneGridConverter converter;
     private final Random random = new Random();
 
-    public AttackTrailStrategy(EntityQuery entityQuery, PheromoneGridConverter converter) {
+    public PatrolTrailStrategy(EntityQuery entityQuery, PheromoneGridConverter converter) {
         this.entityQuery = entityQuery;
+        this.converter = converter;
     }
 
     @Override
@@ -34,24 +39,25 @@ public class AttackTrailStrategy extends TrailStrategy {
             return null;
         }
 
-        // Count visible soldiers with LOWER hashCode (they have "priority")
-        // This creates consistent ordering - we yield to ants with lower hashCode
-        long prioritySoldiersCount = entityQuery.getEntitiesOfType(Ant.class).stream()
+        // Use a small proximity radius (about 1.5 pheromone cells) instead of vision
+        float proximityRadius = converter.getPheromoneCellSize() * PROXIMITY_CELLS;
+
+        // Count nearby soldiers with lower hashCode (they have "priority")
+        long prioritySoldiers = entityQuery.getEntitiesOfType(Ant.class).stream()
                 .filter(a -> a != ant)
                 .filter(a -> a.getType().allowedPheromones().contains(PheromoneType.ATTACK))
-                .filter(a -> a.getPosition().dst(ant.getPosition()) <= ant.getVisionRadius())
-                .filter(a -> a.hashCode() < ant.hashCode()) // Only yield to lower hashCode ants
+                .filter(a -> a.getPosition().dst(ant.getPosition()) <= proximityRadius)
+                .filter(a -> a.hashCode() < ant.hashCode())
                 .count();
 
-        // Turn chance scales with number of priority soldiers
-        if (prioritySoldiersCount > 0) {
-            float turnChance = TURN_CHANCE_PER_SOLDIER * prioritySoldiersCount;
+        // Turn chance scales with count, capped to prevent chaos
+        if (prioritySoldiers > 0) {
+            float turnChance = Math.min(MAX_TURN_CHANCE, TURN_CHANCE_PER_SOLDIER * prioritySoldiers);
             if (random.nextFloat() < turnChance) {
                 outwards = !outwards;
             }
         }
 
-        // Move along trail in current direction
         return moveRandomlyOnTrail(neighbors, current, random);
     }
 

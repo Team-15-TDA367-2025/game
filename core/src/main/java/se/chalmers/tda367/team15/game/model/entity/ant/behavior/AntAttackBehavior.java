@@ -1,8 +1,5 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
-import java.util.HashMap;
-
-import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.MeleeAttackBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
@@ -15,11 +12,9 @@ import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 public class AntAttackBehavior extends MeleeAttackBehaviour implements GeneralizedBehaviour {
     private final Ant ant;
 
-    public AntAttackBehavior(Ant ant, EntityQuery entityQuery, StructureProvider structureProvider,
-            HashMap<AttackCategory, Integer> targetPriority) {
-        super(ant, entityQuery, structureProvider, targetPriority);
+    public AntAttackBehavior(Ant ant, EntityQuery entityQuery, StructureProvider structureProvider) {
+        super(ant, entityQuery);
         this.ant = ant;
-
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
+import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 
@@ -26,13 +26,18 @@ public abstract class AntBehavior implements GeneralizedBehaviour {
     }
 
     public boolean enemiesInSight() {
-        List<CanBeAttacked> entities = entityQuery.getEntitiesOfType(CanBeAttacked.class);
-        List<CanBeAttacked> enemies = entities.stream().filter(e -> e.getFaction() != ant.getFaction()).toList();
+        // We need to use Termite here, because otherwise the performance is very bad.
+        // TODO: Create a enemy type and use that instead.
+        List<? extends Termite> entities = entityQuery.getEntitiesOfType(Termite.class);
 
         Vector2 antPosition = ant.getPosition();
         float visionRadiusSq = ant.getVisionRadius() * ant.getVisionRadius();
 
-        for (CanBeAttacked entity : enemies) {
+        for (Termite entity : entities) {
+            if (entity.getFaction().equals(ant.getFaction())) {
+                continue;
+            }
+
             if (entity.getPosition().dst2(antPosition) <= visionRadiusSq) {
                 return true;
             }

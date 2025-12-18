@@ -1,7 +1,11 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
@@ -25,9 +28,9 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 @ExtendWith(MockitoExtension.class)
-class AttackTrailStrategyTest {
+class PatrolTrailStrategyTest {
 
-    private AttackTrailStrategy strategy;
+    private PatrolTrailStrategy strategy;
 
     @Mock
     private EntityQuery entityQuery;
@@ -43,7 +46,7 @@ class AttackTrailStrategyTest {
 
     @BeforeEach
     void setUp() {
-        strategy = new AttackTrailStrategy(entityQuery, converter);
+        strategy = new PatrolTrailStrategy(entityQuery, converter);
         lenient().when(ant.getType()).thenReturn(antType);
         lenient().when(antType.id()).thenReturn("soldier");
     }

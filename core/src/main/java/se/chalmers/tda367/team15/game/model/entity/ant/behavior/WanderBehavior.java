@@ -13,9 +13,10 @@ import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
- * This behaviour is used when ants are moving on their own, searching for a pheromone trail.
+ * This behaviour is used when ants are moving on their own, searching for a
+ * pheromone trail.
  */
-public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour {
+public class WanderBehavior extends AntBehavior {
     private final Home home;
     private int accumulator = 0;
 
@@ -65,8 +66,8 @@ public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour 
     public void update(PheromoneManager system) {
 
         if (enemiesInSight()) {
-           ant.setAttackBehaviour();
-           return;
+            ant.setAttackBehaviour();
+            return;
         }
 
         accumulator += 1;
