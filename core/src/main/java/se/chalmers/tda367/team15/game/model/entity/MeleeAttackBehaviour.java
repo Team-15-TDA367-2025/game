@@ -11,6 +11,9 @@ import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class is used as the attack logic for all things with melee attack behaviour
+ */
 public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
 

@@ -15,6 +15,9 @@ import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
+/**
+ * This behaviour is used when ants are trying to follow a pheromone trail
+ */
 public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehaviour {
     private final PheromoneType allowedType;
 

@@ -10,6 +10,9 @@ import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
+/**
+ * The attack behaviour for ants
+ */
 public class AntAttackBehavior extends MeleeAttackBehaviour implements GeneralizedBehaviour {
     private final Ant ant;
 

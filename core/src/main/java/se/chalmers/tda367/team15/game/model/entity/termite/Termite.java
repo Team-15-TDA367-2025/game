@@ -19,7 +19,7 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
  * Termites are hostile to anything not in their {@link Faction}, termites
  * {@link Faction} is "TERMITE_PROTECTORATE". Termites will pursue enemy
  * entities
- * then structures, then stand still. Perfect vision of map.
+ * then structures, then stand still. Very large sight range.
  */
 public class Termite extends Entity implements CanBeAttacked, CanAttack {
     private final int visionRadius = 1000000000;

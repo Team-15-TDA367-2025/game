@@ -9,6 +9,11 @@ import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 
+
+/**
+ * Used to update the ants, the ants have a specific behaviour programmed. The behaviour is a state machine, behaviour can be unchanged or switch each update.
+ * When a behaviour will switch the ant's behaviour or leave it unchanged is controlled based on internal logic of the type of behaviour.
+ */
 public abstract class AntBehavior {
     protected Ant ant;
     protected EntityQuery entityQuery;
