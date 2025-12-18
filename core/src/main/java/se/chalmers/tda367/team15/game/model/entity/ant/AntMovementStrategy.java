@@ -19,5 +19,5 @@ public class AntMovementStrategy implements MovementStrategy {
         }
         return map.getTile(position).getType().isWalkable();
     }
-    
+
 }

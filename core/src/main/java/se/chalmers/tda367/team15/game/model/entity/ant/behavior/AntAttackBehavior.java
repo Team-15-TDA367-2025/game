@@ -6,14 +6,15 @@ import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.MeleeAttackBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
+import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
-import se.chalmers.tda367.team15.game.model.pheromones.PheromoneSystem;
 
 public class AntAttackBehavior extends MeleeAttackBehaviour implements GeneralizedBehaviour {
     private final Ant ant;
 
-    public AntAttackBehavior(Ant ant, EntityQuery entityQuery, StructureManager structureManager,HashMap<AttackCategory, Integer> targetPriority) {
-        super(ant, entityQuery,structureManager,targetPriority);
+    public AntAttackBehavior(Ant ant, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority) {
+        super(ant, entityQuery,structureProvider,targetPriority);
         this.ant=ant;
 
     }
@@ -24,7 +25,7 @@ public class AntAttackBehavior extends MeleeAttackBehaviour implements Generaliz
 
     }
     @Override
-    public void update(PheromoneSystem system) {
+    public void update(PheromoneManager system) {
         super.update();
     }
 

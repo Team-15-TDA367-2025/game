@@ -7,6 +7,7 @@ import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
+import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
@@ -20,7 +21,7 @@ import se.chalmers.tda367.team15.game.model.structure.Structure;
  * entities
  * then structures, then stand still. Perfect vision of map.
  */
-public class Termite extends Entity implements CanAttack {
+public class Termite extends Entity implements CanBeAttacked, CanAttack {
     private final int visionRadius = 1000000000;
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
 

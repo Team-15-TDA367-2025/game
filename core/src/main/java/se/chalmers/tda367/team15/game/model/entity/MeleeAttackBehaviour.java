@@ -5,6 +5,7 @@ import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
 import java.util.HashMap;
@@ -14,15 +15,15 @@ public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
 
     protected final EntityQuery entityQuery;
-    protected final StructureManager structureManager;
+    protected final StructureProvider structureProvider;
     protected final HashMap<AttackCategory, Integer> targetPriority;
 
     protected long lastAttackTimeMS = 0;
 
-    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, StructureManager structureManager, HashMap<AttackCategory, Integer> targetPriority) {
+    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority) {
         this.host = canAttack;
         this.entityQuery=entityQuery;
-        this.structureManager=structureManager;
+        this.structureProvider=structureProvider;
         this.targetPriority=targetPriority;
     }
 

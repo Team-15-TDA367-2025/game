@@ -13,7 +13,7 @@ public class EnemyFactory {
     private final EntityQuery entityQuery;
     private final StructureProvider structureProvider;
     private final HashMap<AttackCategory, Integer> targetPriority;
-    public EnemyFactory(EntityQuery entityQuery, structureProvider structureManager, DestructionListener destructionListener, HashMap<AttackCategory, Integer> targetPriority) {
+    public EnemyFactory(EntityQuery entityQuery, StructureProvider structureProvider, DestructionListener destructionListener, HashMap<AttackCategory, Integer> targetPriority) {
         this.entityQuery = entityQuery;
         this.structureProvider = structureProvider;
         this.destructionListener = destructionListener;

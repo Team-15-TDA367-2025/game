@@ -149,7 +149,7 @@ public class GameFactory {
 
         EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener, termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);
-        simulationManager.addUpdateObserver(fogSystem);
+        simulationManager.addUpdateObserver(fogManager);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
         //Ant target priority

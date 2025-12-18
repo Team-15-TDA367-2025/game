@@ -15,14 +15,12 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 
 public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour{
     private final Home home;
-    private final PheromoneGridConverter converter;
     private int accumulator = 0;
 
     // TODO: we should not need to pass along everything to all behaviors
-    public WanderBehavior(Ant ant, Home home, EntityQuery entityQuery, PheromoneGridConverter converter) {
+    public WanderBehavior(Ant ant, Home home, EntityQuery entityQuery) {
         super(ant, entityQuery);
         this.home = home;
-        this.converter = converter;
     }
 
     private void changeTrajectory() {

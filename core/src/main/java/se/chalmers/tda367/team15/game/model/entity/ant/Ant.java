@@ -9,17 +9,14 @@ import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.*;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.*;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 import java.util.HashMap;
 
-public class Ant extends Entity implements VisionProvider, CanAttack {
+public class Ant extends Entity implements VisionProvider, CanBeAttacked,CanAttack {
     AntType type;
     private final int visionRadius = 8;
     protected final Faction faction;
@@ -35,21 +32,21 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
 
     private EntityQuery entityQuery;
-    private StructureManager structureManager;
+    private StructureProvider structureManager;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;
     private float health;
 
-    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home, EntityQuery entityQuery, StructureManager structureManager, HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
+    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
         super(position, type.textureName());
         this.type = type;
-        this.behavior = new WanderBehavior(this, home, entityQuery, system.getConverter());
+        this.behavior = new WanderBehavior(this, home, entityQuery);
         this.system = system;
         this.hunger = 2; // test value
         this.home = home;
         this.entityQuery = entityQuery;
-        this.structureManager = structureManager;
+        this.structureManager = structureProvider;
         this.targetPriority= targetPriority;
 
         // Initialize from AntType
@@ -173,7 +170,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         behavior = new WanderBehavior(this,home,entityQuery);
     }
     public void setFollowTrailBehaviour(){
-        behavior = new FollowTrailBehavior(home,entityQuery,this);
+        behavior = new FollowTrailBehavior(home,entityQuery,this,system.getConverter());
     }
     public void setAttackBehaviour() {
         behavior = new AntAttackBehavior(this,entityQuery,structureManager,targetPriority);
