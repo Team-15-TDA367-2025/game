@@ -22,17 +22,15 @@ public class Termite extends Entity implements CanAttack {
     private final int visionRadius = 1000000000;
     private final Faction faction = Faction.TERMITE_PROTECTORATE;
 
-
+    private final float speed= 2.9f;
     private final float MAX_HEALTH = 1;
-    private float health;
+    private float health= MAX_HEALTH;
     private final DestructionListener destructionListener;
     private TermiteAttackBehaviour termiteAttackBehaviour;
 
     public Termite(Vector2 position, EntityQuery entityQuery, StructureManager structureManager, HashMap<AttackCategory, Integer> targetPriority ,DestructionListener destructionListener) {
         super(position, "termite");
         this.destructionListener = destructionListener;
-        health = MAX_HEALTH;
-        this.SPEED = 2.9f;
         this.termiteAttackBehaviour=new TermiteAttackBehaviour(this,entityQuery,structureManager,targetPriority);
     }
 
@@ -51,8 +49,9 @@ public class Termite extends Entity implements CanAttack {
      *
      * @return returns termites speed.
      */
+    @Override
     public float getSpeed() {
-        return SPEED;
+        return speed;
     }
 
     /**
@@ -89,9 +88,10 @@ public class Termite extends Entity implements CanAttack {
     }
 
     @Override
-    public Entity getEntity() {
-        return this;
+    public void setVelocity(Vector2 v) {
+     super.setVelocity(v);
     }
+
 
     @Override
     public int getVisionRadius() {

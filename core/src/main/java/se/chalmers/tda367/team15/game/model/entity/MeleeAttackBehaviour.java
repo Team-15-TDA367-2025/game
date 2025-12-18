@@ -10,7 +10,7 @@ import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import java.util.HashMap;
 import java.util.List;
 
-public abstract class AttackBehaviour {
+public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
 
     protected final EntityQuery entityQuery;
@@ -19,7 +19,7 @@ public abstract class AttackBehaviour {
 
     protected long lastAttackTimeMS = 0;
 
-    protected AttackBehaviour(CanAttack canAttack,EntityQuery entityQuery,StructureManager structureManager,HashMap<AttackCategory, Integer> targetPriority) {
+    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, StructureManager structureManager, HashMap<AttackCategory, Integer> targetPriority) {
         this.host = canAttack;
         this.entityQuery=entityQuery;
         this.structureManager=structureManager;
@@ -32,10 +32,9 @@ public abstract class AttackBehaviour {
            noTargets();
         }
         else{
-            Entity host = this.host.getEntity();
             Vector2 targetV = target.getPosition().sub(this.host.getPosition());
-            host.setVelocity(targetV.nor().scl(this.host.getEntity().getSpeed()));
-            attack(target);
+            host.setVelocity(targetV.nor().scl(this.host.getSpeed()));
+            attack(target); // Remember we attack before actually moving
         }
     }
 

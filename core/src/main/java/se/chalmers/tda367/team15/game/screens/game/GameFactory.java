@@ -50,7 +50,7 @@ public class GameFactory {
     public static final float WORLD_VIEWPORT_WIDTH = 15f;
     public static final float MIN_ZOOM = 0.05f;
     public static final float MAX_ZOOM = 4.0f;
-    public static final int TICKS_PER_MINUTE = 6;
+    public static final int TICKS_PER_MINUTE = 10;
 
     private GameFactory() {
     }
@@ -148,7 +148,7 @@ public class GameFactory {
 
         //Ant target priority
         HashMap<AttackCategory, Integer> antTargetPriority = new HashMap<>();
-        termiteTargetPriority.put(AttackCategory.TERMITE, 2);
+        antTargetPriority.put(AttackCategory.TERMITE, 2);
 
         PheromoneSystem pheromoneSystem = new PheromoneSystem(new GridPoint2(0, 0), pheromoneGridConverter, 4);
         AntFactory antFactory = new AntFactory(pheromoneSystem, worldMap, entityManager,

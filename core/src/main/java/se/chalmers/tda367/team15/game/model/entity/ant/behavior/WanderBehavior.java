@@ -65,6 +65,7 @@ public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour{
 
         if (enemiesInSight()) {
            ant.setAttackBehaviour();
+           return;
         }
         changeTrajectory();
 
@@ -74,8 +75,6 @@ public class WanderBehavior extends AntBehavior implements GeneralizedBehaviour{
         if (!neighbors.isEmpty()) {
             ant.setFollowTrailBehaviour();
         }
-
-        return;
     }
 
     @Override

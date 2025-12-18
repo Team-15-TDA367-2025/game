@@ -1,11 +1,13 @@
 package se.chalmers.tda367.team15.game.model.interfaces;
 
+import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 
 public interface CanAttack extends CanBeAttacked{
-     Entity getEntity();
      int getVisionRadius();
      float getAttackDamage();
      float getAttackRange();
      int getAttackCoolDownMs();
+    float getSpeed();
+    void setVelocity(Vector2 v);
 }

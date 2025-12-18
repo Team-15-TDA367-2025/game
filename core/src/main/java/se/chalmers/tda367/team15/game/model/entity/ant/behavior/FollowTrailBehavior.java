@@ -57,6 +57,7 @@ public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehav
     public void update(PheromoneSystem system) {
         if (enemiesInSight()) {
             ant.setAttackBehaviour();
+            return;
         }
 
         List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition()).stream()
@@ -71,6 +72,7 @@ public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehav
 
             if (lastPheromone == null) {
                 ant.setWanderBehaviour();
+                return;
             }
         }
 
@@ -91,6 +93,7 @@ public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehav
             // If still no target, we lost the trail
             if (currentTarget == null) {
                 ant.setWanderBehaviour();
+                return;
             }
         }
         // TODO Movement logic breaks at low tick speed

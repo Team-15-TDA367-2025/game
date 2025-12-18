@@ -127,14 +127,20 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     @Override
+    public float getSpeed() {
+        return this.speed;
+    }
+
+    @Override
+    public void setVelocity(Vector2 v) {
+        super.setVelocity(v);
+    }
+
+    @Override
     public Vector2 getSize() {
         return new Vector2(1f, 1.5f); // 1 tile wide, 1.5 tiles tall
     }
 
-    @Override
-    public Entity getEntity() {
-        return null;
-    }
 
     @Override
     public int getVisionRadius() {
