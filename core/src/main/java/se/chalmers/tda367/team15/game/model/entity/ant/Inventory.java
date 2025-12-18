@@ -14,11 +14,18 @@ public class Inventory {
         this.resources = new HashMap<>();
     }
 
+    /** 
+     * Adds a resource to the inventory.
+     * @param type The type of resource to add.
+     * @param amount The amount of resource to add. Can also be negative to remove resources.
+     * @return True if the resource was added, false if the amount would exceed the capacity or be negative.
+     */
     public boolean addResource(ResourceType type, int amount) {
-        if (getTotalAmount() + amount > capacity) {
+        int newAmount = getAmount(type) + amount;
+        if (newAmount < 0 || newAmount > capacity) {
             return false;
         }
-        resources.put(type, resources.getOrDefault(type, 0) + amount);
+        resources.put(type, newAmount);
         return true;
     }
 

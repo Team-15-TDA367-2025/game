@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -40,11 +42,7 @@ public class Colony extends Structure implements Home, TimeObserver, ColonyDataP
 
     @Override
     public int getConsumption() {
-        int total = 0;
-        for (Ant ant : entityQuery.getEntitiesOfType(Ant.class)) {
-            total += ant.getHunger();
-        }
-        return total;
+        return getAnts().stream().mapToInt(Ant::getHunger).sum();
     }
 
     public void applyConsumption(int amount) {
@@ -69,8 +67,11 @@ public class Colony extends Structure implements Home, TimeObserver, ColonyDataP
     }
 
     @Override
-    public int getTotalAnts() {
-        // TODO: fix this
-        return entityQuery.getEntitiesOfType(Ant.class).size();
+    public List<Ant> getAnts() {
+        return entityQuery
+                .getEntitiesOfType(Ant.class)
+                .stream()
+                .filter(ant -> ant.getHome() == this)
+                .toList();
     }
 }
