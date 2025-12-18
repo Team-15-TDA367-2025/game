@@ -2,7 +2,7 @@ package se.chalmers.tda367.team15.game.model;
 
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.entity.termite.*;
+import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 

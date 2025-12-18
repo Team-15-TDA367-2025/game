@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.EnemyFactory;
-import se.chalmers.tda367.team15.game.model.entity.termite.Termite;
+import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 
 /**

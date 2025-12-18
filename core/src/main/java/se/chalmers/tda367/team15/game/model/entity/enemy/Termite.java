@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.entity.termite;
+package se.chalmers.tda367.team15.game.model.entity.enemy;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -9,11 +9,9 @@ import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 
 import java.util.HashMap;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
-import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
  * Termites are hostile to anything not in their {@link Faction}, termites

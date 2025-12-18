@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.entity.termite;
+package se.chalmers.tda367.team15.game.model.entity.enemy;
 
 public class TermiteBehaviourManager {
     TermiteAttackBehaviour attackBehaviour;

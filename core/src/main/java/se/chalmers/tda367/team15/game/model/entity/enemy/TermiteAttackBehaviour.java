@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.entity.termite;
+package se.chalmers.tda367.team15.game.model.entity.enemy;
 
 import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
