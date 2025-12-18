@@ -10,10 +10,10 @@ import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 // A structure is a static object in the game world, fixed to the grid.
-public abstract class Structure implements Drawable, Updatable, HasPosition {
+public abstract class Structure implements Drawable, SimulationObserver, HasPosition {
     private GridPoint2 position;
     private String textureName;
     private int size;

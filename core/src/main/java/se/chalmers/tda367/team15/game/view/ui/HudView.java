@@ -16,7 +16,7 @@ public class HudView {
     private final BottomBarView bottomBar;
     private final Label fpsLabel;
 
-    public HudView(SpriteBatch batch, UiFactory uiFactory) {
+    public HudView(SpriteBatch batch, UiSkin uiFactory) {
         stage = new Stage(new ScreenViewport(), batch);
         ((ScreenViewport) stage.getViewport()).setUnitsPerPixel(1f / UiTheme.UI_SCALE);
 

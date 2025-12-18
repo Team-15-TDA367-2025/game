@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.SimulationProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 public class SimulationManager implements SimulationProvider {
     private static final int baseTickPerSecond = 100; // Do not set lower than 50
@@ -17,13 +17,13 @@ public class SimulationManager implements SimulationProvider {
     private long now = System.currentTimeMillis();
     private boolean paused = false;
 
-    private final List<Updatable> updateObservers = new ArrayList<>();
+    private final List<SimulationObserver> simulationObservers = new ArrayList<>();
 
     public SimulationManager() {
     }
 
-    public void addUpdateObserver(Updatable u) {
-        updateObservers.add(u);
+    public void addUpdateObserver(SimulationObserver u) {
+        simulationObservers.add(u);
     }
 
     public void setTimeFast() {
@@ -64,8 +64,8 @@ public class SimulationManager implements SimulationProvider {
             accumulator += difference;
             while (accumulator >= mSPerTick) {
                 float inGameTimeDifference = (float) inGameTimePerTickMs / 1000f;
-                List<Updatable> updateThese = new ArrayList<>(updateObservers);
-                for (Updatable u : updateThese) {
+                List<SimulationObserver> updateThese = new ArrayList<>(simulationObservers);
+                for (SimulationObserver u : updateThese) {
                     u.update(inGameTimeDifference);
                 }
 
@@ -81,7 +81,7 @@ public class SimulationManager implements SimulationProvider {
         return 1000 / iRLTicksPerSecond;
     }
 
-    public void removeUpdateObserver(Updatable u) {
-        updateObservers.remove(u);
+    public void removeUpdateObserver(SimulationObserver u) {
+        simulationObservers.remove(u);
     }
 }
