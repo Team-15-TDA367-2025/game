@@ -16,7 +16,7 @@ import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
  * - Prefer higher distance pheromones (outward) as tiebreaker
  * - At trail end, patrol back and forth
  */
-public class AttackTrailStrategy implements TrailStrategy {
+public class AttackTrailStrategy extends TrailStrategy {
 
     private static final float SPEED_MULTIPLIER = 1.0f;
 
@@ -60,13 +60,9 @@ public class AttackTrailStrategy implements TrailStrategy {
             // No soldiers in sight - prefer higher distance (outward)
             // But occasionally patrol back for entropy (20% chance)
             if (Math.random() < 0.2) {
-                return movableNeighbors.stream()
-                        .min(Comparator.comparingInt(Pheromone::getDistance))
-                        .orElse(movableNeighbors.get(0));
+                return getBestByDistance(movableNeighbors, false);
             }
-            return movableNeighbors.stream()
-                    .max(Comparator.comparingInt(Pheromone::getDistance))
-                    .orElse(movableNeighbors.get(0));
+            return getBestByDistance(movableNeighbors, true);
         }
 
         // Pick pheromone that maximizes minimum distance to any soldier

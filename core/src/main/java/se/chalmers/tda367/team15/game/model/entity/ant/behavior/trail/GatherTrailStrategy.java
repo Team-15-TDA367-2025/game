@@ -1,19 +1,22 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
-import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
  * Trail strategy for worker ants following GATHER pheromones.
- * - When inventory is empty: prefer higher distance (outward to find resources)
- * - When inventory is full: prefer lower distance (return to colony)
+ * - Walk forward, pick randomly at intersections (multiple same-distance
+ * options)
+ * - Turn around at dead ends (don't leave trail)
+ * - Only return home when inventory is full
  */
-public class GatherTrailStrategy implements TrailStrategy {
+public class GatherTrailStrategy extends TrailStrategy {
 
     private static final float SPEED_MULTIPLIER = 1.2f;
+    private final Random random = new Random();
 
     @Override
     public Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors, Pheromone current) {
@@ -21,24 +24,58 @@ public class GatherTrailStrategy implements TrailStrategy {
             return null;
         }
 
-        boolean returningHome = ant.getInventory().isFull();
+        boolean isFull = ant.getInventory().isFull();
 
-        // Sort by distance - ascending for return, descending for outward
-        Comparator<Pheromone> comparator = Comparator.comparingInt(Pheromone::getDistance);
-        if (!returningHome) {
-            comparator = comparator.reversed();
+        if (isFull) {
+            // Return home: prefer lower distance
+            outwards = false;
+            List<Pheromone> homeward = filterByDistance(neighbors, current, false);
+            if (homeward.isEmpty()) {
+                // At colony entrance - leave trail
+                return null;
+            }
+            return getBestByDistance(homeward, false);
         }
 
-        return neighbors.stream()
-                .filter(p -> current == null || p.getDistance() != current.getDistance())
-                .sorted(comparator)
-                .findFirst()
-                .orElse(neighbors.get(0)); // Fallback to any neighbor if stuck
+        // Not full: wander on trail
+        // Try to move in current direction
+        List<Pheromone> forward = filterByDistance(neighbors, current, outwards);
+
+        if (forward.isEmpty()) {
+            // Dead end - turn around
+            outwards = !outwards;
+            forward = filterByDistance(neighbors, current, outwards);
+
+            if (forward.isEmpty()) {
+                // Still nothing - pick any neighbor that isn't current
+                return neighbors.stream()
+                        .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
+                        .findAny()
+                        .orElse(neighbors.get(0));
+            }
+        }
+
+        // Check for intersection: multiple options with the same "best" distance
+        int bestDist = outwards
+                ? forward.stream().mapToInt(Pheromone::getDistance).max().orElse(0)
+                : forward.stream().mapToInt(Pheromone::getDistance).min().orElse(0);
+
+        List<Pheromone> atBestDist = forward.stream()
+                .filter(p -> p.getDistance() == bestDist)
+                .toList();
+
+        if (atBestDist.size() > 1) {
+            // Intersection - pick randomly
+            return atBestDist.get(random.nextInt(atBestDist.size()));
+        }
+
+        // Single best option
+        return atBestDist.get(0);
     }
 
     @Override
     public void onTrailEnd(Ant ant, Pheromone current) {
-        // At trail end, worker should switch to wander behavior
+        // Worker ants should stay on trail, but if somehow off trail, wander
         ant.setWanderBehaviour();
     }
 

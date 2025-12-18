@@ -25,6 +25,7 @@ test {
     showCauses = true
     showStackTraces = true
     exceptionFormat = "full"
+    showStandardStreams = true
   }
 
   afterSuite { desc, result ->

@@ -51,7 +51,7 @@ public class FollowTrailBehavior extends AntBehavior implements GeneralizedBehav
                     .orElse(null);
 
             if (lastPheromone == null) {
-                ant.setWanderBehaviour();
+                trailStrategy.onTrailEnd(ant, null);
                 return;
             }
         }
