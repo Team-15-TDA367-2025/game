@@ -64,7 +64,8 @@ public class EggManager implements TimeObserver, EggPurchaseProvider {
             return false;
         }
 
-        if (home.getTotalResources(ResourceType.FOOD) < type.foodCost()) {
+        if (!home.spendResources(ResourceType.FOOD, type.foodCost())) {
+            // We failed to spend the resources, so we don't add the egg
             return false;
         }
 
