@@ -65,11 +65,12 @@ public class ResourceManager implements SimulationObserver {
     }
 
     private void handleDeposit(Ant ant) {
-        Home home = ant.getHome();
-        GridPoint2 homeGrid = new GridPoint2((int) home.getPosition().x, (int) home.getPosition().y);
         if (ant.getInventory().isEmpty()) {
             return;
         }
+
+        Home home = ant.getHome();
+        GridPoint2 homeGrid = new GridPoint2((int) home.getPosition().x, (int) home.getPosition().y);
 
         GridPoint2 antGrid = getAntGridPosition(ant);
         int distance = Math.abs(antGrid.x - homeGrid.x) +
