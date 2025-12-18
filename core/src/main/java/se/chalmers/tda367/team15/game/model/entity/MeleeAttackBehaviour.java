@@ -62,19 +62,12 @@ public abstract class MeleeAttackBehaviour {
         if (!potentialTargets.isEmpty()) {
             target = potentialTargets.getFirst();
             for (CanBeAttacked t : potentialTargets) {
-                if (isHigherTargetPriority(t, target) && isCloserTarget(t, target)) {
+                if (isCloserTarget(t, target)) {
                     target = t;
                 }
             }
         }
         return target;
-    }
-
-    private boolean isHigherTargetPriority(CanBeAttacked target, CanBeAttacked currentTarget) {
-        return
-            targetPriority.get(target.getAttackCategory())
-                >= targetPriority.get(currentTarget.getAttackCategory());
-
     }
 
     private boolean isCloserTarget(CanBeAttacked target, CanBeAttacked currentTarget) {

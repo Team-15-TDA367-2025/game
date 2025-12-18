@@ -135,7 +135,6 @@ public class GameFactory {
 
         StructureManager structureManager = new StructureManager();
         simulationManager.addUpdateObserver(structureManager);
-        destructionListener.addStructureDeathObserver(structureManager);
 
         ResourceManager resourceManager = new ResourceManager(entityManager, structureManager);
         simulationManager.addUpdateObserver(resourceManager);
@@ -145,7 +144,6 @@ public class GameFactory {
         // Termite target priority
         HashMap<AttackCategory, Integer> termiteTargetPriority = new HashMap<>();
         termiteTargetPriority.put(AttackCategory.WORKER_ANT, 2);
-        termiteTargetPriority.put(AttackCategory.ANT_COLONY, 1);
 
         EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener, termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);

@@ -19,11 +19,9 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.managers.EntityManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements CanBeAttacked, Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {
+public class Colony extends Structure implements Home, EggHatchObserver, TimeObserver, ColonyUsageProvider {
     private Inventory inventory;
     private final EggManager eggManager;
-    private float health;
-    private float MAX_HEALTH = 600;
     private Faction faction;
     private final EntityQuery entityQuery;
     private final EntityManager entityManager;
@@ -31,7 +29,6 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
 
     public Colony(GridPoint2 position, EntityQuery entityQuery, EggManager eggManager, EntityManager entityManager, DestructionListener destructionListener) {
         super(position, "colony", 4);
-        this.health = MAX_HEALTH;
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000000); // test value for now
         this.eggManager = eggManager;
@@ -105,24 +102,6 @@ public class Colony extends Structure implements CanBeAttacked, Home, EggHatchOb
     @Override
     public Faction getFaction() {
         return faction;
-    }
-
-    @Override
-    public void takeDamage(float amount) {
-        health = Math.max(0f, health - amount);
-        if (health == 0f) {
-            die();
-        }
-    }
-
-    @Override
-    public void die() {
-        destructionListener.notifyStructureDeathObservers(this);
-    }
-
-    @Override
-    public AttackCategory getAttackCategory() {
-        return AttackCategory.ANT_COLONY;
     }
 
     @Override
