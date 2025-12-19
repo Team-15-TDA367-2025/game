@@ -26,8 +26,6 @@ public abstract class AntBehavior implements GeneralizedBehaviour {
     }
 
     public boolean enemiesInSight() {
-        // We need to use Termite here, because otherwise the performance is very bad.
-        // TODO: Create a enemy type and use that instead.
         List<? extends Termite> entities = entityQuery.getEntitiesOfType(Termite.class);
 
         Vector2 antPosition = ant.getPosition();
