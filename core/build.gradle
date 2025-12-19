@@ -4,8 +4,40 @@ eclipse.project.name = appName + '-core'
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   implementation 'com.google.code.gson:gson:2.10.1'
+  implementation 'info.picocli:picocli:4.7.7'
+  annotationProcessor 'info.picocli:picocli-codegen:4.7.7'
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
+  }
+
+  // Testing
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+  testImplementation 'org.mockito:mockito-core:5.5.0'
+  testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+  useJUnitPlatform()
+  
+  testLogging {
+    events "passed", "skipped", "failed", "standardOut", "standardError"
+    showExceptions = true
+    showCauses = true
+    showStackTraces = true
+    exceptionFormat = "full"
+    showStandardStreams = true
+  }
+
+  afterSuite { desc, result ->
+    if (!desc.parent) {
+      println "\n-------- Test Results --------"
+      println "Tests: ${result.testCount}"
+      println "Passed: ${result.successfulTestCount}"
+      println "Failed: ${result.failedTestCount}"
+      println "Skipped: ${result.skippedTestCount}"
+      println "------------------------------"
+    }
   }
 }

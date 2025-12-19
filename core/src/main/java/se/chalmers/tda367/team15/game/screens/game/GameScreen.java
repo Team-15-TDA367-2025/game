@@ -27,7 +27,6 @@ import se.chalmers.tda367.team15.game.view.ui.UiSkin;
  * testable.
  */
 public class GameScreen extends ScreenAdapter {
-
     // Models
     private final GameModel gameModel;
 
@@ -45,11 +44,13 @@ public class GameScreen extends ScreenAdapter {
     // Controllers
     private final CameraController cameraController;
     private final HudController hudController;
+    private final GameFactory gameFactory;
 
     private final Game game;
     private TutorialView tutorialView;
 
     public GameScreen(
+            GameFactory gameFactory,
             Game game,
             GameModel gameModel,
             CameraView cameraView,
@@ -62,6 +63,7 @@ public class GameScreen extends ScreenAdapter {
             CameraController cameraController,
             HudController hudController) {
         this.game = game;
+        this.gameFactory = gameFactory;
         this.gameModel = gameModel;
         this.cameraView = cameraView;
         this.sceneView = sceneView;
@@ -78,7 +80,7 @@ public class GameScreen extends ScreenAdapter {
         if (gameModel.getTotalAnts() == 0) {
             return GameEndReason.ALL_ANTS_DEAD;
         }
-        if (gameModel.getColonyUsageProvider().getTotalResources(ResourceType.FOOD) < 0) {
+        if (gameModel.getColonyDataProvider().getTotalResources(ResourceType.FOOD) < 0) {
             return GameEndReason.STARVATION;
         }
         return GameEndReason.STILL_PLAYING;
@@ -102,7 +104,7 @@ public class GameScreen extends ScreenAdapter {
             GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); // TODO long
                                                                                                         // line
             gameStats.saveIfNewHighScore();
-            game.setScreen(new EndScreen(game, endReason));
+            game.setScreen(new EndScreen(game, endReason, gameFactory));
         }
 
         // Render

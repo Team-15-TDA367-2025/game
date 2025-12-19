@@ -24,12 +24,14 @@ import se.chalmers.tda367.team15.game.screens.game.GameFactory;
 
 public class StartScreen extends ScreenAdapter {
     private final Game game;
+    private final GameFactory gameFactory;
     private BitmapFont font;
     private Stage stage;
     GameEndReason reason;
 
-    public StartScreen(Game game) {
+    public StartScreen(Game game, GameFactory gameFactory) {
         this.game = game;
+        this.gameFactory = gameFactory;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class StartScreen extends ScreenAdapter {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(GameFactory.createGameScreen(game));
+                game.setScreen(gameFactory.createGameScreen(game));
                 dispose();
             }
         });

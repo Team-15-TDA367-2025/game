@@ -28,9 +28,12 @@ public class EndScreen extends ScreenAdapter {
     private Stage stage;
     GameEndReason reason;
     String endMessage;
-    public EndScreen(Game game, GameEndReason reason) {
+    private final GameFactory gameFactory;
+
+    public EndScreen(Game game, GameEndReason reason, GameFactory gameFactory) {
         this.game = game;
         this.reason = reason;
+        this.gameFactory = gameFactory;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class EndScreen extends ScreenAdapter {
         playAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(GameFactory.createGameScreen(game));
+                game.setScreen(gameFactory.createGameScreen(game));
                 dispose();
             }
         });

@@ -1,40 +1,32 @@
 package se.chalmers.tda367.team15.game.lwjgl3;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
-import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
+import se.chalmers.tda367.team15.game.GameConfiguration;
 import se.chalmers.tda367.team15.game.Main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-    private static boolean unlimitedFps = false;
-    private static boolean noFog = false;
-
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired())
             return; // This handles macOS support and helps on Windows.
 
         // Parse launch arguments
-        unlimitedFps = Arrays.asList(args).contains("--unlimited-fps");
-        noFog = Arrays.asList(args).contains("--no-fog");
+        GameConfiguration gameConfiguration = GameConfiguration.fromArgs(args);
 
-        GameLaunchConfiguration.setCurrent(new GameLaunchConfiguration(unlimitedFps, noFog));
-
-        createApplication();
+        createApplication(gameConfiguration);
     }
 
-    private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+    private static Lwjgl3Application createApplication(GameConfiguration gameConfiguration) {
+        return new Lwjgl3Application(new Main(gameConfiguration), getDefaultConfiguration(gameConfiguration));
     }
 
-    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
+    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration(GameConfiguration gameConfiguration) {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("Game");
 
-        if (unlimitedFps) {
+        if (gameConfiguration.unlimitedFps()) {
             // Unlimited FPS mode - disable vsync and set no FPS cap
             configuration.useVsync(false);
             configuration.setForegroundFPS(0);
