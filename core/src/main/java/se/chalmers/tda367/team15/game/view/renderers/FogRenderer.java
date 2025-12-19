@@ -18,16 +18,6 @@ import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportObserver;
 
 public class FogRenderer implements FogObserver, ViewportObserver {
-    @Override
-    public void onFogDirty() {
-        updateFogMaskTexture(fogProvider);
-    }
-
-    @Override
-    public void onViewportResize(int width, int height) {
-        createFrameBuffer(width, height);
-    }
-
     private final SpriteBatch maskBatch;
     private final SpriteBatch fogBatch;
     private final ShaderProgram fogShader;
@@ -101,6 +91,16 @@ public class FogRenderer implements FogObserver, ViewportObserver {
 
         renderFogMaskToFramebuffer(fogProvider, worldProjectionMatrix);
         renderFogOverlay(screenWidth, screenHeight, cameraView);
+    }
+
+    @Override
+    public void onFogDirty() {
+        updateFogMaskTexture(fogProvider);
+    }
+
+    @Override
+    public void onViewportResize(int width, int height) {
+        createFrameBuffer(width, height);
     }
 
     private void updateFogMaskTexture(FogProvider fogProvider) {
