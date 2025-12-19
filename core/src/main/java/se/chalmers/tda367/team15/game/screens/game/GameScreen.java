@@ -18,6 +18,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
+import se.chalmers.tda367.team15.game.view.ui.TutorialView;
 import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 /**
@@ -46,6 +47,7 @@ public class GameScreen extends ScreenAdapter {
     private final GameFactory gameFactory;
 
     private final Game game;
+    private TutorialView tutorialView;
 
     public GameScreen(
             GameFactory gameFactory,
@@ -85,6 +87,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
+    public void show() {
+        tutorialView = new TutorialView(hudView.getStage());
+    }
+
+    @Override
     public void render(float delta) {
         // Update
         cameraController.update(delta);
@@ -121,5 +128,7 @@ public class GameScreen extends ScreenAdapter {
         hudView.dispose();
         uiFactory.dispose();
         textureRegistry.dispose();
+
+        tutorialView.dispose();
     }
 }
