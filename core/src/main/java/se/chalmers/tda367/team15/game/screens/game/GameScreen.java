@@ -18,7 +18,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
-import se.chalmers.tda367.team15.game.view.ui.UiFactory;
+import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 /**
  * Main game screen.
@@ -26,7 +26,6 @@ import se.chalmers.tda367.team15.game.view.ui.UiFactory;
  * testable.
  */
 public class GameScreen extends ScreenAdapter {
-
     // Models
     private final GameModel gameModel;
 
@@ -38,7 +37,7 @@ public class GameScreen extends ScreenAdapter {
 
     // Resources
     private final TextureRegistry textureRegistry;
-    private final UiFactory uiFactory;
+    private final UiSkin uiFactory;
     private final ViewportListener viewportListener;
 
     // Controllers
@@ -54,7 +53,7 @@ public class GameScreen extends ScreenAdapter {
             PheromoneRenderer pheromoneView,
             HudView hudView,
             TextureRegistry textureRegistry,
-            UiFactory uiFactory,
+            UiSkin uiFactory,
             ViewportListener viewportListener,
             CameraController cameraController,
             HudController hudController) {
@@ -75,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
         if (gameModel.getTotalAnts() == 0) {
             return GameEndReason.ALL_ANTS_DEAD;
         }
-        if (gameModel.getColonyUsageProvider().getTotalResources(ResourceType.FOOD) < 0) {
+        if (gameModel.getColonyDataProvider().getTotalResources(ResourceType.FOOD) < 0) {
             return GameEndReason.STARVATION;
         }
         return GameEndReason.STILL_PLAYING;

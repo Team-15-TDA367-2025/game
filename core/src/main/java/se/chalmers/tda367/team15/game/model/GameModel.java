@@ -9,7 +9,7 @@ import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
@@ -18,7 +18,7 @@ import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class GameModel {
-    private final ColonyUsageProvider colonyUsageProvider;
+    private final ColonyDataProvider colonyDataProvider;
     // TODO: Fix
     private final TimeCycleDataProvider timeProvider;
     private final FogProvider fogProvider;
@@ -28,14 +28,15 @@ public class GameModel {
     private final AntTypeRegistry antTypeRegistry;
     private final StructureManager structureManager;
     private final EntityQuery entityQuery;
+    private final EggManager eggManager;
 
     public GameModel(SimulationProvider simulationProvider, TimeCycleDataProvider timeProvider,
-            FogProvider fogProvider, ColonyUsageProvider colonyUsageProvider,
+            FogProvider fogProvider, ColonyDataProvider colonyDataProvider,
             PheromoneUsageProvider pheromoneUsageProvider,
             MapProvider mapProvider, AntTypeRegistry antTypeRegistry, StructureManager structureManager,
-            EntityQuery entityQuery) {
+            EntityQuery entityQuery, EggManager eggManager) {
         this.simulationProvider = simulationProvider;
-        this.colonyUsageProvider = colonyUsageProvider;
+        this.colonyDataProvider = colonyDataProvider;
         this.timeProvider = timeProvider;
         this.fogProvider = fogProvider;
         this.pheromoneUsageProvider = pheromoneUsageProvider;
@@ -43,6 +44,7 @@ public class GameModel {
         this.antTypeRegistry = antTypeRegistry;
         this.structureManager = structureManager;
         this.entityQuery = entityQuery;
+        this.eggManager = eggManager;
     }
 
     public Iterable<Drawable> getDrawables() {
@@ -51,8 +53,8 @@ public class GameModel {
         return Collections.unmodifiableList(allDrawables);
     }
 
-    public ColonyUsageProvider getColonyUsageProvider() {
-        return colonyUsageProvider;
+    public ColonyDataProvider getColonyDataProvider() {
+        return colonyDataProvider;
     }
 
     public TimeCycleDataProvider getTimeProvider() {
@@ -94,7 +96,7 @@ public class GameModel {
     }
 
     public EggManager getEggManager() {
-        return colonyUsageProvider.getEggManager();
+        return eggManager;
     }
 
     public int getTotalAnts() {

@@ -5,19 +5,14 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
 import se.chalmers.tda367.team15.game.model.interfaces.MovementStrategy;
-import se.chalmers.tda367.team15.game.model.interfaces.Updatable;
+import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
-public abstract class Entity implements Drawable, Updatable, HasPosition {
+public abstract class Entity implements Drawable, SimulationObserver, HasPosition {
     protected Vector2 position;
     protected float rotation;
     private String textureName;
     protected Vector2 velocity;
     private MovementStrategy movementStrategy;
-
-    // TODO reduce amount of parameters clients need to handle
-    // Some kind of entity factory might help reduce the amount of parameters
-    // GameWorld is useful because it gives entities awareness of the world around
-    // them- singleton???
 
     public Entity(Vector2 position, String textureName) {
         this.position = position;

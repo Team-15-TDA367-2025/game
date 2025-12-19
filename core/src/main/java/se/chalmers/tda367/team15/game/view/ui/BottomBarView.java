@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 public class BottomBarView {
-    private final UiFactory uiFactory;
+    private final UiSkin uiFactory;
 
     private final Table barTable;
     private final Table expandButtonTable;
@@ -23,7 +23,7 @@ public class BottomBarView {
     private ButtonGroup<TextButton> pheromoneButtonGroup;
     private EggPanelView eggPanelView;
 
-    public BottomBarView(UiFactory uiFactory) {
+    public BottomBarView(UiSkin uiFactory) {
         this.uiFactory = uiFactory;
 
         barTable = new Table();
