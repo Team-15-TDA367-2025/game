@@ -14,8 +14,8 @@ import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
-import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class GameModel {
@@ -27,14 +27,14 @@ public class GameModel {
     private final PheromoneUsageProvider pheromoneUsageProvider;
     private final MapProvider mapProvider;
     private final AntTypeRegistry antTypeRegistry;
-    private final StructureManager structureManager;
+    private final StructureModificationProvider structureModificationProvider;
     private final EntityQuery entityQuery;
     private final EggManager eggManager;
 
     public GameModel(SimulationProvider simulationProvider, TimeCycleDataProvider timeProvider,
             FogProvider fogProvider, ColonyDataProvider colonyDataProvider,
             PheromoneUsageProvider pheromoneUsageProvider,
-            MapProvider mapProvider, AntTypeRegistry antTypeRegistry, StructureManager structureManager,
+            MapProvider mapProvider, AntTypeRegistry antTypeRegistry, StructureModificationProvider structureModificationProvider,
             EntityQuery entityQuery, EggManager eggManager) {
         this.simulationProvider = simulationProvider;
         this.colonyDataProvider = colonyDataProvider;
@@ -43,13 +43,13 @@ public class GameModel {
         this.pheromoneUsageProvider = pheromoneUsageProvider;
         this.mapProvider = mapProvider;
         this.antTypeRegistry = antTypeRegistry;
-        this.structureManager = structureManager;
+        this.structureModificationProvider = structureModificationProvider;
         this.entityQuery = entityQuery;
         this.eggManager = eggManager;
     }
 
     public Collection<GameObject> getDrawables() {
-        List<GameObject> allDrawables = new ArrayList<>(structureManager.getStructures());
+        List<GameObject> allDrawables = new ArrayList<>(structureModificationProvider.getStructures());
         allDrawables.addAll(entityQuery.getEntitiesOfType(Entity.class));
         return Collections.unmodifiableList(allDrawables);
     }

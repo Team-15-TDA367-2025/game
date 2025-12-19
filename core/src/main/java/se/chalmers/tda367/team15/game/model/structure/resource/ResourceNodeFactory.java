@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model.structure.resource;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 
 public class ResourceNodeFactory {

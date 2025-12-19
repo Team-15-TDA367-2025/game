@@ -40,7 +40,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private final PheromoneManager system;
 
     private EntityQuery entityQuery;
-    private StructureProvider structureManager;
+    private StructureProvider structureProvider;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;
@@ -60,7 +60,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         this.hunger = 2; // test value
         this.home = home;
         this.entityQuery = entityQuery;
-        this.structureManager = structureProvider;
+        this.structureProvider = structureProvider;
         this.targetPriority = targetPriority;
         this.trailStrategy = trailStrategy;
         // Initialize from AntType
@@ -184,7 +184,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void setAttackBehaviour() {
-        behavior = new AntAttackBehavior(this, entityQuery, structureManager);
+        behavior = new AntAttackBehavior(this, entityQuery, structureProvider);
     }
 
     @Override

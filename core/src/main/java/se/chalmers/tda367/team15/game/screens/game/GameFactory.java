@@ -164,7 +164,7 @@ public class GameFactory {
         HashMap<AttackCategory, Integer> termiteTargetPriority = new HashMap<>();
         termiteTargetPriority.put(AttackCategory.WORKER_ANT, 2);
 
-        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener,
+        EnemyFactory enemyFactory = new EnemyFactory(entityManager, destructionListener,
                 termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);
         simulationManager.addUpdateObserver(fogManager);

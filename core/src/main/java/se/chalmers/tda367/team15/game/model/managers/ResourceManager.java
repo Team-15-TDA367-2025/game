@@ -9,6 +9,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.structure.Structure;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 
@@ -20,11 +21,11 @@ public class ResourceManager implements SimulationObserver {
     private static final int PICKUP_RADIUS = 2;
     private static final int DEPOSIT_RADIUS = 2;
     private final EntityQuery entityQuery;
-    private final StructureManager structureManager;
+    private final StructureModificationProvider structureModificationProvider;
 
-    public ResourceManager(EntityQuery entityQuery, StructureManager structureManager) {
+    public ResourceManager(EntityQuery entityQuery, StructureModificationProvider structureMmModificationProvider) {
         this.entityQuery = entityQuery;
-        this.structureManager = structureManager;
+        this.structureModificationProvider = structureMmModificationProvider;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class ResourceManager implements SimulationObserver {
     }
 
     public void addResourceNode(ResourceNode resourceNode) {
-        structureManager.addStructure(resourceNode);
+        structureModificationProvider.addStructure(resourceNode);
     }
 
     private void handleHarvest(Ant ant) {
@@ -47,7 +48,7 @@ public class ResourceManager implements SimulationObserver {
         }
 
         GridPoint2 antGrid = getAntGridPosition(ant);
-        List<Structure> structures = structureManager.getStructures();
+        List<Structure> structures = structureModificationProvider.getStructures();
 
         for (Structure structure : structures) {
             GridPoint2 structureGrid = structure.getGridPosition();
