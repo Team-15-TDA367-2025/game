@@ -5,16 +5,18 @@ import java.util.List;
 import java.util.Random;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
  * Abstract base class for how ants follow pheromone trails.
  * Different ant types use different strategies based on their role.
+ * 
+ * NOTE: TrailStrategy instances are shared between all ants of the same type.
+ * Per-ant state (like direction) must be stored in FollowTrailBehavior.
  */
 public abstract class TrailStrategy {
 
-    protected boolean outwards = true;
-    // Protected because it's also used in the PatrolTrailStrategy
     protected final Random random = new Random();
 
     /**
@@ -23,37 +25,33 @@ public abstract class TrailStrategy {
      * @param ant       The ant making the decision
      * @param neighbors Available pheromones in adjacent cells
      * @param current   The current pheromone the ant is on (may be null)
+     * @param behavior  The ant's behavior context (holds per-ant state)
      * @return The selected pheromone to move toward, or null to leave the trail
      */
-    public abstract Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors, Pheromone current);
+    public abstract Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors,
+            Pheromone current, FollowTrailBehavior behavior);
 
     /**
      * Called when the ant reaches a trail end (no valid next pheromone).
      *
-     * @param ant     The ant at the trail end
-     * @param current The current pheromone
+     * @param ant      The ant at the trail end
+     * @param current  The current pheromone
+     * @param behavior The ant's behavior context
      */
-    public abstract void onTrailEnd(Ant ant, Pheromone current);
+    public abstract void onTrailEnd(Ant ant, Pheromone current, FollowTrailBehavior behavior);
 
     /**
      * @return Speed multiplier when following this trail type
      */
     public abstract float getSpeedMultiplier();
 
-    public boolean isOutwards() {
-        return outwards;
-    }
-
-    public void setOutwards(boolean outwards) {
-        this.outwards = outwards;
-    }
-
     /**
      * Helper to get pheromones that are further away or closer to the colony.
+     * Uses STRICT inequality - does not include same-distance pheromones.
      *
      * @param neighbors Available neighbors
      * @param current   Current pheromone (may be null)
-     * @param higher    Dist true for further away, false for closer
+     * @param higher    true for further away, false for closer
      * @return List of matching pheromones
      */
     protected List<Pheromone> filterByDistance(List<Pheromone> neighbors, Pheromone current, boolean higher) {
@@ -81,47 +79,66 @@ public abstract class TrailStrategy {
     }
 
     /**
-     * Helper for wandering randomly on a trail with automatic turn-around at dead
+     * Picks a random pheromone in the current direction, turning around at dead
      * ends.
-     * Picks a random pheromone in the current direction, turning around if needed.
+     * 
+     * SIMPLE ALGORITHM:
+     * 1. Pick the BEST pheromone in desired direction (highest if outwards, lowest
+     * if inwards)
+     * 2. If that's the cell we're on -> dead end, turn around
+     * 3. Otherwise, move there
      *
-     * @param neighbors Available neighbor pheromones
-     * @param current   Current pheromone (may be null)
-     * @param random    Random instance for shuffling
-     * @return Selected pheromone, or null if completely stuck
+     * @param neighbors Available neighbor pheromones (including current)
+     * @param current   Current pheromone the ant is on (may be null)
+     * @param behavior  The ant's behavior context (holds outwards state)
+     * @return Selected pheromone to move toward, or null if stuck
      */
-    protected Pheromone moveRandomlyOnTrail(List<Pheromone> neighbors, Pheromone current) {
-        if (neighbors.isEmpty())
+    protected Pheromone moveRandomlyOnTrail(List<Pheromone> neighbors, Pheromone current,
+            FollowTrailBehavior behavior) {
+        if (neighbors.isEmpty()) {
             return null;
-
-        // Try forward direction; if dead end flip once
-        List<Pheromone> forward = filterByDistance(neighbors, current, outwards);
-        if (forward.isEmpty()) {
-            outwards = !outwards;
-            forward = filterByDistance(neighbors, current, outwards);
         }
 
-        if (!forward.isEmpty()) {
-            return forward.get(random.nextInt(forward.size()));
-        }
-
-        // Still nothing: pick any neighbor not equal to current
-        if (current == null) {
-            return neighbors.get(random.nextInt(neighbors.size()));
-        }
-
-        var curPos = current.getPosition();
-        // Filter to neighbors that are actually different from current
-        List<Pheromone> validNeighbors = neighbors.stream()
-                .filter(p -> !p.getPosition().equals(curPos))
+        // Filter to pheromones in the forward direction (excluding current position)
+        List<Pheromone> forward = neighbors.stream()
+                .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
+                .filter(p -> {
+                    if (current == null)
+                        return true;
+                    int currentDist = current.getDistance();
+                    return behavior.isOutwards()
+                            ? p.getDistance() > currentDist
+                            : p.getDistance() < currentDist;
+                })
                 .toList();
 
-        if (!validNeighbors.isEmpty()) {
-            return validNeighbors.get(random.nextInt(validNeighbors.size()));
+        // If no forward options, we're at a dead end - turn around
+        if (forward.isEmpty()) {
+            System.out.println("Dead end - turning around. CurrentDist=" +
+                    (current != null ? current.getDistance() : "null") +
+                    ", outwards=" + behavior.isOutwards());
+            behavior.flipDirection();
+
+            // Find options in the new direction
+            forward = neighbors.stream()
+                    .filter(p -> current == null || !p.getPosition().equals(current.getPosition()))
+                    .filter(p -> {
+                        if (current == null)
+                            return true;
+                        int currentDist = current.getDistance();
+                        return behavior.isOutwards()
+                                ? p.getDistance() > currentDist
+                                : p.getDistance() < currentDist;
+                    })
+                    .toList();
         }
 
-        // Truly stuck: only neighbor is current cell
-        return null;
-    }
+        if (forward.isEmpty()) {
+            // No options in either direction - just stay put or pick any neighbor
+            return current;
+        }
 
+        // Pick RANDOMLY from forward options (for intersection variety)
+        return forward.get(random.nextInt(forward.size()));
+    }
 }

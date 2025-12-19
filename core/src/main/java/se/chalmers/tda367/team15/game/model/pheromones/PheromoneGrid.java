@@ -70,7 +70,7 @@ public class PheromoneGrid {
         return allPheromones;
     }
 
-    public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
+    public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos, PheromoneType type) {
         List<Pheromone> pheromonesInArea = new ArrayList<>();
 
         // Check all 9 cells in 3x3 grid (including center and all 8 neighbors)
@@ -79,7 +79,10 @@ public class PheromoneGrid {
                 GridPoint2 pos = new GridPoint2(centerGridPos.x + dx, centerGridPos.y + dy);
                 Map<PheromoneType, Pheromone> typeMap = pheromones.get(pos);
                 if (typeMap != null) {
-                    pheromonesInArea.addAll(typeMap.values());
+                    Pheromone pheromone = typeMap.get(type);
+                    if (pheromone != null) {
+                        pheromonesInArea.add(pheromone);
+                    }
                 }
             }
         }

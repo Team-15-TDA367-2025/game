@@ -159,14 +159,17 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
      * @param leftTrail If true, applies a cooldown before re-entering any trail
      */
     public void setWanderBehaviour(boolean leftTrail) {
+        System.out.println("Setting wander behavior");
         behavior = new WanderBehavior(this, home, entityQuery, leftTrail);
     }
 
     public void setFollowTrailBehaviour() {
+        System.out.println("Setting follow trail behavior");
         behavior = new FollowTrailBehavior(entityQuery, this, system.getConverter());
     }
 
     public void setAttackBehaviour() {
+        System.out.println("Setting attack behavior");
         behavior = new AntAttackBehavior(this, entityQuery, targetPriority);
     }
 

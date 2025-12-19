@@ -1,165 +1,173 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 /**
- * This behaviour is used when ants are trying to follow a pheromone trail
+ * Behavior for ants following pheromone trails.
+ * Each frame: move toward target pheromone, pick new target when reached.
  */
 public class FollowTrailBehavior extends AntBehavior {
-    private static final float REACHED_THRESHOLD_FRACTION = 0.3f;
-    private Pheromone lastPheromone = null;
-    private Pheromone currentTarget = null;
-    private final float reachedThresholdSq;
     private final PheromoneGridConverter converter;
+    private Pheromone currentPheromone = null;
+    private Pheromone targetPheromone = null; // The pheromone we're moving towards
+    private boolean outwards = true; // Per-ant direction state
 
-    public FollowTrailBehavior(EntityQuery entityQuery, Ant ant,
-            PheromoneGridConverter converter) {
+    public FollowTrailBehavior(EntityQuery entityQuery, Ant ant, PheromoneGridConverter converter) {
         super(ant, entityQuery);
-        float cellSize = converter.getPheromoneCellSize();
-        float threshold = cellSize * REACHED_THRESHOLD_FRACTION;
-        this.reachedThresholdSq = threshold * threshold;
         this.converter = converter;
     }
 
     @Override
-    public void update(PheromoneManager system) {
+    public void update(PheromoneUsageProvider system) {
         if (enemiesInSight()) {
-            exitTrail(); // Decrement soldier count when leaving trail
+            exitTrail();
             ant.setAttackBehaviour();
             return;
         }
 
-        List<Pheromone> neighbors = system.getPheromonesIn3x3(ant.getGridPosition()).stream()
-                .filter(p -> ant.getType().allowedPheromones().contains(p.getType()))
-                .collect(Collectors.toList());
+        // If we have a target, check if we've reached it
+        if (targetPheromone != null) {
+            Vector2 targetPos = converter.pheromoneGridToWorld(targetPheromone.getPosition());
+            float distToTarget = ant.getPosition().dst2(targetPos);
 
-        // Safety check: if no pheromones nearby, trail was likely deleted
+            // If we haven't reached the target yet, keep moving towards it
+            if (distToTarget > 0.01f) { // Small threshold
+                Vector2 diff = new Vector2(targetPos).sub(ant.getPosition());
+                float speed = ant.getSpeed() * ant.getType().trailStrategy().getSpeedMultiplier();
+                ant.setVelocity(diff.nor().scl(speed));
+                return;
+            }
+
+            // We've reached the target - update current pheromone
+            updateAntCount(targetPheromone);
+            currentPheromone = targetPheromone;
+            targetPheromone = null;
+        }
+
+        // Need to pick a new target
+        Pheromone current = currentPheromone;
+
+        // If we don't have a current pheromone, find one at ant's position
+        if (current == null) {
+            GridPoint2 gridPos = ant.getGridPosition();
+            current = findCurrentPheromone(system, gridPos);
+            if (current == null) {
+                // Try to find any nearby pheromone
+                List<Pheromone> nearby = system.getPheromonesIn3x3(gridPos, ant.getType().allowedPheromones())
+                        .stream().toList();
+                if (!nearby.isEmpty()) {
+                    current = nearby.stream()
+                            .min((a, b) -> Integer.compare(a.getDistance(), b.getDistance()))
+                            .orElse(null);
+                }
+            }
+            if (current == null) {
+                ant.getType().trailStrategy().onTrailEnd(ant, null, this);
+                return;
+            }
+            updateAntCount(current);
+            currentPheromone = current;
+        }
+
+        // Get neighbors around the current pheromone's position
+        List<Pheromone> neighbors = system.getPheromonesIn3x3(current.getPosition(), ant.getType().allowedPheromones())
+                .stream().toList();
+
         if (neighbors.isEmpty()) {
-            exitTrail(); // Decrement soldier count when leaving trail
-            lastPheromone = null;
-            currentTarget = null;
-            ant.getType().trailStrategy().onTrailEnd(ant, null);
+            exitTrail();
+            ant.getType().trailStrategy().onTrailEnd(ant, null, this);
             return;
         }
 
-        // 1. Initialization / Re-anchoring
-        if (lastPheromone == null || !isPheromoneStillValid(lastPheromone, neighbors)) {
-            Pheromone newPheromone = neighbors.stream()
-                    .min((a, b) -> Integer.compare(a.getDistance(), b.getDistance()))
-                    .orElse(null);
+        // Select next target using strategy
+        Pheromone next = ant.getType().trailStrategy().selectNextPheromone(ant, neighbors, current, this);
 
-            if (newPheromone == null) {
-                exitTrail();
-                ant.getType().trailStrategy().onTrailEnd(ant, null);
-                return;
-            }
-
-            updateSoldierCount(lastPheromone, newPheromone);
-            lastPheromone = newPheromone;
-            // Reset target since our anchor changed
-            currentTarget = null;
+        if (next == null) {
+            ant.getType().trailStrategy().onTrailEnd(ant, current, this);
+            return;
         }
 
-        // 2. Target Management - check if current target is still valid
-        if (currentTarget != null) {
-            if (!isPheromoneStillValid(currentTarget, neighbors)) {
-                // Target was deleted, need new target
-                currentTarget = null;
-            } else if (ant.getPosition().dst2(getCenterPos(currentTarget)) < reachedThresholdSq) {
-                // Reached target - update soldier count when moving to new cell
-                updateSoldierCount(lastPheromone, currentTarget);
-                lastPheromone = currentTarget;
-                currentTarget = null;
-            }
-        }
+        // Set as new target
+        targetPheromone = next;
 
-        // 3. Select next target using strategy
-        if (currentTarget == null) {
-            currentTarget = ant.getType().trailStrategy().selectNextPheromone(ant, neighbors, lastPheromone);
-
-            if (currentTarget == null) {
-                ant.getType().trailStrategy().onTrailEnd(ant, lastPheromone);
-                return;
-            }
-        }
-
-        // 4. Movement toward target
-        Vector2 targetPos = getCenterPos(currentTarget);
+        // Start moving toward target
+        Vector2 targetPos = converter.pheromoneGridToWorld(next.getPosition());
         Vector2 diff = new Vector2(targetPos).sub(ant.getPosition());
-        float distSq = diff.len2();
 
-        if (distSq > 0.001f) {
-            float maxSpeed = ant.getSpeed() * ant.getType().trailStrategy().getSpeedMultiplier();
-            float cellSize = converter.getPheromoneCellSize();
-            float speed = Math.min(maxSpeed, Math.max(ant.getSpeed(), (float) Math.sqrt(distSq) / cellSize * maxSpeed));
+        if (diff.len2() > 0.001f) {
+            float speed = ant.getSpeed() * ant.getType().trailStrategy().getSpeedMultiplier();
             ant.setVelocity(diff.nor().scl(speed));
-        } else {
-            ant.setVelocity(new Vector2(0, 0));
         }
     }
 
     /**
-     * Check if a pheromone is still in the neighbors list (not deleted).
+     * Finds the pheromone at the ant's current grid position.
      */
-    private boolean isPheromoneStillValid(Pheromone pheromone, List<Pheromone> neighbors) {
-        return neighbors.stream()
-                .anyMatch(p -> p.getPosition().equals(pheromone.getPosition())
-                        && p.getType() == pheromone.getType());
+    private Pheromone findCurrentPheromone(PheromoneUsageProvider system, GridPoint2 gridPos) {
+        for (PheromoneType type : ant.getType().allowedPheromones()) {
+            Pheromone p = system.getPheromoneAt(gridPos, type);
+            if (p != null) {
+                return p;
+            }
+        }
+        return null;
     }
 
-    private Vector2 getCenterPos(Pheromone p) {
-        return converter.pheromoneGridToWorld(p.getPosition());
+    /**
+     * Updates ant count when moving between pheromone cells.
+     */
+    private void updateAntCount(Pheromone current) {
+        if (current != currentPheromone) {
+            if (currentPheromone != null) {
+                currentPheromone.decrementAnts();
+            }
+            if (current != null) {
+                current.incrementAnts();
+            }
+            currentPheromone = current;
+        }
+    }
+
+    /**
+     * Called when ant leaves the trail.
+     */
+    private void exitTrail() {
+        if (currentPheromone != null) {
+            currentPheromone.decrementAnts();
+            currentPheromone = null;
+        }
+        targetPheromone = null;
     }
 
     public Pheromone getCurrentPheromone() {
-        return currentTarget;
+        return currentPheromone;
+    }
+
+    public boolean isOutwards() {
+        return outwards;
+    }
+
+    public void setOutwards(boolean outwards) {
+        this.outwards = outwards;
+    }
+
+    public void flipDirection() {
+        this.outwards = !this.outwards;
     }
 
     @Override
     public void handleCollision() {
-        currentTarget = null;
-    }
-
-    /**
-     * Checks if this ant is a soldier (can follow ATTACK pheromones).
-     */
-    private boolean isSoldierAnt() {
-        return ant.getType().allowedPheromones().contains(PheromoneType.ATTACK);
-    }
-
-    /**
-     * Updates soldier count when moving from one pheromone cell to another.
-     * Only affects soldier ants.
-     */
-    private void updateSoldierCount(Pheromone oldPheromone, Pheromone newPheromone) {
-        if (!isSoldierAnt()) {
-            return;
-        }
-        if (oldPheromone != null && oldPheromone != newPheromone) {
-            oldPheromone.decrementAnts();
-        }
-        if (newPheromone != null && newPheromone != oldPheromone) {
-            newPheromone.incrementAnts();
-        }
-    }
-
-    /**
-     * Called when ant leaves the trail (switches behavior or trail ends).
-     * Decrements soldier count on current pheromone.
-     */
-    private void exitTrail() {
-        if (isSoldierAnt() && lastPheromone != null) {
-            lastPheromone.decrementAnts();
-        }
+        // Clear target to re-evaluate path
+        targetPheromone = null;
     }
 }

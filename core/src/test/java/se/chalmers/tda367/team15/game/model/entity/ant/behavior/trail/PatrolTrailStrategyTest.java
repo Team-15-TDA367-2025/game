@@ -1,10 +1,7 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +18,7 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
@@ -35,11 +33,15 @@ class PatrolTrailStrategyTest {
     @Mock
     private AntType antType;
 
+    @Mock
+    private FollowTrailBehavior behavior;
+
     @BeforeEach
     void setUp() {
         strategy = new PatrolTrailStrategy();
         lenient().when(ant.getType()).thenReturn(antType);
         lenient().when(antType.id()).thenReturn("soldier");
+        lenient().when(behavior.isOutwards()).thenReturn(true);
     }
 
     // ========== Core Behavior: Patrol Along Trail ==========
@@ -56,7 +58,7 @@ class PatrolTrailStrategyTest {
 
         List<Pheromone> neighbors = Arrays.asList(outward, backward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         // Should pick something (patrol), not null
         assertNotNull(result, "Should patrol on trail when alone");
@@ -66,16 +68,19 @@ class PatrolTrailStrategyTest {
     @Test
     @DisplayName("should turn around at trail end")
     void shouldTurnAroundAtTrailEnd() {
+        when(behavior.isOutwards()).thenReturn(true);
+
         // At end of trail, only backward option available
         Pheromone current = new Pheromone(new GridPoint2(5, 0), PheromoneType.ATTACK, 5);
         Pheromone backward = new Pheromone(new GridPoint2(4, 0), PheromoneType.ATTACK, 4);
 
         List<Pheromone> neighbors = Collections.singletonList(backward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         // Should turn around and pick backward
         assertEquals(backward, result, "Should turn around at trail end");
+        verify(behavior).flipDirection();
     }
 
     // ========== Edge Cases ==========
@@ -86,7 +91,7 @@ class PatrolTrailStrategyTest {
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.ATTACK, 1);
         List<Pheromone> neighbors = Collections.emptyList();
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertNull(result);
     }
@@ -100,6 +105,8 @@ class PatrolTrailStrategyTest {
     @Test
     @DisplayName("should consider turning when other soldiers on same pheromone")
     void shouldConsiderTurningWithOtherSoldiers() {
+        when(behavior.isOutwards()).thenReturn(true);
+
         // When multiple soldiers are on the same pheromone, there's a chance to turn
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.ATTACK, 1);
         current.incrementAnts(); // This ant
@@ -114,7 +121,7 @@ class PatrolTrailStrategyTest {
         List<Pheromone> neighbors = Arrays.asList(outward, backward);
 
         // The result should still be valid even with other soldiers
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
         assertNotNull(result, "Should still patrol even with other soldiers");
     }
 }

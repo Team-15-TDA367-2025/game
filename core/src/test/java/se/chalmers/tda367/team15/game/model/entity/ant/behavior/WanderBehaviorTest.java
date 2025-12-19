@@ -62,10 +62,16 @@ class WanderBehaviorTest {
         when(ant.getGridPosition()).thenReturn(gridPos);
         when(ant.getType()).thenReturn(antType);
         when(ant.getVisionRadius()).thenReturn(8);
+        when(ant.getVelocity()).thenReturn(new Vector2(1, 0));
+        when(ant.getPosition()).thenReturn(new Vector2(0, 0));
+        when(ant.getSpeed()).thenReturn(1.0f);
+        when(home.getPosition()).thenReturn(new Vector2(0, 0));
         when(antType.allowedPheromones()).thenReturn(Set.of(PheromoneType.EXPLORE));
+        when(antType.homeBias()).thenReturn(0.0f);
 
         Pheromone nearbyPheromone = new Pheromone(gridPos, PheromoneType.EXPLORE, 1);
-        when(pheromoneManager.getPheromonesIn3x3(gridPos)).thenReturn(List.of(nearbyPheromone));
+        when(pheromoneManager.getPheromonesIn3x3(gridPos, Set.of(PheromoneType.EXPLORE)))
+                .thenReturn(List.of(nearbyPheromone));
         // No enemies in sight
         when(entityQuery.getEntitiesOfType(Termite.class)).thenReturn(Collections.emptyList());
 
@@ -106,6 +112,7 @@ class WanderBehaviorTest {
         when(ant.getVisionRadius()).thenReturn(8);
         when(ant.getPosition()).thenReturn(new Vector2(0, 0));
         when(ant.getSpeed()).thenReturn(1.0f);
+        when(ant.getVelocity()).thenReturn(new Vector2(1, 0));
         when(ant.getRotation()).thenReturn(0.0f);
         when(home.getPosition()).thenReturn(new Vector2(0, 0));
         when(antType.allowedPheromones()).thenReturn(Set.of(PheromoneType.EXPLORE));
@@ -114,7 +121,8 @@ class WanderBehaviorTest {
         when(entityQuery.getEntitiesOfType(Termite.class)).thenReturn(Collections.emptyList());
 
         Pheromone nearbyPheromone = new Pheromone(gridPos, PheromoneType.EXPLORE, 1);
-        when(pheromoneManager.getPheromonesIn3x3(gridPos)).thenReturn(List.of(nearbyPheromone));
+        when(pheromoneManager.getPheromonesIn3x3(gridPos, Set.of(PheromoneType.EXPLORE)))
+                .thenReturn(List.of(nearbyPheromone));
 
         // When: update is called many times to exhaust cooldown (30 frames)
         for (int i = 0; i < 31; i++) {

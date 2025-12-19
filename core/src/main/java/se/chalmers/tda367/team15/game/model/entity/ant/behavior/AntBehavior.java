@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 
 /**
  * Used to update the ants, the ants have a specific behaviour programmed. The
@@ -44,7 +44,7 @@ public abstract class AntBehavior implements GeneralizedBehaviour {
         return false;
     }
 
-    public abstract void update(PheromoneManager system);
+    public abstract void update(PheromoneUsageProvider system);
 
     public void handleCollision() {
     }

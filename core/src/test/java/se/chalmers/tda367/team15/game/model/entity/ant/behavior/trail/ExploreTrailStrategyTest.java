@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
@@ -26,6 +28,9 @@ class ExploreTrailStrategyTest {
 
     @Mock
     private Ant ant;
+
+    @Mock
+    private FollowTrailBehavior behavior;
 
     @BeforeEach
     void setUp() {
@@ -43,24 +48,25 @@ class ExploreTrailStrategyTest {
 
         List<Pheromone> neighbors = Arrays.asList(outward, backward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertEquals(outward, result, "Should move outward (higher distance)");
-        assertTrue(strategy.isOutwards(), "Should still be in outward mode");
     }
 
     @Test
-    @DisplayName("should pick highest distance when multiple outward options")
-    void shouldPickHighestDistanceOutward() {
+    @DisplayName("should pick from outward options randomly")
+    void shouldPickFromOutwardOptionsRandomly() {
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.EXPLORE, 1);
         Pheromone outward1 = new Pheromone(new GridPoint2(1, 0), PheromoneType.EXPLORE, 2);
         Pheromone outward2 = new Pheromone(new GridPoint2(0, 1), PheromoneType.EXPLORE, 3);
 
         List<Pheromone> neighbors = Arrays.asList(outward1, outward2);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
-
-        assertEquals(outward2, result, "Should pick the highest distance option");
+        // Run multiple times and verify result is always an outward option
+        for (int i = 0; i < 10; i++) {
+            Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
+            assertTrue(result == outward1 || result == outward2, "Should pick an outward option");
+        }
     }
 
     @Test
@@ -71,7 +77,7 @@ class ExploreTrailStrategyTest {
 
         List<Pheromone> neighbors = Collections.singletonList(backward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         // Should return null to leave trail and start wandering
         assertNull(result, "Should leave trail at end (return null) to start wandering");
@@ -85,11 +91,10 @@ class ExploreTrailStrategyTest {
         Pheromone backward = new Pheromone(new GridPoint2(2, 0), PheromoneType.EXPLORE, 2);
 
         // First call at trail end
-        Pheromone result = strategy.selectNextPheromone(ant, Collections.singletonList(backward), end);
+        Pheromone result = strategy.selectNextPheromone(ant, Collections.singletonList(backward), end, behavior);
 
         // Should leave trail, NOT go backward
         assertNull(result, "Should leave trail, not return along it");
-        // The outwards flag might change, but it shouldn't matter since we return null
     }
 
     // ========== Edge Cases ==========
@@ -100,7 +105,7 @@ class ExploreTrailStrategyTest {
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.EXPLORE, 1);
         List<Pheromone> neighbors = Collections.emptyList();
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertNull(result);
     }
@@ -110,11 +115,9 @@ class ExploreTrailStrategyTest {
     void onTrailEndShouldSetWanderBehavior() {
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.EXPLORE, 1);
 
-        strategy.onTrailEnd(ant, current);
+        strategy.onTrailEnd(ant, current, behavior);
 
-        // Can't easily verify setWanderBehaviour was called on mock without
-        // ArgumentCaptor
-        // but at least we verify it doesn't throw
+        verify(ant).setWanderBehaviour(true);
     }
 
     @Test

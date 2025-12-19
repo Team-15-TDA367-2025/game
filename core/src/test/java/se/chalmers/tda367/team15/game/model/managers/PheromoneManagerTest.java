@@ -251,7 +251,9 @@ class PheromoneManagerTest {
             pheromoneManager.addPheromone(center, PheromoneType.ATTACK);
             pheromoneManager.addPheromone(right, PheromoneType.GATHER);
 
-            List<Pheromone> pheromones = pheromoneManager.getPheromonesIn3x3(center);
+            // Test with both types
+            Collection<Pheromone> pheromones = pheromoneManager.getPheromonesIn3x3(
+                    center, java.util.Set.of(PheromoneType.GATHER, PheromoneType.ATTACK));
 
             assertEquals(3, pheromones.size());
         }

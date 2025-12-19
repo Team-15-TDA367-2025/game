@@ -2,7 +2,7 @@ package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.BehaviourWithCollision;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 
 /**
  * Used as an abstraction layer that allows {@link Ant} to use generalized
@@ -11,5 +11,5 @@ import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
  * While also using its own specific pheromone related behaviour
  */
 public interface GeneralizedBehaviour extends BehaviourWithCollision {
-    void update(PheromoneManager system);
+    void update(PheromoneUsageProvider system);
 }

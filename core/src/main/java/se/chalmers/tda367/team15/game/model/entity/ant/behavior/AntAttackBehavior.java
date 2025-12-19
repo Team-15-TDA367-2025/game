@@ -1,13 +1,12 @@
 package se.chalmers.tda367.team15.game.model.entity.ant.behavior;
 
+import java.util.HashMap;
+
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.MeleeAttackBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureProvider;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
-
-import java.util.HashMap;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 
 /**
  * The attack behaviour for ants
@@ -26,7 +25,7 @@ public class AntAttackBehavior extends MeleeAttackBehaviour implements Generaliz
     }
 
     @Override
-    public void update(PheromoneManager system) {
+    public void update(PheromoneUsageProvider system) {
         super.update();
     }
 

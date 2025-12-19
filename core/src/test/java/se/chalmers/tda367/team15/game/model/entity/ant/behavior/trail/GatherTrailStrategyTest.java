@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
@@ -34,10 +35,14 @@ class GatherTrailStrategyTest {
     @Mock
     private Inventory inventory;
 
+    @Mock
+    private FollowTrailBehavior behavior;
+
     @BeforeEach
     void setUp() {
         strategy = new GatherTrailStrategy();
         lenient().when(ant.getInventory()).thenReturn(inventory);
+        lenient().when(behavior.isOutwards()).thenReturn(true);
     }
 
     // ========== Core Behavior: Wander on Trail ==========
@@ -56,7 +61,7 @@ class GatherTrailStrategyTest {
         Set<Pheromone> results = new HashSet<>();
         // Run multiple times - random should give different results
         for (int i = 0; i < 50; i++) {
-            Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+            Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
             assertNotNull(result);
             results.add(result);
         }
@@ -69,34 +74,34 @@ class GatherTrailStrategyTest {
     @DisplayName("should turn around at dead ends instead of leaving trail")
     void shouldTurnAroundAtDeadEnds() {
         when(inventory.isFull()).thenReturn(false);
+        when(behavior.isOutwards()).thenReturn(true);
 
         // At the end of trail (dist 3), only neighbor goes backward (dist 2)
         Pheromone current = new Pheromone(new GridPoint2(3, 0), PheromoneType.GATHER, 3);
         Pheromone backward = new Pheromone(new GridPoint2(2, 0), PheromoneType.GATHER, 2);
         List<Pheromone> neighbors = Collections.singletonList(backward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         // Should NOT return null (leave trail), should turn around
         assertNotNull(result, "Should turn around at dead end, not leave trail");
         assertEquals(backward, result);
+        verify(behavior).flipDirection(); // Should have flipped to go backward
     }
 
     @Test
     @DisplayName("should continue wandering after turning around at dead end")
     void shouldContinueWanderingAfterTurnAround() {
         when(inventory.isFull()).thenReturn(false);
+        when(behavior.isOutwards()).thenReturn(false); // Already turned around
 
-        // First: hit dead end and turn around
+        // Now at mid (dist 2), should be able to continue backward
         Pheromone end = new Pheromone(new GridPoint2(3, 0), PheromoneType.GATHER, 3);
         Pheromone mid = new Pheromone(new GridPoint2(2, 0), PheromoneType.GATHER, 2);
-        strategy.selectNextPheromone(ant, Collections.singletonList(mid), end);
-
-        // Now at mid (dist 2), should still be able to go forward OR backward
         Pheromone start = new Pheromone(new GridPoint2(1, 0), PheromoneType.GATHER, 1);
         List<Pheromone> neighbors = Arrays.asList(end, start);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, mid);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, mid, behavior);
 
         // Should pick something (continue wandering), not leave trail
         assertNotNull(result, "Should continue wandering on trail");
@@ -114,7 +119,7 @@ class GatherTrailStrategyTest {
         Pheromone homeward = new Pheromone(new GridPoint2(1, 0), PheromoneType.GATHER, 1);
         List<Pheromone> neighbors = Arrays.asList(outward, homeward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertEquals(homeward, result, "Should go toward lower distance (home) when full");
     }
@@ -129,7 +134,7 @@ class GatherTrailStrategyTest {
         Pheromone outward = new Pheromone(new GridPoint2(2, 0), PheromoneType.GATHER, 2);
         List<Pheromone> neighbors = Collections.singletonList(outward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertNull(result, "Should leave trail (return null) when at colony and full");
     }
@@ -138,13 +143,14 @@ class GatherTrailStrategyTest {
     @DisplayName("should move forward (higher distance) when inventory is not full")
     void shouldMoveForwardWhenNotFull() {
         when(inventory.isFull()).thenReturn(false);
+        when(behavior.isOutwards()).thenReturn(true);
 
         Pheromone current = new Pheromone(new GridPoint2(2, 0), PheromoneType.GATHER, 2);
         Pheromone outward = new Pheromone(new GridPoint2(3, 0), PheromoneType.GATHER, 3);
         Pheromone homeward = new Pheromone(new GridPoint2(1, 0), PheromoneType.GATHER, 1);
         List<Pheromone> neighbors = Arrays.asList(outward, homeward);
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         // Should pick outward (higher distance), not homeward
         assertEquals(outward, result, "Should go forward (outward) when not full");
@@ -155,13 +161,12 @@ class GatherTrailStrategyTest {
     @Test
     @DisplayName("should return null when no neighbors available")
     void shouldReturnNullWhenNoNeighbors() {
-        // Note: This stub is not reached since we return early, but keep for clarity
         lenient().when(inventory.isFull()).thenReturn(false);
 
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.GATHER, 1);
         List<Pheromone> neighbors = Collections.emptyList();
 
-        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current);
+        Pheromone result = strategy.selectNextPheromone(ant, neighbors, current, behavior);
 
         assertNull(result);
     }

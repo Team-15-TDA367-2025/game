@@ -1,9 +1,11 @@
 package se.chalmers.tda367.team15.game.model.managers;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
@@ -50,6 +52,13 @@ public class PheromoneManager implements PheromoneUsageProvider {
         if (pheromoneGrid.hasPheromoneAt(pos, type)) {
             return false;
         }
+
+        // // Disallow placing 2x2 pheromones
+        // Collection<Pheromone> neighbors = pheromoneGrid.getPheromonesIn3x3(pos,
+        // type);
+        // if (neighbors.size() > 2) {
+        // return false;
+        // }
 
         int minDistance = findLowestNeighbor(pos, type);
         if (minDistance == -1) {
@@ -217,10 +226,6 @@ public class PheromoneManager implements PheromoneUsageProvider {
         return pheromoneGrid.getPheromonesAt(gridPos);
     }
 
-    public List<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos) {
-        return pheromoneGrid.getPheromonesIn3x3(centerGridPos);
-    }
-
     /** Fills all lines using strictly adjacent (non-diagonal) steps. */
     public GridPoint2 drawPheromonesBetween(GridPoint2 start, GridPoint2 end, PheromoneType type) {
         if (start == null) {
@@ -251,5 +256,14 @@ public class PheromoneManager implements PheromoneUsageProvider {
     private boolean processPheromoneAction(GridPoint2 pos, PheromoneType type) {
         return addPheromone(pos, type) ||
                 getPheromoneAt(pos, type) != null;
+    }
+
+    @Override
+    public Collection<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos, Set<PheromoneType> types) {
+        List<Pheromone> pheromones = new ArrayList<>();
+        for (PheromoneType type : types) {
+            pheromones.addAll(pheromoneGrid.getPheromonesIn3x3(centerGridPos, type));
+        }
+        return pheromones;
     }
 }

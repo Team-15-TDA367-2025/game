@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
@@ -19,7 +20,8 @@ public class PatrolTrailStrategy extends TrailStrategy {
     private static final float MAX_TURN_CHANCE = 0.20f; // Cap at 20%
 
     @Override
-    public Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors, Pheromone current) {
+    public Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors,
+            Pheromone current, FollowTrailBehavior behavior) {
         if (neighbors.isEmpty()) {
             return null;
         }
@@ -32,19 +34,19 @@ public class PatrolTrailStrategy extends TrailStrategy {
         if (otherSoldiers > 0) {
             float turnChance = Math.min(MAX_TURN_CHANCE, TURN_CHANCE_PER_SOLDIER * otherSoldiers);
             if (random.nextInt(1000) < turnChance * 1000) {
-                outwards = !outwards;
+                behavior.flipDirection();
             }
         }
 
-        return moveRandomlyOnTrail(neighbors, current);
+        return moveRandomlyOnTrail(neighbors, current, behavior);
     }
 
     @Override
-    public void onTrailEnd(Ant ant, Pheromone current) {
+    public void onTrailEnd(Ant ant, Pheromone current, FollowTrailBehavior behavior) {
         if (current == null) {
             ant.setWanderBehaviour(true);
         }
-        outwards = !outwards;
+        behavior.flipDirection();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.model.interfaces.providers;
 
 import java.util.Collection;
+import java.util.Set;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -22,6 +23,8 @@ public interface PheromoneUsageProvider {
     Pheromone getPheromoneAt(GridPoint2 pos, PheromoneType type);
 
     Collection<Pheromone> getPheromonesAt(GridPoint2 pos);
+
+    Collection<Pheromone> getPheromonesIn3x3(GridPoint2 centerGridPos, Set<PheromoneType> types);
 
     Collection<Pheromone> getPheromones();
 }

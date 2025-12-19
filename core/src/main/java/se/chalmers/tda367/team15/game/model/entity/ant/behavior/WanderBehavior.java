@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
@@ -82,7 +82,7 @@ public class WanderBehavior extends AntBehavior {
     }
 
     @Override
-    public void update(PheromoneManager system) {
+    public void update(PheromoneUsageProvider system) {
 
         if (enemiesInSight()) {
             ant.setAttackBehaviour();
@@ -102,8 +102,7 @@ public class WanderBehavior extends AntBehavior {
         }
 
         GridPoint2 gridPos = ant.getGridPosition();
-        List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos).stream()
-                .filter(p -> ant.getType().allowedPheromones().contains(p.getType()))
+        List<Pheromone> neighbors = system.getPheromonesIn3x3(gridPos, ant.getType().allowedPheromones()).stream()
                 .toList();
 
         if (!neighbors.isEmpty()) {

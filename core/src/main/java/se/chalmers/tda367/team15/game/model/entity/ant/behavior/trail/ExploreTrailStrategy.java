@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 
 /**
@@ -15,7 +16,8 @@ public class ExploreTrailStrategy extends TrailStrategy {
     private static final float SPEED_MULTIPLIER = 1.3f;
 
     @Override
-    public Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors, Pheromone current) {
+    public Pheromone selectNextPheromone(Ant ant, List<Pheromone> neighbors,
+            Pheromone current, FollowTrailBehavior behavior) {
         if (neighbors.isEmpty()) {
             return null;
         }
@@ -28,11 +30,20 @@ public class ExploreTrailStrategy extends TrailStrategy {
             return null;
         }
 
-        return moveRandomlyOnTrail(outward, current);
+        // Filter out current position from the outward list
+        List<Pheromone> options = current != null
+                ? outward.stream().filter(p -> !p.getPosition().equals(current.getPosition())).toList()
+                : outward;
+
+        if (options.isEmpty()) {
+            return null;
+        }
+
+        return options.get(random.nextInt(options.size()));
     }
 
     @Override
-    public void onTrailEnd(Ant ant, Pheromone current) {
+    public void onTrailEnd(Ant ant, Pheromone current, FollowTrailBehavior behavior) {
         ant.setWanderBehaviour(true);
     }
 
