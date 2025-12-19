@@ -18,6 +18,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
+import se.chalmers.tda367.team15.game.view.ui.TutorialView;
 import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
 /**
@@ -46,6 +47,8 @@ public class GameScreen extends ScreenAdapter {
     private final HudController hudController;
 
     private final Game game;
+    private TutorialView tutorialView;
+
     public GameScreen(
             Game game,
             GameModel gameModel,
@@ -82,6 +85,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
     @Override
+    public void show() {
+        tutorialView = new TutorialView(hudView.getStage());
+    }
+
+    @Override
     public void render(float delta) {
         // Update
         cameraController.update(delta);
@@ -91,7 +99,8 @@ public class GameScreen extends ScreenAdapter {
 
         GameEndReason endReason = gameHasEnded();
         if (endReason != GameEndReason.STILL_PLAYING) {
-            GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); //TODO long line
+            GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); // TODO long
+                                                                                                        // line
             gameStats.saveIfNewHighScore();
             game.setScreen(new EndScreen(game, endReason));
         }
@@ -117,5 +126,7 @@ public class GameScreen extends ScreenAdapter {
         hudView.dispose();
         uiFactory.dispose();
         textureRegistry.dispose();
+
+        tutorialView.dispose();
     }
 }
