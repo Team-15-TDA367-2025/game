@@ -14,11 +14,6 @@ public abstract class Entity implements GameObject, SimulationObserver, HasPosit
     protected Vector2 velocity;
     private MovementStrategy movementStrategy;
 
-    // TODO reduce amount of parameters clients need to handle
-    // Some kind of entity factory might help reduce the amount of parameters
-    // GameWorld is useful because it gives entities awareness of the world around
-    // them- singleton???
-
     public Entity(Vector2 position) {
         this.position = position;
         this.rotation = 0f;
@@ -39,7 +34,7 @@ public abstract class Entity implements GameObject, SimulationObserver, HasPosit
         Vector2 velocityStep = velocity.cpy().scl(deltaTime);
         Vector2 nextPosition = position.cpy().add(velocityStep);
 
-        // If no strategy is set, we assume free movement (or you could assume strict)
+        // If no strategy is set, we assume free movement
         if (movementStrategy != null && !movementStrategy.canMoveTo(nextPosition)) {
             handleCollision();
             return;

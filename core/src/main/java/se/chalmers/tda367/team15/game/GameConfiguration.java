@@ -1,10 +1,18 @@
 package se.chalmers.tda367.team15.game;
 
+import java.util.Set;
+
 import com.badlogic.gdx.math.GridPoint2;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
+import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.ExploreTrailStrategy;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.GatherTrailStrategy;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.PatrolTrailStrategy;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 public record GameConfiguration(boolean unlimitedFps, boolean noFog, int startAnts, Long seed,
         int startResources, String antType, GridPoint2 mapSize) {
@@ -52,5 +60,55 @@ public record GameConfiguration(boolean unlimitedFps, boolean noFog, int startAn
             String[] parts = value.split(",");
             return new GridPoint2(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
         }
+    }
+
+    public static void registerAntTypes(AntTypeRegistry registry) {
+        // Scout: High speed, low HP, 0 capacity, cheap/fast to hatch
+        registry.register(AntType.with()
+                .id("scout")
+                .displayName("Scout")
+                .foodCost(5)
+                .developmentTicks(30)
+                .maxHealth(4f)
+                .moveSpeed(8f)
+                .carryCapacity(0)
+                .allowedPheromones(Set.of(PheromoneType.EXPLORE))
+                .homeBias(0.05f) // Low home bias - scouts wander far
+                .visionRadius(8)
+                .hunger(2)
+                .trailStrategy(new ExploreTrailStrategy())
+                .build());
+
+        // Soldier: Low speed, high HP, 0 capacity, expensive
+        registry.register(AntType.with()
+                .id("soldier")
+                .displayName("Soldier")
+                .foodCost(40)
+                .developmentTicks(300)
+                .maxHealth(20f)
+                .moveSpeed(2f)
+                .carryCapacity(50)
+                .allowedPheromones(Set.of(PheromoneType.ATTACK))
+                .homeBias(0.3f)
+                .visionRadius(8)
+                .hunger(2)
+                .trailStrategy(new PatrolTrailStrategy())
+                .build());
+
+        // Worker: Medium speed, medium HP, some capacity
+        registry.register(AntType.with()
+                .id("worker")
+                .displayName("Worker")
+                .foodCost(10)
+                .developmentTicks(60)
+                .maxHealth(6f)
+                .moveSpeed(5f)
+                .carryCapacity(10)
+                .allowedPheromones(Set.of(PheromoneType.GATHER))
+                .homeBias(0.1f)
+                .visionRadius(8)
+                .hunger(2)
+                .trailStrategy(new GatherTrailStrategy())
+                .build());
     }
 }
