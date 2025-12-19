@@ -25,7 +25,7 @@ public class Termite extends Entity implements CanAttack {
     private final float MAX_HEALTH = 1;
     private float health = MAX_HEALTH;
     private final DestructionListener destructionListener;
-    private TermiteAttackBehaviour termiteAttackBehaviour;
+    private final TermiteAttackBehaviour termiteAttackBehaviour;
 
     public Termite(Vector2 position, EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {

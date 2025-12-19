@@ -16,7 +16,6 @@ import se.chalmers.tda367.team15.game.view.TextureResolver;
 public class HudController implements PheromoneSelectionListener {
     private final HudView view;
     private final PheromoneController pheromoneController;
-    private final EggController eggController;
     private final EggPanelView eggPanelView;
     private final ColonyDataProvider colonyDataProvider;
     private final SpeedController speedController;
@@ -33,7 +32,7 @@ public class HudController implements PheromoneSelectionListener {
         this.speedController = speedController;
         this.colonyDataProvider = colonyDataProvider;
         // Create egg controller and panel
-        this.eggController = new EggController(antTypeRegistry, eggPurchaseProvider);
+        EggController eggController = new EggController(antTypeRegistry, eggPurchaseProvider);
         this.eggPanelView = new EggPanelView(uiFactory, eggController, eggManager, colonyDataProvider,
                 antTypeRegistry, textureResolver);
 

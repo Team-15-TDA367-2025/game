@@ -16,8 +16,8 @@ import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificat
  */
 public class WaveManager implements TimeObserver {
     private int nightNumber = 0;
-    private EnemyFactory enemyFactory;
-    private EntityModificationProvider entityModificationProvider;
+    private final EnemyFactory enemyFactory;
+    private final EntityModificationProvider entityModificationProvider;
 
     public WaveManager(EnemyFactory enemyFactory, EntityModificationProvider entityModificationProvider) {
         this.enemyFactory = enemyFactory;

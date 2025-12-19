@@ -8,10 +8,10 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
 public class CameraController extends InputAdapter {
-    private CameraModel cameraModel;
-    private CoordinateConverter converter;
+    private final CameraModel cameraModel;
+    private final CoordinateConverter converter;
     private float zoomSpeed = 0.1f;
-    private float moveSpeed = 20f; // World units per second
+    private final float moveSpeed = 20f; // World units per second
 
     public CameraController(CameraModel model, CoordinateConverter converter) {
         this.cameraModel = model;

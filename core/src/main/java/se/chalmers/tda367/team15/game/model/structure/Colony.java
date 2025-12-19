@@ -14,7 +14,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvi
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 public class Colony extends Structure implements Home, TimeObserver, ColonyDataProvider {
-    private Inventory inventory;
+    private final Inventory inventory;
     private final Faction faction;
     private final EntityQuery entityQuery;
     private boolean isDead = false;

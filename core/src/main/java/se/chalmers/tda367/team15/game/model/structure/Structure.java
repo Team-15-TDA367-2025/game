@@ -10,8 +10,8 @@ import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObser
 
 // A structure is a static object in the game world, fixed to the grid.
 public abstract class Structure implements GameObject, SimulationObserver, HasPosition {
-    private GridPoint2 position;
-    private int size;
+    private final GridPoint2 position;
+    private final int size;
     Faction faction;
 
     public Structure(GridPoint2 position, int size) {

@@ -33,7 +33,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private final DestructionListener destructionListener;
     private final PheromoneManager system;
 
-    private EntityQuery entityQuery;
+    private final EntityQuery entityQuery;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;

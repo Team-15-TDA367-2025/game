@@ -10,8 +10,8 @@ import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 
 // Implements the CoordinateConverter interface, so we can use it in the CameraController without depending on the view code.
 public class CameraView implements CoordinateConverter, ViewportObserver {
-    private OrthographicCamera camera;
-    private CameraModel model;
+    private final OrthographicCamera camera;
+    private final CameraModel model;
     private Vector2 viewportSize;
     private final float worldViewportWidth;
 
@@ -48,7 +48,7 @@ public class CameraView implements CoordinateConverter, ViewportObserver {
     /**
      * Gets the effective viewport size (what we actually see in world coordinates
      * after zoom).
-     * 
+     *
      * @return Effective viewport size in world units
      */
     public Vector2 getEffectiveViewportSize() {
@@ -71,7 +71,7 @@ public class CameraView implements CoordinateConverter, ViewportObserver {
 
     /**
      * Converts world coordinates to screen coordinates.
-     * 
+     *
      * @param worldPos World position
      * @return Screen coordinates in pixels (Y=0 at top, matching LibGDX screen
      *         input)

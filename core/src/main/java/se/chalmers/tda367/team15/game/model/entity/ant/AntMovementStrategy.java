@@ -6,7 +6,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.MovementStrategy;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class AntMovementStrategy implements MovementStrategy {
-    private MapProvider map;
+    private final MapProvider map;
 
     public AntMovementStrategy(MapProvider worldMap) {
         this.map = worldMap;

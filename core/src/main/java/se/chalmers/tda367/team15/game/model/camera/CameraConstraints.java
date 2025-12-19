@@ -5,11 +5,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class CameraConstraints {
-    private float minZoom;
-    private float maxZoom;
+    private final float minZoom;
+    private final float maxZoom;
 
     // You can never move the camera so that any part is outside of this rectangle.
-    private Rectangle bounds;
+    private final Rectangle bounds;
 
     public CameraConstraints(Rectangle bounds, float minZoom, float maxZoom) {
         if (minZoom <= 0) {
@@ -43,7 +43,7 @@ public class CameraConstraints {
     /**
      * Constrains a camera position considering the viewport size and zoom.
      * Ensures that the camera viewport corners stay within bounds when possible.
-     * 
+     *
      * @param position     The current camera position
      * @param zoom         The current zoom level
      * @param viewportSize The viewport size in world units (before zoom)

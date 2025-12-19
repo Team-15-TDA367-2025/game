@@ -18,7 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class TextureRegistry {
     private final Map<String, TextureRegion> textures = new HashMap<>();
-    private TextureAtlas atlas;
+    private final TextureAtlas atlas;
 
     public TextureRegistry() {
         // 256x256 gives us about 64 tiles with 32x32 textures, which for now is enough.
@@ -30,7 +30,7 @@ public class TextureRegistry {
         createPixelTexture(packer);
 
         atlas = packer.generateTextureAtlas(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest, false);
-        
+
         for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
             textures.put(region.name, region);
         }

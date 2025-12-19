@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class CameraModel {
-    private Vector2 position = new Vector2(0, 0);
+    private final Vector2 position = new Vector2(0, 0);
     private float zoom = 0.2f;
-    private CameraConstraints constraints;
+    private final CameraConstraints constraints;
 
     public CameraModel(CameraConstraints constraints) {
         this.constraints = constraints;
@@ -36,7 +36,7 @@ public class CameraModel {
      * Zooms to a new level while keeping a specific world point visually fixed.
      * This updates both the zoom level and the camera position to create a "zoom
      * towards" effect.
-     * 
+     *
      * @param newZoom        The new zoom level (magnification)
      * @param invariantPoint The point in world coordinates that should remain fixed
      *                       (e.g., mouse cursor)
@@ -66,7 +66,7 @@ public class CameraModel {
     /**
      * Applies constraints to the camera position considering the viewport size.
      * Ensures that the camera viewport corners stay within bounds when possible.
-     * 
+     *
      * @param viewportSize The viewport size in world units (before zoom)
      */
     public void applyConstraints(Vector2 viewportSize) {
