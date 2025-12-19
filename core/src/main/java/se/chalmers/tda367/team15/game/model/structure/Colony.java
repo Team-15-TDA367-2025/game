@@ -19,6 +19,7 @@ public class Colony extends Structure
     private Inventory inventory;
     private Faction faction;
     private final EntityQuery entityQuery;
+    private boolean isDead = false;
 
     public Colony(GridPoint2 position, EntityQuery entityQuery, int initialFood) {
         super(position, "colony", 4);
@@ -48,7 +49,9 @@ public class Colony extends Structure
     }
 
     public void applyConsumption(int amount) {
-        inventory.addResource(ResourceType.FOOD, -amount);
+        if (!inventory.addResource(ResourceType.FOOD, -amount)) {
+            isDead = true;
+        }
     }
 
     public int getTotalResources(ResourceType type) {
@@ -75,5 +78,9 @@ public class Colony extends Structure
                 .stream()
                 .filter(ant -> ant.getHome() == this)
                 .toList();
+    }
+
+    public boolean getIsDead() {
+        return isDead;
     }
 }
