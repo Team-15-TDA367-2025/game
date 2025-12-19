@@ -43,9 +43,12 @@ public class GameScreen extends ScreenAdapter {
     // Controllers
     private final CameraController cameraController;
     private final HudController hudController;
+    private final GameFactory gameFactory;
 
     private final Game game;
+
     public GameScreen(
+            GameFactory gameFactory,
             Game game,
             GameModel gameModel,
             CameraView cameraView,
@@ -58,6 +61,7 @@ public class GameScreen extends ScreenAdapter {
             CameraController cameraController,
             HudController hudController) {
         this.game = game;
+        this.gameFactory = gameFactory;
         this.gameModel = gameModel;
         this.cameraView = cameraView;
         this.sceneView = sceneView;
@@ -90,9 +94,10 @@ public class GameScreen extends ScreenAdapter {
 
         GameEndReason endReason = gameHasEnded();
         if (endReason != GameEndReason.STILL_PLAYING) {
-            GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); //TODO long line
+            GameStats gameStats = new GameStats(gameModel.getTimeProvider().getGameTime().totalDays()); // TODO long
+                                                                                                        // line
             gameStats.saveIfNewHighScore();
-            game.setScreen(new EndScreen(game, endReason));
+            game.setScreen(new EndScreen(game, endReason, gameFactory));
         }
 
         // Render

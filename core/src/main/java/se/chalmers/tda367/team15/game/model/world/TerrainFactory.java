@@ -6,10 +6,10 @@ import java.util.List;
 import se.chalmers.tda367.team15.game.model.world.terrain.PipelineTerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.terrain.TerrainFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.features.IslandMaskFeature;
-import se.chalmers.tda367.team15.game.model.world.terrain.features.RiverFeature;
-import se.chalmers.tda367.team15.game.model.world.terrain.features.TextureApplicationFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.features.PerlinHeightMapFeature;
 import se.chalmers.tda367.team15.game.model.world.terrain.features.ResourcePlacementFeature;
+import se.chalmers.tda367.team15.game.model.world.terrain.features.RiverFeature;
+import se.chalmers.tda367.team15.game.model.world.terrain.features.TextureApplicationFeature;
 
 /**
  * Factory for creating configured terrain generators.
@@ -24,7 +24,10 @@ public class TerrainFactory {
      * Creates a standard Perlin noise-based terrain generator.
      * Includes base height map, lakes, textures/sand, and resource placement.
      */
-    public static TerrainGenerator createStandardPerlinGenerator(long seed) {
+    public static TerrainGenerator createStandardPerlinGenerator(Long seed) {
+        if (seed == null) {
+            seed = System.currentTimeMillis();
+        }
 
         // Define default configurations
         List<TerrainFeature> pipeline = Arrays.asList(

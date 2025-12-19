@@ -37,3 +37,8 @@ You can also run the following commands:
 
 - `--no-fog` - Disables fog of war rendering (can be useful when working with terrain generation)
 - `--unlimited-fps` - Disables the FPS limit, which allows you to test performance
+- `--start-ants=<number>` - Number of ants to start with (default 1)
+- `--ant-type=<type>` - Type of ants to start with (default worker)
+- `--start-resources=<number>` - Number of resources to start with (default 20)
+- `--seed=<number>` - Seed for terrain generation (default System.currentTimeMillis())
+- `--map-size=<number>,<number>` - Size of the map (default 400,400)
