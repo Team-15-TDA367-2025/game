@@ -19,7 +19,7 @@ import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class GameModel {
     private final ColonyDataProvider colonyDataProvider;
-    // TODO: Fix
+
     private final TimeCycleDataProvider timeProvider;
     private final FogProvider fogProvider;
     private final SimulationProvider simulationProvider;
