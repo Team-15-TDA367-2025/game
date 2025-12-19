@@ -12,6 +12,7 @@ public record GameConfiguration(boolean unlimitedFps, boolean noFog, int startAn
     public static final float MIN_ZOOM = 0.05f;
     public static final float MAX_ZOOM = 4.0f;
     public static final int TICKS_PER_MINUTE = 6;
+    public static final int GRASS_VARIANT_TYPES = 3;
 
     @Command(name = "game", mixinStandardHelpOptions = true, description = "Game configuration")
     private static class CliArgs {

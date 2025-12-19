@@ -2,9 +2,9 @@ package se.chalmers.tda367.team15.game.model.interfaces;
 
 import com.badlogic.gdx.math.Vector2;
 
-public interface Drawable {
-    /** The name of the texture file to use for the object */
-    String getTextureName();
+public interface GameObject {
+    /** The logical type ID of the object (e.g. "worker_ant", "colony") */
+    String getTypeId();
 
     /** The position in world units */
     Vector2 getPosition();

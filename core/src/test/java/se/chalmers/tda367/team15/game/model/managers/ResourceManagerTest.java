@@ -20,6 +20,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
+import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNodeFactory;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 class ResourceManagerTest {
@@ -27,12 +28,14 @@ class ResourceManagerTest {
     private EntityQuery entityQuery;
     private StructureManager structureManager;
     private ResourceManager resourceManager;
+    private ResourceNodeFactory resourceNodeFactory;
 
     @BeforeEach
     void setUp() {
         entityQuery = mock(EntityQuery.class);
         structureManager = mock(StructureManager.class);
         resourceManager = new ResourceManager(entityQuery, structureManager);
+        resourceNodeFactory = new ResourceNodeFactory();
     }
 
     @Test
@@ -82,7 +85,7 @@ class ResourceManagerTest {
         void shouldNotHarvestOutOfRange() {
             Ant ant = mock(Ant.class);
             Inventory inventory = mock(Inventory.class);
-            ResourceNode node = new ResourceNode(new GridPoint2(15, 15), "test", 1, ResourceType.FOOD, 10, 10);
+            ResourceNode node = resourceNodeFactory.createResourceNode(new Vector2(15, 15), 10);
 
             Home home = mock(Home.class);
             when(ant.getPosition()).thenReturn(new Vector2(10, 10));
@@ -105,7 +108,7 @@ class ResourceManagerTest {
         void shouldNotHarvestWhenFull() {
             Ant ant = mock(Ant.class);
             Inventory inventory = mock(Inventory.class);
-            ResourceNode node = new ResourceNode(new GridPoint2(11, 11), "test", 1, ResourceType.FOOD, 10, 10);
+            ResourceNode node = resourceNodeFactory.createResourceNode(new Vector2(11, 11), 10);
 
             Home home = mock(Home.class);
             when(ant.getPosition()).thenReturn(new Vector2(10, 10));

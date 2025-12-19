@@ -11,4 +11,7 @@ public interface ColonyDataProvider extends HasPosition {
     List<Ant> getAnts();
 
     int getConsumption();
+
+    /** Is true if the colony failed to eat enough food to survive the day */
+    boolean getIsDead();
 }

@@ -43,12 +43,14 @@ public class WanderBehavior extends AntBehavior {
     }
 
     private void changeTrajectory() {
-        float angle = ant.getRotation(); // in radians
+        // Use velocity angle directly (radians) - this is the actual movement direction
+        float angle = ant.getVelocity().angleRad();
+
         double sigma = Math.toRadians(10); // deviation in degrees
         double maxTurn = Math.toRadians(20); // maximum allowed turn in degrees
 
         double randomTurn = MathUtils.random.nextGaussian() * sigma;
-        randomTurn = MathUtils.clamp(randomTurn, -maxTurn, maxTurn);
+        randomTurn = MathUtils.clamp((float) randomTurn, (float) -maxTurn, (float) maxTurn);
 
         float homeTurn = getHomeTurn(angle);
 

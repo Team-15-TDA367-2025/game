@@ -9,62 +9,55 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Applies textures and tile types based on height and water maps.
  * Also handles sand borders.
  */
-public class TextureApplicationFeature implements TerrainFeature {
-    private static final String TEXTURE_WATER = "water";
-    private static final String TEXTURE_SAND = "sand";
-    private static final String[] TEXTURE_GRASS = { "grass1", "grass2", "grass3" };
-
+public class TileApplicationFeature implements TerrainFeature {
     @Override
     public void apply(TerrainGenerationContext context) {
         int width = context.getWidth();
         int height = context.getHeight();
-        String[][] textureMap = new String[width][height];
 
-        // 1. Initial Texture Assignment
+        Tile[][] tileMap = new Tile[width][height];
+
+        // 1. Initial Tile Assignment
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                double noise = context.getHeight(x, y);
-                // Only treat explicitly marked areas as water (from IslandMask or LakeFeature)
                 if (context.isWater(x, y)) {
-                    textureMap[x][y] = TEXTURE_WATER;
+                    tileMap[x][y] = new Tile(0, TileType.WATER);
                 } else {
-                    textureMap[x][y] = noiseToGrassTexture(noise);
+                    int variant = getVariant(context, x, y);
+                    tileMap[x][y] = new Tile(variant, TileType.GRASS);
                 }
             }
         }
 
         // 2. Apply Sand Borders
-        applySandBorders(textureMap, context.getWidth(), context.getHeight(), context);
+        applySandBorders(tileMap, context.getWidth(), context.getHeight(), context);
 
-        // 3. Convert to Tiles
+        // 3. Set Tiles in context
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                String texture = textureMap[x][y];
-                TileType type = textureToTileType(texture);
-                context.setTile(x, y, new Tile(texture, type));
+                context.setTile(x, y, tileMap[x][y]);
             }
         }
     }
 
-    private String noiseToGrassTexture(double noise) {
-        int index = (int) (noise * TEXTURE_GRASS.length);
-        return TEXTURE_GRASS[Math.min(index, TEXTURE_GRASS.length - 1)];
+    private int getVariant(TerrainGenerationContext context, int x, int y) {
+        return (int) Math.floor(context.getHeight(x, y) * context.getVariantCount());
     }
 
-    private void applySandBorders(String[][] textureMap, int width, int height, TerrainGenerationContext context) {
+    private void applySandBorders(Tile[][] tileMap, int width, int height, TerrainGenerationContext context) {
         boolean[][] waterMap = context.getWaterMap();
         if (waterMap == null)
             return;
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                // If it's already water, skip
+                // Already water, skip
                 if (waterMap[x][y])
                     continue;
 
-                // Check neighbors for water
+                // If neighbor is water, set to sand
                 if (hasWaterNeighbor(x, y, context)) {
-                    textureMap[x][y] = TEXTURE_SAND;
+                    tileMap[x][y] = new Tile(0, TileType.SAND);
                 }
             }
         }
@@ -83,14 +76,4 @@ public class TextureApplicationFeature implements TerrainFeature {
         return false;
     }
 
-    private TileType textureToTileType(String texture) {
-        switch (texture) {
-            case TEXTURE_WATER:
-                return TileType.WATER;
-            case TEXTURE_SAND:
-                return TileType.SAND;
-            default:
-                return TileType.GRASS;
-        }
-    }
 }
