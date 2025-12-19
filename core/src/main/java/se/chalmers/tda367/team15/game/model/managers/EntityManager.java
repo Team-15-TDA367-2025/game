@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.EntityDeathObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificationProvider;
 
 /**
  * Manages the lifecycle of entities in the simulation.

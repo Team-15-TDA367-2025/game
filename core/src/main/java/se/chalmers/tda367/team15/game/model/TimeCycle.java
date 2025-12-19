@@ -1,8 +1,8 @@
 package se.chalmers.tda367.team15.game.model;
 
-import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;

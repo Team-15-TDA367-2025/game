@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.interfaces;
+package se.chalmers.tda367.team15.game.model.interfaces.observers;
 
 /**
  * All time observers need to be added to the TimeCycle in order to receive

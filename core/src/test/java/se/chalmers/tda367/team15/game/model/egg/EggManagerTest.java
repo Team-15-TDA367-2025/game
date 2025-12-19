@@ -24,8 +24,8 @@ import se.chalmers.tda367.team15.game.model.Egg;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.managers.EggManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 

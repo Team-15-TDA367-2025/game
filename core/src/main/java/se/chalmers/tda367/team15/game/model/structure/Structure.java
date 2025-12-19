@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
 
 // A structure is a static object in the game world, fixed to the grid.
 public abstract class Structure implements GameObject, SimulationObserver, HasPosition {

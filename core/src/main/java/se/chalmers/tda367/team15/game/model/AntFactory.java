@@ -10,7 +10,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.GatherTrai
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.TrailStrategy;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 

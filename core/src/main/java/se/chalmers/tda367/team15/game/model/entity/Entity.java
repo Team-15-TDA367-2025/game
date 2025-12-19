@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
 import se.chalmers.tda367.team15.game.model.interfaces.MovementStrategy;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
 
 public abstract class Entity implements GameObject, SimulationObserver, HasPosition {
     protected Vector2 position;

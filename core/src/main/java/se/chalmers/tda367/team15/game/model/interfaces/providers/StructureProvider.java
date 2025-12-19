@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.interfaces;
+package se.chalmers.tda367.team15.game.model.interfaces.providers;
 
 import java.util.List;
 

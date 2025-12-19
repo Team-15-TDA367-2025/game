@@ -10,9 +10,9 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.fog.FogOfWar;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.FogObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.FogObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.VisionProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class FogManager implements FogProvider, SimulationObserver {

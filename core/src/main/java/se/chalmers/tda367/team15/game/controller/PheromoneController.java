@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 
 public class PheromoneController extends InputAdapter {

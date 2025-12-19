@@ -7,10 +7,10 @@ import com.badlogic.gdx.math.GridPoint2;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.Inventory;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 // TODO - Antigravity: SRP violation - implements 5 interfaces, consider extracting ColonyResourceManager, ColonyEggHandler, ColonyCombat

@@ -13,7 +13,7 @@ import se.chalmers.tda367.team15.game.controller.EggController;
 import se.chalmers.tda367.team15.game.model.Egg;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.managers.EggManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.view.TextureResolver;

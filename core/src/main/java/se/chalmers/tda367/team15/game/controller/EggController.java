@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.EggPurchaseProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EggPurchaseProvider;
 
 public class EggController {
     private final AntTypeRegistry antTypeRegistry;

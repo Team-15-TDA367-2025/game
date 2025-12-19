@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import se.chalmers.tda367.team15.game.model.SimulationProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
 
 public class SimulationManager implements SimulationProvider {
     private static final int baseTickPerSecond = 100; // Do not set lower than 50

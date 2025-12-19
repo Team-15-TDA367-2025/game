@@ -9,12 +9,12 @@ import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
-import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureModificationProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.managers.EggManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 

@@ -4,7 +4,7 @@ import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.entity.MeleeAttackBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 
 import java.util.HashMap;

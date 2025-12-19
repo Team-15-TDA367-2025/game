@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Scaling;
 
-import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
 
 public class TopBarView extends Table {
     private final UiSkin uiFactory;

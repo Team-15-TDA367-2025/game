@@ -10,10 +10,10 @@ import se.chalmers.tda367.team15.game.model.Egg;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.EggPurchaseProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EggPurchaseProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 /**

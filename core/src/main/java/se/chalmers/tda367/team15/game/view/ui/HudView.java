@@ -6,9 +6,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.Gdx;
 
-import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
+
+import com.badlogic.gdx.Gdx;
 
 public class HudView {
     private final Stage stage;

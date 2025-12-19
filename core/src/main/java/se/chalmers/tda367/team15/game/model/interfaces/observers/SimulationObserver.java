@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.interfaces;
+package se.chalmers.tda367.team15.game.model.interfaces.observers;
 
 public interface SimulationObserver {
     default void update(float deltaTime) {

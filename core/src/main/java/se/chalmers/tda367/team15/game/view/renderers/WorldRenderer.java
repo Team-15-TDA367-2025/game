@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.view.TextureResolver;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;

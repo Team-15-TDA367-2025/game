@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.EnemyFactory;
 import se.chalmers.tda367.team15.game.model.entity.enemy.Termite;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificationProvider;
 
 /**
  * When night starts as dictated by {@link GameWorld} spawns a new wave of
