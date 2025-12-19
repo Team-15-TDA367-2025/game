@@ -21,24 +21,22 @@ public class AntFactory {
     private final MapProvider map;
     private final EntityQuery entityQuery;
     private final DestructionListener destructionListener;
-    private final StructureProvider structureProvider;
     private final HashMap<AttackCategory, Integer> targetPriority;
 
     public AntFactory(PheromoneManager pheromoneManager, MapProvider map, EntityQuery entityQuery,
-            DestructionListener destructionListener, StructureProvider structureProvider,
+            DestructionListener destructionListener,
             HashMap<AttackCategory, Integer> targetPriority) {
         this.pheromoneManager = pheromoneManager;
         this.map = map;
         this.entityQuery = entityQuery;
         this.destructionListener = destructionListener;
-        this.structureProvider = structureProvider;
         this.targetPriority = targetPriority;
     }
 
     public Ant createAnt(Home home, AntType type) {
         Vector2 position = home.getPosition();
         TrailStrategy strategy = createStrategy(type);
-        return new Ant(position, pheromoneManager, type, map, home, entityQuery, structureProvider, targetPriority,
+        return new Ant(position, pheromoneManager, type, map, home, entityQuery, targetPriority,
                 destructionListener, strategy);
     }
 

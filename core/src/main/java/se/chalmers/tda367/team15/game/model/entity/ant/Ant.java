@@ -18,7 +18,6 @@ import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
@@ -40,7 +39,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private final PheromoneManager system;
 
     private EntityQuery entityQuery;
-    private StructureProvider structureProvider;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;
@@ -49,7 +47,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
     public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
 
-            EntityQuery entityQuery, StructureProvider structureProvider,
+            EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener,
             TrailStrategy trailStrategy) {
         super(position);
@@ -60,7 +58,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         this.hunger = 2; // test value
         this.home = home;
         this.entityQuery = entityQuery;
-        this.structureProvider = structureProvider;
         this.targetPriority = targetPriority;
         this.trailStrategy = trailStrategy;
         // Initialize from AntType
@@ -172,7 +169,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
     /**
      * Switches to wander behavior.
-     * 
+     *
      * @param leftTrail If true, applies a cooldown before re-entering any trail
      */
     public void setWanderBehaviour(boolean leftTrail) {
@@ -184,7 +181,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void setAttackBehaviour() {
-        behavior = new AntAttackBehavior(this, entityQuery, structureProvider);
+        behavior = new AntAttackBehavior(this, entityQuery, targetPriority);
     }
 
     @Override

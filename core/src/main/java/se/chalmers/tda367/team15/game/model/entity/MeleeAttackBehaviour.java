@@ -1,10 +1,12 @@
 package se.chalmers.tda367.team15.game.model.entity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
+import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.CanBeAttacked;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
@@ -17,12 +19,13 @@ public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
 
     private final EntityQuery entityQuery;
-
+    private final HashMap<AttackCategory, Integer> targetPriority;
     private long lastAttackTimeMS = 0;
 
-    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery) {
+    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, HashMap<AttackCategory, Integer> targetPriority) {
         this.host = canAttack;
         this.entityQuery = entityQuery;
+        this.targetPriority=targetPriority;
     }
 
     public void update() {
@@ -57,7 +60,7 @@ public abstract class MeleeAttackBehaviour {
         if (!potentialTargets.isEmpty()) {
             target = potentialTargets.getFirst();
             for (CanBeAttacked t : potentialTargets) {
-                if (isCloserTarget(t, target)) {
+                if (isCloserTarget(t, target) && isHigherPriority(t, target)) {
                     target = t;
                 }
             }
@@ -67,6 +70,10 @@ public abstract class MeleeAttackBehaviour {
 
     private boolean isCloserTarget(CanBeAttacked target, CanBeAttacked currentTarget) {
         return target.getPosition().dst(host.getPosition()) < currentTarget.getPosition().dst(host.getPosition());
+    }
+
+    private boolean isHigherPriority(CanBeAttacked target, CanBeAttacked currentTarget) {
+        return targetPriority.get(target.getAttackCategory()) >= targetPriority.get(currentTarget.getAttackCategory());
     }
 
     private List<CanBeAttacked> potentialTargets() {

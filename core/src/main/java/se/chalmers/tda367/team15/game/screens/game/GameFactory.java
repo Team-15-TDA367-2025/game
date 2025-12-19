@@ -176,7 +176,7 @@ public class GameFactory {
 
         PheromoneManager pheromoneManager = new PheromoneManager(new GridPoint2(0, 0), pheromoneGridConverter, 4);
         AntFactory antFactory = new AntFactory(pheromoneManager, worldMap, entityManager,
-                destructionListener, structureManager, antTargetPriority);
+                destructionListener, antTargetPriority);
 
         ResourceNodeFactory resourceNodeFactory = new ResourceNodeFactory();
         Colony colony = createColony(timeCycle, entityManager, structureManager,
