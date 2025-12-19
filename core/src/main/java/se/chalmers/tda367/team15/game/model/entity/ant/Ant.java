@@ -13,13 +13,12 @@ import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntAttackBehavio
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.GeneralizedBehaviour;
 import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.TrailStrategy;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.VisionProvider;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
@@ -31,20 +30,21 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     // Stats from AntType
     private final Inventory inventory;
     private final DestructionListener destructionListener;
-    private final PheromoneManager system;
 
     private final EntityQuery entityQuery;
     HashMap<AttackCategory, Integer> targetPriority;
+    private final PheromoneUsageProvider pheromoneUsageProvider;
 
     private GeneralizedBehaviour behavior;
 
-    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
+    public Ant(Vector2 position, PheromoneUsageProvider pheromoneUsageProvider, AntType type, MapProvider map,
+            Home home,
             EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
         super(position);
         this.type = type;
         this.behavior = new WanderBehavior(this, home, entityQuery);
-        this.system = system;
+        this.pheromoneUsageProvider = pheromoneUsageProvider;
         this.home = home;
         this.entityQuery = entityQuery;
         this.targetPriority = targetPriority;
@@ -74,11 +74,11 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void updateBehavior() {
-        behavior.update(system);
+        behavior.update(pheromoneUsageProvider);
     }
 
     public GridPoint2 getGridPosition() {
-        PheromoneGridConverter converter = system.getConverter();
+        PheromoneGridConverter converter = pheromoneUsageProvider.getConverter();
         return converter.worldToPheromoneGrid(position);
     }
 
@@ -163,7 +163,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void setFollowTrailBehaviour() {
-        behavior = new FollowTrailBehavior(entityQuery, this, system.getConverter());
+        behavior = new FollowTrailBehavior(entityQuery, this, pheromoneUsageProvider.getConverter());
     }
 
     public void setAttackBehaviour() {
