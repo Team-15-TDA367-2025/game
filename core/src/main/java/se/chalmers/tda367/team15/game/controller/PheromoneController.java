@@ -65,7 +65,7 @@ public class PheromoneController extends InputAdapter {
         GridPoint2 gridPos = worldToGrid(worldPos);
 
         if (currentType == null) {
-            pheromoneUsageProvider.removePheromone(gridPos);
+            pheromoneUsageProvider.removeAllPheromones(gridPos);
             return;
         }
 
@@ -101,7 +101,7 @@ public class PheromoneController extends InputAdapter {
 
     private boolean processPheromoneAction(GridPoint2 pos) {
         return pheromoneUsageProvider.addPheromone(pos, currentType) ||
-                pheromoneUsageProvider.getPheromoneAt(pos) != null;
+                pheromoneUsageProvider.getPheromoneAt(pos, currentType) != null;
     }
 
     /**

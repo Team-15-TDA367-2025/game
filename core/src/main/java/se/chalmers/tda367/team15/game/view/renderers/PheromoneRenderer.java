@@ -1,89 +1,131 @@
 package se.chalmers.tda367.team15.game.view.renderers;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
-import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.Pheromone;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 
-// AI Generated for testing, should not look like this later!
 public class PheromoneRenderer {
-    private final ShapeRenderer shapeRenderer;
+    private final SpriteBatch batch;
+    private final ShaderProgram shader;
     private final CameraView cameraView;
     private final PheromoneUsageProvider pheromoneUsageProvider;
     private final PheromoneGridConverter converter;
+    private final Texture pheromoneTexture;
+    private final TextureRegion pheromoneRegion;
+    private float time;
 
     public PheromoneRenderer(CameraView cameraView, PheromoneUsageProvider pheromoneUsageProvider) {
         this.cameraView = cameraView;
         this.pheromoneUsageProvider = pheromoneUsageProvider;
         this.converter = pheromoneUsageProvider.getConverter();
-        this.shapeRenderer = new ShapeRenderer();
+        this.batch = new SpriteBatch();
+
+        // Create a simple white texture with proper UV coordinates (not from atlas)
+        Pixmap pixmap = new Pixmap(2, 2, Pixmap.Format.RGBA8888);
+        pixmap.setColor(1f, 1f, 1f, 1f);
+        pixmap.fill();
+        pheromoneTexture = new Texture(pixmap);
+        pheromoneRegion = new TextureRegion(pheromoneTexture, 0, 0, 2, 2);
+        pixmap.dispose();
+
+        ShaderProgram.pedantic = false;
+        shader = new ShaderProgram(
+                Gdx.files.internal("shaders/pheromone.vert"),
+                Gdx.files.internal("shaders/pheromone.frag"));
+
+        if (!shader.isCompiled()) {
+            Gdx.app.error("PheromoneRenderer", "Shader compilation failed: " + shader.getLog());
+        }
+
+        batch.setShader(shader);
     }
 
     public void render() {
+        time += Gdx.graphics.getDeltaTime();
+
         Matrix4 projectionMatrix = cameraView.getCombinedMatrix();
-        shapeRenderer.setProjectionMatrix(projectionMatrix);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        batch.setProjectionMatrix(projectionMatrix);
+
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+        batch.begin();
+
+        // Set uniforms once before drawing
+        shader.setUniformf("u_time", time);
 
         // Find max distance for normalization
-        int maxDistance = 0;
+        int maxDistance = 1;
         for (Pheromone pheromone : pheromoneUsageProvider.getPheromones()) {
             maxDistance = Math.max(maxDistance, pheromone.getDistance());
         }
 
+        float cellSize = converter.getPheromoneCellSize();
+        // Draw at 4x size so balls can overflow into neighboring cells
+        float drawSize = cellSize * 4f;
+
         for (Pheromone pheromone : pheromoneUsageProvider.getPheromones()) {
-            Color baseColor = getColorForType(pheromone.getType());
-            float fadeFactor = calculateFadeFactor(pheromone.getDistance(), maxDistance);
+            float distanceRatio = (float) pheromone.getDistance() / maxDistance;
 
-            Color color = new Color(
-                    baseColor.r * fadeFactor,
-                    baseColor.g * fadeFactor,
-                    baseColor.b * fadeFactor,
-                    1.0f);
-            shapeRenderer.setColor(color);
+            // Trail strength: 1.0 at start, 0.0 at end
+            float trailStrength = 1.0f - distanceRatio;
 
+            // Pack: R = type index, G = trail strength, B = random seed, A = 1.0
+            int typeIndex = getTypeIndex(pheromone.getType());
+
+            // Generate deterministic random seed from grid position
             GridPoint2 gridPos = pheromone.getPosition();
+            float randomSeed = ((gridPos.x * 73856093) ^ (gridPos.y * 19349663)) / (float) Integer.MAX_VALUE;
+            randomSeed = Math.abs(randomSeed);
+
+            Color tempColor = new Color();
+            tempColor.set(typeIndex / 3.0f, trailStrength, randomSeed, 1.0f);
+
+            batch.setColor(tempColor);
             Vector2 worldPos = converter.pheromoneGridToWorld(gridPos);
-            float cellSize = converter.getPheromoneCellSize();
-            // Draw a square at the pheromone cell size, centered at the world position
-            shapeRenderer.rect(worldPos.x - cellSize / 2f, worldPos.y - cellSize / 2f, cellSize, cellSize);
+
+            float thisDrawSize = ((float) Math.log(trailStrength + 1) + 0.5f) * drawSize;
+
+            batch.draw(pheromoneRegion,
+                    worldPos.x - thisDrawSize / 2f,
+                    worldPos.y - thisDrawSize / 2f,
+                    thisDrawSize,
+                    thisDrawSize);
         }
 
-        shapeRenderer.end();
+        batch.end();
     }
 
-    private float calculateFadeFactor(int distance, int maxDistance) {
-        if (maxDistance == 0 || distance == 0) {
-            return 1.0f;
-        }
-
-        float normalizedDistance = (float) distance / Math.max(maxDistance, 1);
-        float power = 1.8f;
-        float fadeFactor = 1.0f - (float) Math.pow(normalizedDistance, power);
-        return Math.max(0.2f, Math.min(1.0f, fadeFactor));
-    }
-
-    private Color getColorForType(PheromoneType type) {
+    private int getTypeIndex(PheromoneType type) {
         switch (type) {
             case GATHER:
-                return Color.BLUE;
+                return 0;
             case ATTACK:
-                return Color.RED;
+                return 1;
             case EXPLORE:
-                return Color.GREEN;
+                return 2;
             default:
-                return Color.WHITE;
+                return 0;
         }
     }
 
     public void dispose() {
-        shapeRenderer.dispose();
+        batch.dispose();
+        shader.dispose();
+        pheromoneTexture.dispose();
     }
 }

@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model.structure;
 
+import java.util.List;
+
 import com.badlogic.gdx.math.GridPoint2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -11,17 +13,19 @@ import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
-public class Colony extends Structure implements Home, TimeObserver, ColonyDataProvider {
+// TODO - Antigravity: SRP violation - implements 5 interfaces, consider extracting ColonyResourceManager, ColonyEggHandler, ColonyCombat
+public class Colony extends Structure
+        implements Home, TimeObserver, ColonyDataProvider {
     private Inventory inventory;
     private Faction faction;
     private final EntityQuery entityQuery;
 
     public Colony(GridPoint2 position, EntityQuery entityQuery, int initialFood) {
         super(position, "colony", 4);
-        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000000); // test value for now
         this.inventory.addResource(ResourceType.FOOD, initialFood);
         this.entityQuery = entityQuery;
+        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
     }
 
     @Override
@@ -40,11 +44,7 @@ public class Colony extends Structure implements Home, TimeObserver, ColonyDataP
 
     @Override
     public int getConsumption() {
-        int total = 0;
-        for (Ant ant : entityQuery.getEntitiesOfType(Ant.class)) {
-            total += ant.getHunger();
-        }
-        return total;
+        return getAnts().stream().mapToInt(Ant::getHunger).sum();
     }
 
     public void applyConsumption(int amount) {
@@ -69,8 +69,11 @@ public class Colony extends Structure implements Home, TimeObserver, ColonyDataP
     }
 
     @Override
-    public int getTotalAnts() {
-        // TODO: fix this
-        return entityQuery.getEntitiesOfType(Ant.class).size();
+    public List<Ant> getAnts() {
+        return entityQuery
+                .getEntitiesOfType(Ant.class)
+                .stream()
+                .filter(ant -> ant.getHome() == this)
+                .toList();
     }
 }

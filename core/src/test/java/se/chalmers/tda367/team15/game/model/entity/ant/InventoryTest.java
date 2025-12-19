@@ -59,6 +59,15 @@ class InventoryTest {
         }
 
         @Test
+        @DisplayName("should reject resource when going below zero")
+        void shouldRejectResourceWhenGoingBelowZero() {
+            boolean result = inventory.addResource(ResourceType.FOOD, -1);
+
+            assertFalse(result);
+            assertEquals(0, inventory.getAmount(ResourceType.FOOD));
+        }
+
+        @Test
         @DisplayName("should reject partial overflow")
         void shouldRejectPartialOverflow() {
             inventory.addResource(ResourceType.FOOD, 8);

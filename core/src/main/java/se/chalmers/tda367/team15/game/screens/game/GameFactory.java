@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
+import java.util.Set;
+
 import java.util.HashMap;
 
 import com.badlogic.gdx.Game;
@@ -37,6 +39,7 @@ import se.chalmers.tda367.team15.game.model.managers.SimulationManager;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.managers.WaveManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNodeFactory;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
@@ -47,6 +50,7 @@ import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
+import se.chalmers.tda367.team15.game.view.renderers.FogRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
@@ -69,6 +73,7 @@ public class GameFactory {
         // 1. Create Models
         CameraModel cameraModel = createCameraModel(mapSize);
         GameModel gameModel = createGameModel(mapSize);
+        ViewportListener viewportListener = new ViewportListener();
 
         // 2. Create Resources
         TextureRegistry textureRegistry = new TextureRegistry();
@@ -77,8 +82,9 @@ public class GameFactory {
 
         // 3. Create Views
         CameraView cameraView = createCameraView(cameraModel);
+        FogRenderer fogRenderer = new FogRenderer(gameModel.getFogProvider());
         WorldRenderer worldRenderer = new WorldRenderer(cameraView, textureRegistry, gameModel.getMapProvider(),
-                gameModel.getTimeProvider(), gameModel.getFogProvider(), gameConfiguration.noFog());
+                gameModel.getTimeProvider(), fogRenderer, viewportListener, gameConfiguration.noFog());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneUsageProvider());
         HudView hudView = new HudView(hudBatch, uiFactory);
 
@@ -98,8 +104,9 @@ public class GameFactory {
         inputManager.addProcessor(pheromoneController);
 
         // 6. Wire Listeners
-        ViewportListener viewportListener = new ViewportListener();
         viewportListener.addObserver(cameraView);
+        viewportListener.addObserver(fogRenderer);
+        gameModel.getFogProvider().addObserver(fogRenderer);
 
         return new GameScreen(
                 this,
@@ -126,6 +133,8 @@ public class GameFactory {
         return new CameraModel(constraints);
     }
 
+    // TODO - Antigravity: Long method (47 lines) - break into createSimulation(),
+    // createWorldAndTerrain(), createEntitySystem()
     private GameModel createGameModel(GridPoint2 mapSize) {
         AntTypeRegistry antTypeRegistry = createAntTypeRegistry();
 
@@ -247,6 +256,8 @@ public class GameFactory {
                 .moveSpeed(8f)
                 .carryCapacity(0)
                 .textureName("scout")
+                .allowedPheromones(Set.of(PheromoneType.EXPLORE))
+                .homeBias(0.05f) // Low home bias - scouts wander far
                 .build());
 
         // Soldier: Low speed, high HP, 0 capacity, expensive
@@ -259,6 +270,8 @@ public class GameFactory {
                 .moveSpeed(2f)
                 .carryCapacity(0)
                 .textureName("ant")
+                .allowedPheromones(Set.of(PheromoneType.ATTACK))
+                .homeBias(0.3f)
                 .build());
 
         // Worker: Medium speed, medium HP, some capacity
@@ -271,6 +284,8 @@ public class GameFactory {
                 .moveSpeed(5f)
                 .carryCapacity(10)
                 .textureName("ant")
+                .allowedPheromones(Set.of(PheromoneType.GATHER))
+                .homeBias(0.1f)
                 .build());
 
         return registry;

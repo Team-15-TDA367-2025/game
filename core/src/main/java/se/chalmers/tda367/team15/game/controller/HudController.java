@@ -49,7 +49,7 @@ public class HudController implements PheromoneSelectionListener {
     }
 
     public void update(float dt) {
-        view.updateData(timeProvider, colonyDataProvider.getTotalAnts(),
+        view.updateData(timeProvider, colonyDataProvider.getAnts().size(),
                 colonyDataProvider.getTotalResources(ResourceType.FOOD), colonyDataProvider.getConsumption());
     }
 }

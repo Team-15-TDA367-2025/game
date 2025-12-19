@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
-import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
+import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 
 public class WorldRenderer {
     private final SpriteBatch batch;
@@ -27,12 +27,14 @@ public class WorldRenderer {
     private final boolean disableFog;
 
     public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, MapProvider mapProvider,
-            TimeCycleDataProvider timeProvider, FogProvider fogProvider, boolean disableFog) {
+            TimeCycleDataProvider timeProvider, FogRenderer fogRenderer, ViewportListener viewportListener,
+            boolean disableFog) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
         this.terrainRenderer = new TerrainRenderer(textureRegistry);
-        this.fogRenderer = new FogRenderer(textureRegistry.get("pixel"), fogProvider);
+        this.fogRenderer = fogRenderer;
+        viewportListener.addObserver(fogRenderer);
         this.mapProvider = mapProvider;
         this.shapeRenderer = new ShapeRenderer();
         this.timeProvider = timeProvider;
@@ -45,11 +47,13 @@ public class WorldRenderer {
 
         terrainRenderer.render(batch, mapProvider, cameraView);
         drawables.forEach(this::draw);
-        if (!disableFog) {
-            fogRenderer.render(batch, cameraView);
-        }
 
         batch.end();
+
+        // Render fog after main batch to avoid z-fighting
+        if (!disableFog) {
+            fogRenderer.render(cameraView.getCombinedMatrix(), cameraView);
+        }
 
         if (!timeProvider.getIsDay()) {
             // at night, we draw a black rectangle over screen 50% opacity
@@ -89,6 +93,7 @@ public class WorldRenderer {
 
     public void dispose() {
         batch.dispose();
+        fogRenderer.dispose();
         shapeRenderer.dispose();
     }
 }

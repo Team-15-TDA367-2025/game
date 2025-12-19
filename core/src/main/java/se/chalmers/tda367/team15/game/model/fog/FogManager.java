@@ -2,11 +2,13 @@ package se.chalmers.tda367.team15.game.model.fog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.FogObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
@@ -15,7 +17,8 @@ public class FogManager implements FogProvider, SimulationObserver {
     private final FogOfWar fogOfWar;
     private final MapProvider mapProvider;
     private final EntityQuery entityQuery;
-
+    private final List<FogObserver> observers = new CopyOnWriteArrayList<>();
+    
     public FogManager(EntityQuery entityQuery, MapProvider mapProvider) {
         this.mapProvider = mapProvider;
         this.entityQuery = entityQuery;
@@ -29,6 +32,11 @@ public class FogManager implements FogProvider, SimulationObserver {
             Vector2 position = visionProvider.getPosition();
             fogOfWar.reveal(mapProvider.worldToTile(position), visionProvider.getVisionRadius());
         }
+
+        if (fogOfWar.isDirty()) {
+            fogOfWar.clearDirty();
+            notifyDirty();
+        }
     }
 
     @Override
@@ -40,4 +48,24 @@ public class FogManager implements FogProvider, SimulationObserver {
     public boolean isDiscovered(GridPoint2 pos) {
         return fogOfWar.isDiscovered(pos);
     }
+
+    @Override
+    public boolean[][] getDiscoveredArray() {
+        return fogOfWar.getDiscoveredArray();
+    }
+
+    private void notifyDirty() {
+        for (FogObserver observer : observers) {
+            observer.onFogDirty();
+        }
+    }
+
+    public void addObserver(FogObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(FogObserver observer) {
+        observers.remove(observer);
+    }
 }
+

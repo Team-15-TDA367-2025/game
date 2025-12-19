@@ -13,10 +13,13 @@ public interface PheromoneUsageProvider {
 
     boolean addPheromone(GridPoint2 pos, PheromoneType type);
 
-    void removePheromone(GridPoint2 pos);
+    void removePheromone(GridPoint2 pos, PheromoneType type);
 
-    Pheromone getPheromoneAt(GridPoint2 pos);
+    void removeAllPheromones(GridPoint2 pos);
+
+    Pheromone getPheromoneAt(GridPoint2 pos, PheromoneType type);
+
+    Collection<Pheromone> getPheromonesAt(GridPoint2 pos);
 
     Collection<Pheromone> getPheromones();
-
 }

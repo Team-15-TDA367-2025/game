@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model.entity.ant;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -7,16 +9,24 @@ import com.badlogic.gdx.math.Vector2;
 import se.chalmers.tda367.team15.game.model.AttackCategory;
 import se.chalmers.tda367.team15.game.model.DestructionListener;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.*;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.AntAttackBehavior;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.FollowTrailBehavior;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.GeneralizedBehaviour;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.WanderBehavior;
+import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.TrailStrategy;
 import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.interfaces.*;
+import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.Home;
+import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
-import java.util.HashMap;
-
-public class Ant extends Entity implements VisionProvider, CanBeAttacked,CanAttack {
+public class Ant extends Entity implements VisionProvider, CanAttack {
+    // TODO - Antigravity: Magic number - visionRadius should be in AntType or
+    // config
     AntType type;
     private final int visionRadius = 8;
     protected final Faction faction;
@@ -30,25 +40,29 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked,CanAtta
     private final DestructionListener destructionListener;
     private final PheromoneManager system;
 
-
     private EntityQuery entityQuery;
     private StructureProvider structureManager;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;
     private float health;
+    private TrailStrategy trailStrategy;
 
-    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home, EntityQuery entityQuery, StructureProvider structureProvider, HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
+    public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
+            EntityQuery entityQuery, StructureProvider structureProvider,
+            HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener,
+            TrailStrategy trailStrategy) {
         super(position, type.textureName());
         this.type = type;
         this.behavior = new WanderBehavior(this, home, entityQuery);
         this.system = system;
+        // TODO - Antigravity: Magic number - hunger should be in AntType
         this.hunger = 2; // test value
         this.home = home;
         this.entityQuery = entityQuery;
         this.structureManager = structureProvider;
-        this.targetPriority= targetPriority;
-
+        this.targetPriority = targetPriority;
+        this.trailStrategy = trailStrategy;
         // Initialize from AntType
         this.speed = type.moveSpeed();
         this.health = type.maxHealth();
@@ -135,7 +149,6 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked,CanAtta
         return new Vector2(1f, 1.5f); // 1 tile wide, 1.5 tiles tall
     }
 
-
     @Override
     public int getVisionRadius() {
         return visionRadius;
@@ -165,15 +178,25 @@ public class Ant extends Entity implements VisionProvider, CanBeAttacked,CanAtta
         return faction;
     }
 
-
     public void setWanderBehaviour() {
-        behavior = new WanderBehavior(this,home,entityQuery);
+        setWanderBehaviour(false);
     }
-    public void setFollowTrailBehaviour(){
-        behavior = new FollowTrailBehavior(home,entityQuery,this,system.getConverter());
+
+    /**
+     * Switches to wander behavior.
+     * 
+     * @param leftTrail If true, applies a cooldown before re-entering any trail
+     */
+    public void setWanderBehaviour(boolean leftTrail) {
+        behavior = new WanderBehavior(this, home, entityQuery, leftTrail);
     }
+
+    public void setFollowTrailBehaviour() {
+        behavior = new FollowTrailBehavior(entityQuery, this, system.getConverter(), trailStrategy);
+    }
+
     public void setAttackBehaviour() {
-        behavior = new AntAttackBehavior(this,entityQuery,structureManager,targetPriority);
+        behavior = new AntAttackBehavior(this, entityQuery, structureManager);
     }
 
     @Override
