@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 public class CameraModel {
-    private final Vector2 position = new Vector2(0, 0);
+    private Vector2 position = new Vector2(0, 0);
     private float zoom = 0.2f;
     private final CameraConstraints constraints;
 
