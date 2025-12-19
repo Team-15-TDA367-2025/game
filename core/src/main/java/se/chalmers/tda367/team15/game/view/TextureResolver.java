@@ -26,18 +26,13 @@ public class TextureResolver {
      * This is the extension point for modding/new content.
      */
     private void initializeMappings() {
-        // Ant types -> textures
         idMappings.put("worker", "ant");
         idMappings.put("soldier", "ant");
         idMappings.put("scout", "scout");
 
-        // Enemy types
         idMappings.put("termite", "termite");
-
-        // Structures
         idMappings.put("colony", "colony");
 
-        // Tile types (without variant suffix for single-texture types)
         idMappings.put("water1", "water");
         idMappings.put("sand1", "sand");
         // grass1, grass2, grass3 exist as assets, so they don't need mapping
@@ -62,7 +57,7 @@ public class TextureResolver {
             return resolveResourceNode((ResourceNode) object);
         }
 
-        // Default: use type ID
+        // Fallback to type ID
         return resolve(object.getTypeId());
     }
 
@@ -73,9 +68,7 @@ public class TextureResolver {
         // Try state-specific texture first
         if (isCarrying) {
             String carryingId = mapIdToTextureName(baseId) + "_carrying";
-            if (registry.has(carryingId)) {
-                return registry.get(carryingId);
-            }
+            return registry.get(carryingId);
         }
 
         return resolve(baseId);
@@ -85,10 +78,7 @@ public class TextureResolver {
         boolean isDepleted = node.getCurrentAmount() <= 0;
 
         if (isDepleted) {
-            if (registry.has("node_depleted")) {
-                return registry.get("node_depleted");
-            }
-            return registry.get("pixel");
+            return registry.get("depleted_node");
         }
 
         return resolve("node");
@@ -104,12 +94,7 @@ public class TextureResolver {
             return registry.get(mappedName);
         }
 
-        // Fallback to pixel
-        if (registry.has("pixel")) {
-            return registry.get("pixel");
-        }
-
-        throw new IllegalArgumentException("No texture found for ID: " + id + " (mapped to: " + mappedName + ")");
+        return registry.get("pixel");
     }
 
     private String mapIdToTextureName(String id) {
