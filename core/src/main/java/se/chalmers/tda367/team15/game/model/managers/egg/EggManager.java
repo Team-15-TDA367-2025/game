@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.managers;
+package se.chalmers.tda367.team15.game.model.managers.egg;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import se.chalmers.tda367.team15.game.model.AntFactory;
-import se.chalmers.tda367.team15.game.model.Egg;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;

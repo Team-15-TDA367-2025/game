@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.fog;
+package se.chalmers.tda367.team15.game.model.managers.fog;
 
 import com.badlogic.gdx.math.GridPoint2;
 

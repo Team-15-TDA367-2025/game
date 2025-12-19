@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.managers;
+package se.chalmers.tda367.team15.game.model.managers.fog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.model.fog.FogOfWar;
-import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.observers.FogObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;

@@ -8,14 +8,15 @@ import java.util.List;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.SimulationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
-import se.chalmers.tda367.team15.game.model.managers.EggManager;
+import se.chalmers.tda367.team15.game.model.managers.egg.EggManager;
+import se.chalmers.tda367.team15.game.model.managers.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class GameModel {

@@ -4,7 +4,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.EggPurchaseProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
-import se.chalmers.tda367.team15.game.model.managers.EggManager;
+import se.chalmers.tda367.team15.game.model.managers.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.view.ui.EggPanelView;

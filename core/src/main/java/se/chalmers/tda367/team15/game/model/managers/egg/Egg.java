@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model;
+package se.chalmers.tda367.team15.game.model.managers.egg;
 
 import java.util.Optional;
 
