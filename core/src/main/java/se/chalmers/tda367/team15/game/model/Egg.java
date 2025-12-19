@@ -1,4 +1,4 @@
-package se.chalmers.tda367.team15.game.model.egg;
+package se.chalmers.tda367.team15.game.model;
 
 import java.util.Optional;
 

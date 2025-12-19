@@ -10,11 +10,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import se.chalmers.tda367.team15.game.controller.EggController;
-import se.chalmers.tda367.team15.game.model.egg.Egg;
-import se.chalmers.tda367.team15.game.model.egg.EggManager;
+import se.chalmers.tda367.team15.game.model.Egg;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
+import se.chalmers.tda367.team15.game.model.managers.EggManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.view.TextureResolver;
 

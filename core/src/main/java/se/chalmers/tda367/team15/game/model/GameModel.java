@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import se.chalmers.tda367.team15.game.model.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
@@ -16,6 +15,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
+import se.chalmers.tda367.team15.game.model.managers.EggManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 
 public class GameModel {
