@@ -4,7 +4,6 @@ import java.util.LinkedHashSet;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
-import se.chalmers.tda367.team15.game.model.structure.Structure;
 
 /**
  * Has the responsibility of notifying interested parties when something dies /

@@ -8,7 +8,6 @@ import java.util.Map;
 /**
  * Central registry for ant types.
  * Allows adding new ant types without modifying existing code.
- * Uses singleton pattern for global access.
  */
 public class AntTypeRegistry {
     private final Map<String, AntType> types;
@@ -16,7 +15,6 @@ public class AntTypeRegistry {
     public AntTypeRegistry() {
         this.types = new HashMap<>();
     }
-
 
     /**
      * Registers a new ant type.
@@ -32,6 +30,8 @@ public class AntTypeRegistry {
         types.put(type.id(), type);
     }
 
+    // TODO - Antigravity: Returns null on missing key - consider Optional<AntType>
+    // or throw exception
     /** @return the ant type, or null if not found */
     public AntType get(String id) {
         return types.get(id);

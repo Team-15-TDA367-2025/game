@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
+import java.util.Set;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,6 +30,7 @@ import se.chalmers.tda367.team15.game.model.managers.SimulationManager;
 import se.chalmers.tda367.team15.game.model.managers.StructureManager;
 import se.chalmers.tda367.team15.game.model.managers.WaveManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
+import se.chalmers.tda367.team15.game.model.pheromones.PheromoneType;
 import se.chalmers.tda367.team15.game.model.structure.Colony;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNodeFactory;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
@@ -118,6 +121,8 @@ public class GameFactory {
         return new CameraModel(constraints);
     }
 
+    // TODO - Antigravity: Long method (47 lines) - break into createSimulation(),
+    // createWorldAndTerrain(), createEntitySystem()
     private static GameModel createGameModel() {
         AntTypeRegistry antTypeRegistry = createAntTypeRegistry();
 
@@ -145,12 +150,13 @@ public class GameFactory {
         HashMap<AttackCategory, Integer> termiteTargetPriority = new HashMap<>();
         termiteTargetPriority.put(AttackCategory.WORKER_ANT, 2);
 
-        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener, termiteTargetPriority);
+        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener,
+                termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);
         simulationManager.addUpdateObserver(fogManager);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
-        //Ant target priority
+        // Ant target priority
         HashMap<AttackCategory, Integer> antTargetPriority = new HashMap<>();
         antTargetPriority.put(AttackCategory.TERMITE, 2);
 
@@ -177,9 +183,11 @@ public class GameFactory {
 
     public static void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
-        AntType type = antTypeRegistry.get("worker");
-        Ant ant = antFactory.createAnt(home, type);
-        entityManager.addEntity(ant);
+        AntType type = antTypeRegistry.get("scout");
+        for (int i = 0; i < 10; i++) {
+            Ant ant = antFactory.createAnt(home, type);
+            entityManager.addEntity(ant);
+        }
     }
 
     /**
@@ -235,6 +243,8 @@ public class GameFactory {
                 .moveSpeed(8f)
                 .carryCapacity(0)
                 .textureName("scout")
+                .allowedPheromones(Set.of(PheromoneType.EXPLORE))
+                .homeBias(0.05f) // Low home bias - scouts wander far
                 .build());
 
         // Soldier: Low speed, high HP, 0 capacity, expensive
@@ -247,6 +257,8 @@ public class GameFactory {
                 .moveSpeed(2f)
                 .carryCapacity(0)
                 .textureName("ant")
+                .allowedPheromones(Set.of(PheromoneType.ATTACK))
+                .homeBias(0.3f)
                 .build());
 
         // Worker: Medium speed, medium HP, some capacity
@@ -259,6 +271,8 @@ public class GameFactory {
                 .moveSpeed(5f)
                 .carryCapacity(10)
                 .textureName("ant")
+                .allowedPheromones(Set.of(PheromoneType.GATHER))
+                .homeBias(0.1f)
                 .build());
 
         return registry;

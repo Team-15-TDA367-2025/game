@@ -9,8 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import se.chalmers.tda367.team15.game.model.entity.Entity;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityDeathObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityModificationProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 /**
@@ -21,7 +21,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
  * type.
  */
 public class EntityManager implements SimulationObserver, EntityDeathObserver, EntityQuery, EntityModificationProvider {
-    private final CopyOnWriteArrayList<Entity> entities = new CopyOnWriteArrayList<>();
+    private final List<Entity> entities = new CopyOnWriteArrayList<>();
     private final Map<Class<?>, List<Entity>> cachedEntities = new HashMap<>();
 
     public void addEntity(Entity entity) {
@@ -38,9 +38,10 @@ public class EntityManager implements SimulationObserver, EntityDeathObserver, E
     }
 
     private void cacheEntities(Class<?> type) {
+        cachedEntities.putIfAbsent(type, new ArrayList<>());
         for (Entity entity : entities) {
             if (type.isInstance(entity)) {
-                cachedEntities.computeIfAbsent(type, k -> new ArrayList<>()).add(entity);
+                cachedEntities.get(type).add(entity);
             }
         }
     }
@@ -51,10 +52,11 @@ public class EntityManager implements SimulationObserver, EntityDeathObserver, E
             cacheEntities(type);
         }
         @SuppressWarnings("unchecked") // We know the type is correct
-        List<T> result = (List<T>)  cachedEntities.getOrDefault(type, new ArrayList<>());
+        List<T> result = (List<T>) cachedEntities.get(type);
 
         return Collections.unmodifiableList(result);
     }
+
     @Override
     public void update(float deltaTime) {
         for (Entity entity : entities) {
