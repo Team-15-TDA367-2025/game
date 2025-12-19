@@ -1,7 +1,5 @@
 package se.chalmers.tda367.team15.game.view.renderers;
 
-import java.util.Map;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,7 +8,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
-import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
@@ -27,9 +24,10 @@ public class WorldRenderer {
     private final MapProvider mapProvider;
     private final ShapeRenderer shapeRenderer;
     private final TimeCycleDataProvider timeProvider;
+    private final boolean disableFog;
 
     public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, MapProvider mapProvider,
-            TimeCycleDataProvider timeProvider, FogProvider fogProvider) {
+            TimeCycleDataProvider timeProvider, FogProvider fogProvider, boolean disableFog) {
         this.cameraView = cameraView;
         this.textureRegistry = textureRegistry;
         this.batch = new SpriteBatch();
@@ -38,6 +36,7 @@ public class WorldRenderer {
         this.mapProvider = mapProvider;
         this.shapeRenderer = new ShapeRenderer();
         this.timeProvider = timeProvider;
+        this.disableFog = disableFog;
     }
 
     public void render(Iterable<Drawable> drawables) {
@@ -46,7 +45,7 @@ public class WorldRenderer {
 
         terrainRenderer.render(batch, mapProvider, cameraView);
         drawables.forEach(this::draw);
-        if (!GameLaunchConfiguration.getCurrent().noFog()) {
+        if (!disableFog) {
             fogRenderer.render(batch, cameraView);
         }
 

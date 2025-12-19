@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,13 +9,18 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
+import se.chalmers.tda367.team15.game.GameConfiguration;
 import se.chalmers.tda367.team15.game.controller.CameraController;
 import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
 import se.chalmers.tda367.team15.game.controller.PheromoneController;
 import se.chalmers.tda367.team15.game.controller.SpeedController;
-import se.chalmers.tda367.team15.game.model.*;
+import se.chalmers.tda367.team15.game.model.AntFactory;
+import se.chalmers.tda367.team15.game.model.AttackCategory;
+import se.chalmers.tda367.team15.game.model.DestructionListener;
+import se.chalmers.tda367.team15.game.model.EnemyFactory;
+import se.chalmers.tda367.team15.game.model.GameModel;
+import se.chalmers.tda367.team15.game.model.TimeCycle;
 import se.chalmers.tda367.team15.game.model.camera.CameraConstraints;
 import se.chalmers.tda367.team15.game.model.camera.CameraModel;
 import se.chalmers.tda367.team15.game.model.egg.EggManager;
@@ -45,24 +52,23 @@ import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
 import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
-import java.util.HashMap;
-
 /**
  * Factory for creating and wiring the GameScreen.
  */
 public class GameFactory {
-    public static final float WORLD_VIEWPORT_WIDTH = 15f;
-    public static final float MIN_ZOOM = 0.05f;
-    public static final float MAX_ZOOM = 4.0f;
-    public static final int TICKS_PER_MINUTE = 6;
+    public final float WORLD_VIEWPORT_WIDTH = 15f;
+    public final float MIN_ZOOM = 0.05f;
+    public final float MAX_ZOOM = 4.0f;
+    public final int TICKS_PER_MINUTE = 6;
+    public final GameConfiguration gameConfiguration;
 
-    private GameFactory() {
+    public GameFactory(GameConfiguration gameConfiguration) {
+        this.gameConfiguration = gameConfiguration;
     }
 
-    public static GameScreen createGameScreen(Game game) {
+    public GameScreen createGameScreen(Game game) {
 
-        GridPoint2 mapSize = GameLaunchConfiguration.getCurrent().mapSize();
-        int startResources = GameLaunchConfiguration.getCurrent().startResources();
+        GridPoint2 mapSize = gameConfiguration.mapSize();
 
         // 1. Create Models
         CameraModel cameraModel = createCameraModel(mapSize);
@@ -76,7 +82,7 @@ public class GameFactory {
         // 3. Create Views
         CameraView cameraView = createCameraView(cameraModel);
         WorldRenderer worldRenderer = new WorldRenderer(cameraView, textureRegistry, gameModel.getMapProvider(),
-                gameModel.getTimeProvider(), gameModel.getFogProvider());
+                gameModel.getTimeProvider(), gameModel.getFogProvider(), gameConfiguration.noFog());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneUsageProvider());
         HudView hudView = new HudView(hudBatch, uiFactory);
 
@@ -100,6 +106,7 @@ public class GameFactory {
         viewportListener.addObserver(cameraView);
 
         return new GameScreen(
+                this,
                 game,
                 gameModel,
                 cameraView,
@@ -113,7 +120,7 @@ public class GameFactory {
                 hudController);
     }
 
-    private static CameraModel createCameraModel(GridPoint2 mapSize) {
+    private CameraModel createCameraModel(GridPoint2 mapSize) {
 
         Rectangle worldBounds = new Rectangle(
                 -mapSize.x / 2f, -mapSize.y / 2f,
@@ -123,11 +130,11 @@ public class GameFactory {
         return new CameraModel(constraints);
     }
 
-    private static GameModel createGameModel(GridPoint2 mapSize) {
+    private GameModel createGameModel(GridPoint2 mapSize) {
         AntTypeRegistry antTypeRegistry = createAntTypeRegistry();
 
         TerrainGenerator terrainGenerator = TerrainFactory.createStandardPerlinGenerator(
-                GameLaunchConfiguration.getCurrent().seed());
+                gameConfiguration.seed());
         // TODO: break this down
         SimulationManager simulationManager = new SimulationManager();
         TimeCycle timeCycle = new TimeCycle(1f / TICKS_PER_MINUTE);
@@ -150,12 +157,13 @@ public class GameFactory {
         HashMap<AttackCategory, Integer> termiteTargetPriority = new HashMap<>();
         termiteTargetPriority.put(AttackCategory.WORKER_ANT, 2);
 
-        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener, termiteTargetPriority);
+        EnemyFactory enemyFactory = new EnemyFactory(entityManager, structureManager, destructionListener,
+                termiteTargetPriority);
         FogManager fogManager = new FogManager(entityManager, worldMap);
         simulationManager.addUpdateObserver(fogManager);
         PheromoneGridConverter pheromoneGridConverter = new PheromoneGridConverter(4);
 
-        //Ant target priority
+        // Ant target priority
         HashMap<AttackCategory, Integer> antTargetPriority = new HashMap<>();
         antTargetPriority.put(AttackCategory.TERMITE, 2);
 
@@ -165,7 +173,7 @@ public class GameFactory {
 
         ResourceNodeFactory resourceNodeFactory = new ResourceNodeFactory(structureManager);
         Colony colony = createColony(timeCycle, entityManager, structureManager,
-                20);
+                gameConfiguration.startResources());
 
         EggManager eggManager = new EggManager(antTypeRegistry, antFactory, colony, entityManager);
         timeCycle.addTimeObserver(eggManager);
@@ -180,10 +188,10 @@ public class GameFactory {
                 pheromoneManager, worldMap, antTypeRegistry, structureManager, entityManager, eggManager);
     }
 
-    public static void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
+    public void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
-        AntType type = antTypeRegistry.get("worker");
-        for (int i = 0; i < GameLaunchConfiguration.getCurrent().startWorkers(); i++) {
+        AntType type = antTypeRegistry.get(gameConfiguration.antType());
+        for (int i = 0; i < gameConfiguration.startAnts(); i++) {
             Ant ant = antFactory.createAnt(home, type);
             entityManager.addEntity(ant);
         }
@@ -192,7 +200,7 @@ public class GameFactory {
     /**
      * Spawns structures determined by terrain generation features.
      */
-    private static void spawnTerrainStructures(ResourceNodeFactory resourceNodeFactory, MapProvider map) {
+    private void spawnTerrainStructures(ResourceNodeFactory resourceNodeFactory, MapProvider map) {
         for (StructureSpawn spawn : map.getStructureSpawns()) {
             if ("resource_node".equals(spawn.getType())) {
                 Vector2 structurePos = map.tileToWorld(spawn.getPosition());
@@ -203,7 +211,7 @@ public class GameFactory {
         }
     }
 
-    private static Colony createColony(TimeCycle timeCycle,
+    private Colony createColony(TimeCycle timeCycle,
             EntityQuery entityQuery, StructureManager structureManager,
             int initialFood) {
         Colony colony = new Colony(new GridPoint2(0, 0), entityQuery,
@@ -213,7 +221,7 @@ public class GameFactory {
         return colony;
     }
 
-    private static CameraView createCameraView(CameraModel cameraModel) {
+    private CameraView createCameraView(CameraModel cameraModel) {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         float aspectRatio = screenWidth == 0 ? 1f : screenHeight / screenWidth;
@@ -229,7 +237,7 @@ public class GameFactory {
      * This must be called before creating GameModel to ensure ant types are
      * available.
      */
-    private static AntTypeRegistry createAntTypeRegistry() {
+    private AntTypeRegistry createAntTypeRegistry() {
         AntTypeRegistry registry = new AntTypeRegistry();
 
         // Scout: High speed, low HP, 0 capacity, cheap/fast to hatch

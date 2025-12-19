@@ -1,60 +1,32 @@
 package se.chalmers.tda367.team15.game.lwjgl3;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.math.GridPoint2;
 
-import se.chalmers.tda367.team15.game.GameLaunchConfiguration;
+import se.chalmers.tda367.team15.game.GameConfiguration;
 import se.chalmers.tda367.team15.game.Main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-    private static boolean unlimitedFps = false;
-    private static boolean noFog = false;
-
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired())
             return; // This handles macOS support and helps on Windows.
 
         // Parse launch arguments
-        unlimitedFps = Arrays.asList(args).contains("--unlimited-fps");
-        noFog = Arrays.asList(args).contains("--no-fog");
-        int startWorkers = Integer.parseInt(Arrays.stream(args).filter(arg -> arg.startsWith("--start-workers="))
-                .findFirst().orElse("--start-workers=1").split("=")[1]);
-        int seed = Integer.parseInt(Arrays.stream(args).filter(arg -> arg.startsWith("--seed="))
-                .findFirst().orElse("--seed=-1").split("=")[1]);
+        GameConfiguration gameConfiguration = GameConfiguration.fromArgs(args);
 
-        if (seed == -1) {
-            seed = (int) System.currentTimeMillis();
-        }
-
-        int startResources = Integer.parseInt(Arrays.stream(args).filter(arg -> arg.startsWith("--start-resources="))
-                .findFirst().orElse("--start-resources=20").split("=")[1]);
-
-        int mapSizeX = Integer.parseInt(Arrays.stream(args).filter(arg -> arg.startsWith("--map-size-x="))
-                .findFirst().orElse("--map-size-x=400").split("=")[1]);
-        int mapSizeY = Integer.parseInt(Arrays.stream(args).filter(arg -> arg.startsWith("--map-size-y="))
-                .findFirst().orElse("--map-size-y=400").split("=")[1]);
-
-        GridPoint2 mapSize = new GridPoint2(mapSizeX, mapSizeY);
-
-        GameLaunchConfiguration.setCurrent(new GameLaunchConfiguration(unlimitedFps, noFog, startWorkers, seed,
-                startResources, mapSize));
-
-        createApplication();
+        createApplication(gameConfiguration);
     }
 
-    private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+    private static Lwjgl3Application createApplication(GameConfiguration gameConfiguration) {
+        return new Lwjgl3Application(new Main(gameConfiguration), getDefaultConfiguration(gameConfiguration));
     }
 
-    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
+    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration(GameConfiguration gameConfiguration) {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("Game");
 
-        if (unlimitedFps) {
+        if (gameConfiguration.unlimitedFps()) {
             // Unlimited FPS mode - disable vsync and set no FPS cap
             configuration.useVsync(false);
             configuration.setForegroundFPS(0);

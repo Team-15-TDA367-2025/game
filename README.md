@@ -40,5 +40,5 @@ You can also run the following commands:
 - `--start-workers=<number>` - Number of ants to start with (default 1)
 - `--start-resources=<number>` - Number of resources to start with (default 20)
 - `--seed=<number>` - Seed for terrain generation (default random)
-- `--map-size-x=<number>` - X size of the map (default 50)
-- `--map-size-y=<number>` - Y size of the map (default 50)
+- `--map-size-x=<number>` - X size of the map (default 400)
+- `--map-size-y=<number>` - Y size of the map (default 400)
