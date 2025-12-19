@@ -11,22 +11,14 @@ public class ResourceNode extends Structure {
     private final int cooldownTicks; // ticks until respawn
     private int ticksRemaining; // current countdown
 
-    public ResourceNode(GridPoint2 position, String textureName, int radius,
-                        ResourceType type, int maxAmount, int cooldownTicks) {
-        super(position, textureName, radius);
+    public ResourceNode(GridPoint2 position, int radius,
+            ResourceType type, int maxAmount, int cooldownTicks) {
+        super(position, radius);
         this.type = type;
         this.maxAmount = maxAmount;
         this.currentAmount = maxAmount;
         this.cooldownTicks = cooldownTicks;
         this.ticksRemaining = 0;
-    }
-
-    @Override
-    public String getTextureName() {
-        if (currentAmount <= 0) {
-            return "grass1";
-        }
-        return super.getTextureName();
     }
 
     @Override
@@ -64,5 +56,10 @@ public class ResourceNode extends Structure {
 
     public int getCurrentAmount() {
         return currentAmount;
+    }
+
+    @Override
+    public String getTypeId() {
+        return "resource_" + type.name().toLowerCase();
     }
 }

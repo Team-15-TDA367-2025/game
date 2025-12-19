@@ -14,19 +14,18 @@ import se.chalmers.tda367.team15.game.model.interfaces.TimeObserver;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
 // TODO - Antigravity: SRP violation - implements 5 interfaces, consider extracting ColonyResourceManager, ColonyEggHandler, ColonyCombat
-public class Colony extends Structure
-        implements Home, TimeObserver, ColonyDataProvider {
+public class Colony extends Structure implements Home, TimeObserver, ColonyDataProvider {
     private Inventory inventory;
-    private Faction faction;
+    private final Faction faction;
     private final EntityQuery entityQuery;
     private boolean isDead = false;
 
     public Colony(GridPoint2 position, EntityQuery entityQuery, int initialFood) {
-        super(position, "colony", 4);
+        super(position, 4);
+        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
         this.inventory = new Inventory(1000000); // test value for now
         this.inventory.addResource(ResourceType.FOOD, initialFood);
         this.entityQuery = entityQuery;
-        this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
     }
 
     @Override
@@ -82,5 +81,10 @@ public class Colony extends Structure
 
     public boolean getIsDead() {
         return isDead;
+    }
+
+    @Override
+    public String getTypeId() {
+        return "colony";
     }
 }

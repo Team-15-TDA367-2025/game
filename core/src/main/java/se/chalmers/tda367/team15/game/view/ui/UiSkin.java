@@ -14,10 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.TextureResolver;
 
 public class UiSkin {
-    private final TextureRegistry textures;
+    private final TextureResolver resolver;
     private final BitmapFont defaultFont;
     private NinePatchDrawable buttonBackground;
     private NinePatchDrawable buttonBackgroundHover;
@@ -26,8 +26,8 @@ public class UiSkin {
     private NinePatchDrawable panelBackground;
     private NinePatchDrawable areaBackground;
 
-    public UiSkin(TextureRegistry textures) {
-        this.textures = textures;
+    public UiSkin(TextureResolver resolver) {
+        this.resolver = resolver;
         this.defaultFont = new BitmapFont();
     }
 
@@ -38,7 +38,7 @@ public class UiSkin {
     }
 
     public ImageButton createImageButton(String textureName, Runnable onClick) {
-        TextureRegion region = textures.get(textureName);
+        TextureRegion region = resolver.resolve(textureName);
         TextureRegionDrawable drawable = new TextureRegionDrawable(region);
 
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -62,7 +62,7 @@ public class UiSkin {
 
     public NinePatchDrawable getPanelBackground() {
         if (panelBackground == null) {
-            NinePatch patch = new NinePatch(textures.get("panel"), 4, 4, 4, 4);
+            NinePatch patch = new NinePatch(resolver.resolve("panel"), 4, 4, 4, 4);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             panelBackground = new NinePatchDrawable(patch);
         }
@@ -71,7 +71,7 @@ public class UiSkin {
 
     public NinePatchDrawable getButtonBackground() {
         if (buttonBackground == null) {
-            NinePatch patch = new NinePatch(textures.get("button"), 3, 3, 3, 6);
+            NinePatch patch = new NinePatch(resolver.resolve("button"), 3, 3, 3, 6);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             buttonBackground = new NinePatchDrawable(patch);
         }
@@ -80,7 +80,7 @@ public class UiSkin {
 
     public NinePatchDrawable getButtonBackgroundHover() {
         if (buttonBackgroundHover == null) {
-            NinePatch patch = new NinePatch(textures.get("button"), 3, 3, 3, 6);
+            NinePatch patch = new NinePatch(resolver.resolve("button"), 3, 3, 3, 6);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             NinePatchDrawable drawable = new NinePatchDrawable(patch);
             drawable.getPatch().setColor(UiTheme.BUTTON_HOVER_TINT);
@@ -91,7 +91,7 @@ public class UiSkin {
 
     public NinePatchDrawable getButtonBackgroundPressed() {
         if (buttonBackgroundPressed == null) {
-            NinePatch patch = new NinePatch(textures.get("button"), 3, 3, 3, 6);
+            NinePatch patch = new NinePatch(resolver.resolve("button"), 3, 3, 3, 6);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             NinePatchDrawable drawable = new NinePatchDrawable(patch);
             drawable.getPatch().setColor(UiTheme.BUTTON_PRESSED_TINT);
@@ -102,7 +102,7 @@ public class UiSkin {
 
     public NinePatchDrawable getButtonBackgroundChecked() {
         if (buttonBackgroundChecked == null) {
-            NinePatch patch = new NinePatch(textures.get("button"), 3, 3, 3, 6);
+            NinePatch patch = new NinePatch(resolver.resolve("button"), 3, 3, 3, 6);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             NinePatchDrawable drawable = new NinePatchDrawable(patch);
             drawable.getPatch().setColor(UiTheme.BUTTON_CHECKED_TINT);
@@ -113,7 +113,7 @@ public class UiSkin {
 
     public NinePatchDrawable getAreaBackground() {
         if (areaBackground == null) {
-            NinePatch patch = new NinePatch(textures.get("area"), 2, 2, 3, 3);
+            NinePatch patch = new NinePatch(resolver.resolve("area"), 2, 2, 3, 3);
             patch.scale(UiTheme.NINE_PATCH_SCALE, UiTheme.NINE_PATCH_SCALE);
             areaBackground = new NinePatchDrawable(patch);
         }
@@ -121,7 +121,7 @@ public class UiSkin {
     }
 
     public ImageButton createToggleButton(String textureName) {
-        TextureRegion region = textures.get(textureName);
+        TextureRegion region = resolver.resolve(textureName);
         TextureRegionDrawable drawable = new TextureRegionDrawable(region);
 
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -177,15 +177,11 @@ public class UiSkin {
     }
 
     public Image createImage(String textureName) {
-        return new Image(textures.get(textureName));
+        return new Image(resolver.resolve(textureName));
     }
 
     public TextureRegionDrawable createDrawable(String textureName) {
-        return new TextureRegionDrawable(textures.get(textureName));
-    }
-
-    public TextureRegistry getTextures() {
-        return textures;
+        return new TextureRegionDrawable(resolver.resolve(textureName));
     }
 
     public void dispose() {

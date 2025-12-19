@@ -28,78 +28,72 @@ public record AntType(
         float maxHealth,
         float moveSpeed,
         int carryCapacity,
-        String textureName,
         Set<PheromoneType> allowedPheromones,
         float homeBias) {
 
-            public static final class Builder {
-                private String id;
-                private String displayName;
-                private int foodCost;
-                private int developmentTicks;
-                private float maxHealth;
-                private float moveSpeed;
-                private int carryCapacity;
-                private String textureName;
-                private Set<PheromoneType> allowedPheromones;
-                private float homeBias;
+    public static final class Builder {
+        private String id;
+        private String displayName;
+        private int foodCost;
+        private int developmentTicks;
+        private float maxHealth;
+        private float moveSpeed;
+        private int carryCapacity;
+        private Set<PheromoneType> allowedPheromones;
+        private float homeBias;
 
-                public Builder id(String id) {
-                    this.id = id;
-                    return this;
-                }
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
 
-                public Builder displayName(String displayName) {
-                    this.displayName = displayName;
-                    return this;
-                }
+        public Builder displayName(String displayName) {
+            this.displayName = displayName;
+            return this;
+        }
 
-                public Builder foodCost(int foodCost) {
-                    this.foodCost = foodCost;
-                    return this;
-                }
+        public Builder foodCost(int foodCost) {
+            this.foodCost = foodCost;
+            return this;
+        }
 
-                public Builder developmentTicks(int developmentTicks) {
-                    this.developmentTicks = developmentTicks;
-                    return this;
-                }
+        public Builder developmentTicks(int developmentTicks) {
+            this.developmentTicks = developmentTicks;
+            return this;
+        }
 
-                public Builder maxHealth(float maxHealth) {
-                    this.maxHealth = maxHealth;
-                    return this;
-                }
-                
-                public Builder moveSpeed(float moveSpeed) {
-                    this.moveSpeed = moveSpeed;
-                    return this;
-                }
+        public Builder maxHealth(float maxHealth) {
+            this.maxHealth = maxHealth;
+            return this;
+        }
 
-                public Builder carryCapacity(int carryCapacity) {
-                    this.carryCapacity = carryCapacity;
-                    return this;
-                }
+        public Builder moveSpeed(float moveSpeed) {
+            this.moveSpeed = moveSpeed;
+            return this;
+        }
 
-                public Builder textureName(String textureName) {
-                    this.textureName = textureName;
-                    return this;
-                }
+        public Builder carryCapacity(int carryCapacity) {
+            this.carryCapacity = carryCapacity;
+            return this;
+        }
 
-                public Builder allowedPheromones(Set<PheromoneType> allowedPheromones) {
-                    this.allowedPheromones = allowedPheromones;
-                    return this;
-                }
+        public Builder allowedPheromones(Set<PheromoneType> allowedPheromones) {
+            this.allowedPheromones = allowedPheromones;
+            return this;
+        }
 
-                public Builder homeBias(float homeBias) {
-                    this.homeBias = homeBias;
-                    return this;
-                }
+        public Builder homeBias(float homeBias) {
+            this.homeBias = homeBias;
+            return this;
+        }
 
-                public AntType build() {
-                    return new AntType(id, displayName, foodCost, developmentTicks, maxHealth, moveSpeed, carryCapacity, textureName, allowedPheromones, homeBias);
-                }
-            }
+        public AntType build() {
+            return new AntType(id, displayName, foodCost, developmentTicks, maxHealth, moveSpeed, carryCapacity,
+                    allowedPheromones, homeBias);
+        }
+    }
 
-            public static Builder with() {
-                return new Builder();
-            }
+    public static Builder with() {
+        return new Builder();
+    }
 }

@@ -4,20 +4,18 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.faction.Faction;
-import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.HasPosition;
 import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 
 // A structure is a static object in the game world, fixed to the grid.
-public abstract class Structure implements Drawable, SimulationObserver, HasPosition {
+public abstract class Structure implements GameObject, SimulationObserver, HasPosition {
     private GridPoint2 position;
-    private String textureName;
     private int size;
     Faction faction;
 
-    public Structure(GridPoint2 position, String textureName, int size) {
+    public Structure(GridPoint2 position, int size) {
         this.position = position;
-        this.textureName = textureName;
         this.size = size;
     }
 
@@ -28,11 +26,6 @@ public abstract class Structure implements Drawable, SimulationObserver, HasPosi
     @Override
     public Vector2 getPosition() {
         return new Vector2(position.x, position.y);
-    }
-
-    @Override
-    public String getTextureName() {
-        return textureName;
     }
 
     @Override

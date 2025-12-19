@@ -29,7 +29,7 @@ public class Termite extends Entity implements CanAttack {
 
     public Termite(Vector2 position, EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
-        super(position, "termite");
+        super(position);
         this.destructionListener = destructionListener;
         this.termiteAttackBehaviour = new TermiteAttackBehaviour(this, entityQuery, targetPriority);
     }
@@ -88,6 +88,10 @@ public class Termite extends Entity implements CanAttack {
     }
 
     @Override
+    public String getTypeId() {
+        return "termite";
+    }
+
     public void setVelocity(Vector2 v) {
         super.setVelocity(v);
     }

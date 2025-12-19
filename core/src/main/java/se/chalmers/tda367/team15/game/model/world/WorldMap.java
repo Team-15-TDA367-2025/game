@@ -31,7 +31,8 @@ public class WorldMap implements MapProvider {
         Set<String> names = new HashSet<>();
         for (Tile[] row : tiles) {
             for (Tile tile : row) {
-                names.add(tile.getTextureName());
+                // Construct texture name from tile type and variant
+                names.add(tile.getType().name().toLowerCase() + (tile.getVariant() + 1));
             }
         }
         return names;

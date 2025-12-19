@@ -2,6 +2,7 @@ package se.chalmers.tda367.team15.game.view.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -14,26 +15,30 @@ import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
+import se.chalmers.tda367.team15.game.view.TextureResolver;
 
 /**
  * UI panel for purchasing eggs and displaying egg development progress.
  * Dynamically builds UI based on registered ant types in the registry.
  */
 public class EggPanelView {
-    private final UiSkin uiFactory;
+    private final UiSkin uiSkin;
     private final EggController eggController;
     private final EggManager eggManager;
     private final Table panelTable;
     private final HorizontalGroup eggTypeGroup;
     private final ColonyDataProvider colonyDataProvider;
     private final AntTypeRegistry antTypeRegistry;
+    private final TextureResolver textureResolver;
 
-    public EggPanelView(UiSkin uiFactory, EggController eggController, EggManager eggManager, ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry) {
-        this.uiFactory = uiFactory;
+    public EggPanelView(UiSkin uiFactory, EggController eggController, EggManager eggManager,
+            ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry, TextureResolver textureResolver) {
+        this.uiSkin = uiFactory;
         this.eggController = eggController;
         this.eggManager = eggManager;
         this.colonyDataProvider = colonyDataProvider;
         this.antTypeRegistry = antTypeRegistry;
+        this.textureResolver = textureResolver;
         panelTable = new Table();
         // No background - this panel is embedded in BottomBarView which has its own
         // background
@@ -64,20 +69,20 @@ public class EggPanelView {
      */
     private Table createEggTypeButton(AntType type) {
         // Create purchase button with the ant type's texture
-        ImageButton button = uiFactory.createImageButton(type.textureName(), () -> {
+        ImageButton button = uiSkin.createImageButton(type.id(), () -> {
             eggController.purchaseEgg(type.id());
         });
 
         // Name label below the button
         String labelText = type.displayName() + " (" + type.foodCost() + ")";
         Label nameLabel = new Label(labelText,
-                uiFactory.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT, Color.WHITE));
+                uiSkin.createLabelStyle(UiTheme.FONT_SCALE_DEFAULT, Color.WHITE));
 
         // Progress bar for eggs of this type - using area background for consistent
         // styling
         ProgressBar.ProgressBarStyle progressStyle = new ProgressBar.ProgressBarStyle();
-        progressStyle.background = uiFactory.getAreaBackground();
-        progressStyle.knobBefore = uiFactory.getButtonBackgroundChecked();
+        progressStyle.background = uiSkin.getAreaBackground();
+        progressStyle.knobBefore = uiSkin.getButtonBackgroundChecked();
         ProgressBar progressBar = new ProgressBar(0f, 1f, 0.01f, false, progressStyle);
         progressBar.setValue(0f);
         progressBar.setVisible(false);
@@ -126,6 +131,9 @@ public class EggPanelView {
                 } else {
                     progressBar.setVisible(false);
                 }
+
+                // Added lines from the instruction
+                Image icon = new Image(textureResolver.resolve(antTypeRegistry.get(state.typeId).id()));
 
                 // Update button enabled state based on resources
                 AntType type = antTypeRegistry.get(state.typeId);

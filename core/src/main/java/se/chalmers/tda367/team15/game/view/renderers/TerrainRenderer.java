@@ -7,14 +7,14 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
 import se.chalmers.tda367.team15.game.model.world.Tile;
-import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.TextureResolver;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 
 public class TerrainRenderer {
-    private final TextureRegistry textureRegistry;
+    private final TextureResolver textureResolver;
 
-    public TerrainRenderer(TextureRegistry textureRegistry) {
-        this.textureRegistry = textureRegistry;
+    public TerrainRenderer(TextureResolver textureResolver) {
+        this.textureResolver = textureResolver;
     }
 
     public void render(SpriteBatch batch, MapProvider worldMap, CameraView cameraView) {
@@ -37,7 +37,9 @@ public class TerrainRenderer {
                 Tile tile = worldMap.getTile(new GridPoint2(x, y));
 
                 if (tile != null) {
-                    TextureRegion texture = textureRegistry.get(tile.getTextureName());
+                    // Temporary resolution until TextureResolver is fully implemented
+                    String textureName = tile.getType().name().toLowerCase() + (tile.getVariant() + 1);
+                    TextureRegion texture = textureResolver.resolve(textureName);
                     batch.draw(texture, x + offsetX, y + offsetY, 1, 1);
                 }
             }

@@ -6,13 +6,13 @@ public class Pheromone {
     private final GridPoint2 position;
     private final PheromoneType type;
     private int distance;
-    private int soldierCount;
+    private int antCount;
 
     public Pheromone(GridPoint2 position, PheromoneType type, int distance) {
         this.position = position;
         this.type = type;
         this.distance = distance;
-        this.soldierCount = 0;
+        this.antCount = 0;
     }
 
     public GridPoint2 getPosition() {
@@ -31,17 +31,17 @@ public class Pheromone {
         this.distance = distance;
     }
 
-    public int getSoldierCount() {
-        return soldierCount;
+    public int getAntCount() {
+        return antCount;
     }
 
-    public void incrementSoldierCount() {
-        soldierCount++;
+    public void incrementAnts() {
+        antCount++;
     }
 
-    public void decrementSoldierCount() {
-        if (soldierCount > 0) {
-            soldierCount--;
+    public void decrementAnts() {
+        if (antCount > 0) {
+            antCount--;
         }
     }
 }

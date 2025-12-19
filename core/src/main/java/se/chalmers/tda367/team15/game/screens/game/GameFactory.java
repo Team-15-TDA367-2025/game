@@ -48,6 +48,7 @@ import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 import se.chalmers.tda367.team15.game.model.world.WorldMap;
 import se.chalmers.tda367.team15.game.model.world.terrain.StructureSpawn;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.TextureResolver;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.FogRenderer;
@@ -77,13 +78,14 @@ public class GameFactory {
 
         // 2. Create Resources
         TextureRegistry textureRegistry = new TextureRegistry();
-        UiSkin uiFactory = new UiSkin(textureRegistry);
+        TextureResolver textureResolver = new TextureResolver(textureRegistry);
+        UiSkin uiFactory = new UiSkin(textureResolver);
         SpriteBatch hudBatch = new SpriteBatch();
 
         // 3. Create Views
         CameraView cameraView = createCameraView(cameraModel);
         FogRenderer fogRenderer = new FogRenderer(gameModel.getFogProvider());
-        WorldRenderer worldRenderer = new WorldRenderer(cameraView, textureRegistry, gameModel.getMapProvider(),
+        WorldRenderer worldRenderer = new WorldRenderer(cameraView, textureResolver, gameModel.getMapProvider(),
                 gameModel.getTimeProvider(), fogRenderer, viewportListener, gameConfiguration.noFog());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneUsageProvider());
         HudView hudView = new HudView(hudBatch, uiFactory);
@@ -95,8 +97,8 @@ public class GameFactory {
                 cameraView);
         SpeedController speedController = new SpeedController(gameModel);
         HudController hudController = new HudController(hudView, gameModel.getAntTypeRegistry(),
-                gameModel.getEggManager(), pheromoneController, speedController,
-                uiFactory, gameModel.getTimeProvider(), gameModel.getColonyDataProvider(), gameModel.getEggManager());
+                gameModel.getEggManager(), pheromoneController, speedController, uiFactory, gameModel.getTimeProvider(),
+                gameModel.getColonyDataProvider(), gameModel.getEggManager(), textureResolver);
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);
@@ -139,7 +141,7 @@ public class GameFactory {
         AntTypeRegistry antTypeRegistry = createAntTypeRegistry();
 
         TerrainGenerator terrainGenerator = TerrainFactory.createStandardPerlinGenerator(
-                gameConfiguration.seed());
+                gameConfiguration.seed(), GameConfiguration.GRASS_VARIANT_TYPES);
         // TODO: break this down
         SimulationManager simulationManager = new SimulationManager();
         TimeCycle timeCycle = new TimeCycle(1f / GameConfiguration.TICKS_PER_MINUTE);
@@ -176,7 +178,7 @@ public class GameFactory {
         AntFactory antFactory = new AntFactory(pheromoneManager, worldMap, entityManager,
                 destructionListener, antTargetPriority);
 
-        ResourceNodeFactory resourceNodeFactory = new ResourceNodeFactory(structureManager);
+        ResourceNodeFactory resourceNodeFactory = new ResourceNodeFactory();
         Colony colony = createColony(timeCycle, entityManager, structureManager,
                 gameConfiguration.startResources());
 
@@ -184,7 +186,7 @@ public class GameFactory {
         timeCycle.addTimeObserver(eggManager);
 
         spawnInitialAnts(entityManager, colony, antFactory, antTypeRegistry);
-        spawnTerrainStructures(resourceNodeFactory, worldMap);
+        spawnTerrainStructures(resourceNodeFactory, worldMap, structureManager);
 
         WaveManager waveManager = new WaveManager(enemyFactory, entityManager);
         timeCycle.addTimeObserver(waveManager);
@@ -205,12 +207,12 @@ public class GameFactory {
     /**
      * Spawns structures determined by terrain generation features.
      */
-    private void spawnTerrainStructures(ResourceNodeFactory resourceNodeFactory, MapProvider map) {
+    private void spawnTerrainStructures(ResourceNodeFactory resourceNodeFactory, MapProvider map,
+            StructureManager structureManager) {
         for (StructureSpawn spawn : map.getStructureSpawns()) {
             if ("resource_node".equals(spawn.getType())) {
                 Vector2 structurePos = map.tileToWorld(spawn.getPosition());
-
-                resourceNodeFactory.createResourceNode(structurePos, spawn);
+                structureManager.addStructure(resourceNodeFactory.createResourceNode(structurePos, spawn));
             }
             // Add other structure types here
         }
@@ -255,7 +257,6 @@ public class GameFactory {
                 .maxHealth(4f)
                 .moveSpeed(8f)
                 .carryCapacity(0)
-                .textureName("scout")
                 .allowedPheromones(Set.of(PheromoneType.EXPLORE))
                 .homeBias(0.05f) // Low home bias - scouts wander far
                 .build());
@@ -268,8 +269,7 @@ public class GameFactory {
                 .developmentTicks(300)
                 .maxHealth(20f)
                 .moveSpeed(2f)
-                .carryCapacity(0)
-                .textureName("ant")
+                .carryCapacity(50)
                 .allowedPheromones(Set.of(PheromoneType.ATTACK))
                 .homeBias(0.3f)
                 .build());
@@ -283,7 +283,6 @@ public class GameFactory {
                 .maxHealth(6f)
                 .moveSpeed(5f)
                 .carryCapacity(10)
-                .textureName("ant")
                 .allowedPheromones(Set.of(PheromoneType.GATHER))
                 .homeBias(0.1f)
                 .build());

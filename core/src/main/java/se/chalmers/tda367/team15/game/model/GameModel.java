@@ -1,6 +1,7 @@
 package se.chalmers.tda367.team15.game.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,8 +11,8 @@ import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.fog.FogProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.ColonyDataProvider;
-import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
+import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.PheromoneUsageProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.StructureModificationProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
@@ -47,8 +48,8 @@ public class GameModel {
         this.eggManager = eggManager;
     }
 
-    public Iterable<Drawable> getDrawables() {
-        List<Drawable> allDrawables = new ArrayList<>(structureModificationProvider.getStructures());
+    public Collection<GameObject> getDrawables() {
+        List<GameObject> allDrawables = new ArrayList<>(structureModificationProvider.getStructures());
         allDrawables.addAll(entityQuery.getEntitiesOfType(Entity.class));
         return Collections.unmodifiableList(allDrawables);
     }

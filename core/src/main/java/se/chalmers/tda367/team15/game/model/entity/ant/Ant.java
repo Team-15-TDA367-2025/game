@@ -18,7 +18,6 @@ import se.chalmers.tda367.team15.game.model.faction.Faction;
 import se.chalmers.tda367.team15.game.model.interfaces.CanAttack;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.VisionProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.pheromones.PheromoneGridConverter;
@@ -35,7 +34,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
     // Stats from AntType
     private final float speed;
-    private final String baseTextureName;
     private final Inventory inventory;
     private final DestructionListener destructionListener;
     private final PheromoneManager system;
@@ -48,10 +46,11 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private TrailStrategy trailStrategy;
 
     public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
+
             EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener,
             TrailStrategy trailStrategy) {
-        super(position, type.textureName());
+        super(position);
         this.type = type;
         this.behavior = new WanderBehavior(this, home, entityQuery);
         this.system = system;
@@ -65,7 +64,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         this.speed = type.moveSpeed();
         this.health = type.maxHealth();
         this.inventory = new Inventory(type.carryCapacity());
-        this.baseTextureName = type.textureName();
 
         pickRandomDirection();
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
@@ -87,20 +85,10 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     public void update(float deltaTime) {
         updateBehavior();
         super.update(deltaTime);
-        updateTexture();
     }
 
     public void updateBehavior() {
         behavior.update(system);
-    }
-
-    private void updateTexture() {
-        if (inventory.isEmpty()) {
-            setTextureName(baseTextureName);
-        } else {
-            // TODO: This should be a more generic solution
-            setTextureName("resource");
-        }
     }
 
     public GridPoint2 getGridPosition() {
@@ -127,7 +115,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         boolean deposited = home.depositResources(inventory);
         if (deposited) {
             inventory.clear();
-            updateTexture();
         }
         return deposited;
     }
@@ -195,6 +182,11 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
     public void setAttackBehaviour() {
         behavior = new AntAttackBehavior(this, entityQuery, targetPriority);
+    }
+
+    @Override
+    public String getTypeId() {
+        return type.id();
     }
 
     @Override

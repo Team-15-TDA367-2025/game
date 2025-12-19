@@ -8,17 +8,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.MathUtils;
 
-import se.chalmers.tda367.team15.game.model.interfaces.Drawable;
+import se.chalmers.tda367.team15.game.model.interfaces.GameObject;
 import se.chalmers.tda367.team15.game.model.interfaces.TimeCycleDataProvider;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
-import se.chalmers.tda367.team15.game.view.TextureRegistry;
+import se.chalmers.tda367.team15.game.view.TextureResolver;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
 import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 
 public class WorldRenderer {
     private final SpriteBatch batch;
     private final CameraView cameraView;
-    private final TextureRegistry textureRegistry;
+    private final TextureResolver textureResolver;
     private final TerrainRenderer terrainRenderer;
     private final FogRenderer fogRenderer;
     private final MapProvider mapProvider;
@@ -26,13 +26,13 @@ public class WorldRenderer {
     private final TimeCycleDataProvider timeProvider;
     private final boolean disableFog;
 
-    public WorldRenderer(CameraView cameraView, TextureRegistry textureRegistry, MapProvider mapProvider,
+    public WorldRenderer(CameraView cameraView, TextureResolver textureResolver, MapProvider mapProvider,
             TimeCycleDataProvider timeProvider, FogRenderer fogRenderer, ViewportListener viewportListener,
             boolean disableFog) {
         this.cameraView = cameraView;
-        this.textureRegistry = textureRegistry;
+        this.textureResolver = textureResolver;
         this.batch = new SpriteBatch();
-        this.terrainRenderer = new TerrainRenderer(textureRegistry);
+        this.terrainRenderer = new TerrainRenderer(textureResolver);
         this.fogRenderer = fogRenderer;
         viewportListener.addObserver(fogRenderer);
         this.mapProvider = mapProvider;
@@ -41,7 +41,7 @@ public class WorldRenderer {
         this.disableFog = disableFog;
     }
 
-    public void render(Iterable<Drawable> drawables) {
+    public void render(Iterable<GameObject> drawables) {
         batch.setProjectionMatrix(cameraView.getCombinedMatrix());
         batch.begin();
 
@@ -69,8 +69,8 @@ public class WorldRenderer {
 
     }
 
-    private void draw(Drawable drawable) {
-        TextureRegion region = textureRegistry.get(drawable.getTextureName());
+    private void draw(GameObject drawable) {
+        TextureRegion region = textureResolver.resolve(drawable);
 
         float width = drawable.getSize().x;
         float height = drawable.getSize().y;
@@ -88,7 +88,7 @@ public class WorldRenderer {
                 originX, originY,
                 width, height,
                 1f, 1f,
-                MathUtils.radiansToDegrees * (drawable.getRotation() - (MathUtils.PI / 2f)));
+                MathUtils.radiansToDegrees * drawable.getRotation());
     }
 
     public void dispose() {

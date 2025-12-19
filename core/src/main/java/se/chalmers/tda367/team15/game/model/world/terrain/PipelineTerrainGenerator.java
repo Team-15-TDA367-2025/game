@@ -12,15 +12,17 @@ import se.chalmers.tda367.team15.game.model.world.TerrainGenerator;
 public class PipelineTerrainGenerator implements TerrainGenerator {
     private final List<TerrainFeature> pipeline;
     private final long seed;
+    private final int variantCount;
 
-    public PipelineTerrainGenerator(long seed, List<TerrainFeature> pipeline) {
+    public PipelineTerrainGenerator(long seed, List<TerrainFeature> pipeline, int variantCount) {
         this.seed = seed;
         this.pipeline = new ArrayList<>(pipeline);
+        this.variantCount = variantCount;
     }
 
     @Override
     public TerrainGenerationResult generate(int width, int height) {
-        TerrainGenerationContext context = new TerrainGenerationContext(width, height, seed);
+        TerrainGenerationContext context = new TerrainGenerationContext(width, height, seed, variantCount);
 
         for (TerrainFeature feature : pipeline) {
             feature.apply(context);
@@ -29,4 +31,3 @@ public class PipelineTerrainGenerator implements TerrainGenerator {
         return new TerrainGenerationResult(context.getTileMap(), context.getStructureSpawns());
     }
 }
-
