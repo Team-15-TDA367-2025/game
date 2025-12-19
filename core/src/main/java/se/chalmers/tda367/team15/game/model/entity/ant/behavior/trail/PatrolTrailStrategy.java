@@ -26,7 +26,7 @@ public class PatrolTrailStrategy extends TrailStrategy {
 
         // Get soldier count from current pheromone (O(1) instead of O(n))
         // Subtract 1 because the count includes this ant
-        int otherSoldiers = current != null ? Math.max(0, current.getSoldierCount() - 1) : 0;
+        int otherSoldiers = current != null ? Math.max(0, current.getAntCount() - 1) : 0;
 
         // Turn chance scales with count, capped to prevent chaos
         if (otherSoldiers > 0) {

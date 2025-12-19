@@ -149,10 +149,10 @@ public class FollowTrailBehavior extends AntBehavior {
             return;
         }
         if (oldPheromone != null && oldPheromone != newPheromone) {
-            oldPheromone.decrementSoldierCount();
+            oldPheromone.decrementAnts();
         }
         if (newPheromone != null && newPheromone != oldPheromone) {
-            newPheromone.incrementSoldierCount();
+            newPheromone.incrementAnts();
         }
     }
 
@@ -162,7 +162,7 @@ public class FollowTrailBehavior extends AntBehavior {
      */
     private void exitTrail() {
         if (isSoldierAnt() && lastPheromone != null) {
-            lastPheromone.decrementSoldierCount();
+            lastPheromone.decrementAnts();
         }
     }
 }

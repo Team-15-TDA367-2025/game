@@ -49,7 +49,7 @@ class PatrolTrailStrategyTest {
     void shouldPatrolWhenAloneOnPheromone() {
         // When soldier count is 1 (just this ant), it should patrol normally
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.ATTACK, 1);
-        current.incrementSoldierCount(); // This ant
+        current.incrementAnts(); // This ant
 
         Pheromone outward = new Pheromone(new GridPoint2(1, 0), PheromoneType.ATTACK, 2);
         Pheromone backward = new Pheromone(new GridPoint2(-1, 0), PheromoneType.ATTACK, 0);
@@ -102,11 +102,11 @@ class PatrolTrailStrategyTest {
     void shouldConsiderTurningWithOtherSoldiers() {
         // When multiple soldiers are on the same pheromone, there's a chance to turn
         Pheromone current = new Pheromone(new GridPoint2(0, 0), PheromoneType.ATTACK, 1);
-        current.incrementSoldierCount(); // This ant
-        current.incrementSoldierCount(); // Another soldier
-        current.incrementSoldierCount(); // Another soldier
+        current.incrementAnts(); // This ant
+        current.incrementAnts(); // Another soldier
+        current.incrementAnts(); // Another soldier
 
-        assertEquals(3, current.getSoldierCount(), "Should have 3 soldiers on pheromone");
+        assertEquals(3, current.getAntCount(), "Should have 3 soldiers on pheromone");
 
         Pheromone outward = new Pheromone(new GridPoint2(1, 0), PheromoneType.ATTACK, 2);
         Pheromone backward = new Pheromone(new GridPoint2(-1, 0), PheromoneType.ATTACK, 0);
