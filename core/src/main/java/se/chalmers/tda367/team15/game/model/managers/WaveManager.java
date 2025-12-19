@@ -33,7 +33,7 @@ public class WaveManager implements TimeObserver {
      * will have scattered positions from a random direction.
      */
     private void spawnWave() {
-        int nEnemies = nightNumber * 2;
+        int nEnemies = (int) Math.floor(Math.pow(nightNumber, 2.7));
 
         // spawn location
         Vector2 spawnLocation = scatter(new Vector2(0, 0), 45);
