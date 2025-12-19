@@ -41,7 +41,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private final PheromoneManager system;
 
     private EntityQuery entityQuery;
-    private StructureProvider structureManager;
     HashMap<AttackCategory, Integer> targetPriority;
 
     private GeneralizedBehaviour behavior;
@@ -49,7 +48,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     private TrailStrategy trailStrategy;
 
     public Ant(Vector2 position, PheromoneManager system, AntType type, MapProvider map, Home home,
-            EntityQuery entityQuery, StructureProvider structureProvider,
+            EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener,
             TrailStrategy trailStrategy) {
         super(position, type.textureName());
@@ -60,7 +59,6 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
         this.hunger = 2; // test value
         this.home = home;
         this.entityQuery = entityQuery;
-        this.structureManager = structureProvider;
         this.targetPriority = targetPriority;
         this.trailStrategy = trailStrategy;
         // Initialize from AntType
@@ -184,7 +182,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
 
     /**
      * Switches to wander behavior.
-     * 
+     *
      * @param leftTrail If true, applies a cooldown before re-entering any trail
      */
     public void setWanderBehaviour(boolean leftTrail) {
@@ -196,7 +194,7 @@ public class Ant extends Entity implements VisionProvider, CanAttack {
     }
 
     public void setAttackBehaviour() {
-        behavior = new AntAttackBehavior(this, entityQuery, structureManager);
+        behavior = new AntAttackBehavior(this, entityQuery, targetPriority);
     }
 
     @Override

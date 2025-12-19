@@ -12,9 +12,9 @@ import se.chalmers.tda367.team15.game.model.interfaces.StructureProvider;
 
 public class TermiteAttackBehaviour extends MeleeAttackBehaviour {
 
-    public TermiteAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, StructureProvider structureManager,
+    public TermiteAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority) {
-        super(canAttack, entityQuery);
+        super(canAttack, entityQuery,targetPriority);
     }
 
     @Override

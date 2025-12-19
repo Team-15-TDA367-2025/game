@@ -28,11 +28,11 @@ public class Termite extends Entity implements CanAttack {
     private final DestructionListener destructionListener;
     private TermiteAttackBehaviour termiteAttackBehaviour;
 
-    public Termite(Vector2 position, EntityQuery entityQuery, StructureProvider structureProvider,
+    public Termite(Vector2 position, EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority, DestructionListener destructionListener) {
         super(position, "termite");
         this.destructionListener = destructionListener;
-        this.termiteAttackBehaviour = new TermiteAttackBehaviour(this, entityQuery, structureProvider, targetPriority);
+        this.termiteAttackBehaviour = new TermiteAttackBehaviour(this, entityQuery, targetPriority);
     }
 
     /**
