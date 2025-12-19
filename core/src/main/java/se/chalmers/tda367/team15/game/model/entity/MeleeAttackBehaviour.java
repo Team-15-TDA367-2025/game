@@ -13,7 +13,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 
 /**
  * This class is used as the attack logic for all things with melee attack
- * behaviour
+ * behavior
  */
 public abstract class MeleeAttackBehaviour {
     protected final CanAttack host;
@@ -22,10 +22,11 @@ public abstract class MeleeAttackBehaviour {
     private final HashMap<AttackCategory, Integer> targetPriority;
     private long lastAttackTimeMS = 0;
 
-    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery, HashMap<AttackCategory, Integer> targetPriority) {
+    protected MeleeAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery,
+            HashMap<AttackCategory, Integer> targetPriority) {
         this.host = canAttack;
         this.entityQuery = entityQuery;
-        this.targetPriority=targetPriority;
+        this.targetPriority = targetPriority;
     }
 
     public void update() {

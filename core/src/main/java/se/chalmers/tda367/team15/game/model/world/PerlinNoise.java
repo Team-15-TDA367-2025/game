@@ -74,4 +74,3 @@ public class PerlinNoise {
         return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
     }
 }
-

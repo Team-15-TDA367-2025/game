@@ -8,14 +8,15 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Generates a base height map using Perlin noise.
  */
 public class PerlinHeightMapFeature implements TerrainFeature {
-    
+
     private final double scale;
     private final int octaves;
     private final double persistence;
     private final double lacunarity;
     private final double redistribution;
 
-    public PerlinHeightMapFeature(double scale, int octaves, double persistence, double lacunarity, double redistribution) {
+    public PerlinHeightMapFeature(double scale, int octaves, double persistence, double lacunarity,
+            double redistribution) {
         this.scale = scale;
         this.octaves = octaves;
         this.persistence = persistence;
@@ -28,7 +29,7 @@ public class PerlinHeightMapFeature implements TerrainFeature {
         int width = context.getWidth();
         int height = context.getHeight();
         PerlinNoise perlinNoise = new PerlinNoise(context.getSeed());
-        
+
         double[][] noiseMap = new double[width][height];
         double minNoise = Double.MAX_VALUE;
         double maxNoise = Double.MIN_VALUE;
@@ -61,7 +62,7 @@ public class PerlinHeightMapFeature implements TerrainFeature {
                 noiseMap[x][y] = Math.pow(normalized, redistribution);
             }
         }
-        
+
         context.setHeightMap(noiseMap);
     }
 }

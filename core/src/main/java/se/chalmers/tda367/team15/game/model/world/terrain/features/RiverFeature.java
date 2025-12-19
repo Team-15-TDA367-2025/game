@@ -10,7 +10,7 @@ import se.chalmers.tda367.team15.game.model.world.terrain.TerrainGenerationConte
  * Generates river-like water bodies using a random walk algorithm.
  */
 public class RiverFeature implements TerrainFeature {
-    
+
     private final int riverCount;
     private final int minLength;
     private final int maxLength;
@@ -18,7 +18,8 @@ public class RiverFeature implements TerrainFeature {
     private final double brushRadius;
     private final double widthVariance;
 
-    public RiverFeature(int riverCount, int minLength, int maxLength, int centerExclusionRadius, double brushRadius, double widthVariance) {
+    public RiverFeature(int riverCount, int minLength, int maxLength, int centerExclusionRadius, double brushRadius,
+            double widthVariance) {
         this.riverCount = riverCount;
         this.minLength = minLength;
         this.maxLength = maxLength;
@@ -33,9 +34,9 @@ public class RiverFeature implements TerrainFeature {
         int width = context.getWidth();
         int height = context.getHeight();
         boolean[][] waterMap = (existingWater != null) ? copyBooleanMap(existingWater) : new boolean[width][height];
-        
+
         generateRivers(context, waterMap);
-        
+
         context.setWaterMap(waterMap);
     }
 
@@ -56,16 +57,16 @@ public class RiverFeature implements TerrainFeature {
                 x = random.nextInt(width);
                 y = random.nextInt(height);
                 attempts++;
-            } while (attempts < 50 && 
-                     (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) < centerExclusionSq);
+            } while (attempts < 50 &&
+                    (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) < centerExclusionSq);
 
             // 2. Perform random walk
             int length = minLength + random.nextInt(maxLength - minLength + 1);
-            
+
             double curX = x;
             double curY = y;
             double angle = random.nextDouble() * Math.PI * 2;
-            
+
             // Random offset for noise sampling so rivers don't all look the same
             double noiseOffset = random.nextDouble() * 1000.0;
 
@@ -73,10 +74,10 @@ public class RiverFeature implements TerrainFeature {
                 // Calculate dynamic radius using Perlin noise
                 // Use step as X coordinate for 1D noise
                 double noiseVal = noise.noise(step * 0.1 + noiseOffset, 0);
-                
+
                 // Let's use the noise to modulate the base radius.
                 // Configured radius +/- widthVariance
-                double radiusMod = 1.0 + noiseVal * widthVariance; 
+                double radiusMod = 1.0 + noiseVal * widthVariance;
                 double currentRadius = brushRadius * radiusMod;
                 currentRadius = Math.max(1.0, currentRadius); // Ensure at least 1px
 
@@ -89,7 +90,7 @@ public class RiverFeature implements TerrainFeature {
                 paintBrush(waterMap, (int) curX, (int) curY, currentRadius, width, height);
 
                 // Update direction with random offset (wiggle)
-                angle += (random.nextDouble() - 0.5) * 1.0; 
+                angle += (random.nextDouble() - 0.5) * 1.0;
 
                 // Move forward
                 curX += Math.cos(angle);
@@ -101,7 +102,7 @@ public class RiverFeature implements TerrainFeature {
     private void paintBrush(boolean[][] map, int x, int y, double radius, int width, int height) {
         int r = (int) Math.ceil(radius);
         double radiusSq = radius * radius;
-        
+
         for (int dx = -r; dx <= r; dx++) {
             for (int dy = -r; dy <= r; dy++) {
                 if (dx * dx + dy * dy <= radiusSq) {

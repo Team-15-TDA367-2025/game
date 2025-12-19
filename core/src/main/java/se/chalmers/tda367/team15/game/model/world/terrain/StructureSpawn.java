@@ -35,4 +35,3 @@ public class StructureSpawn {
         return properties;
     }
 }
-

@@ -25,4 +25,3 @@ public class TerrainGenerationResult {
         return structureSpawns;
     }
 }
-

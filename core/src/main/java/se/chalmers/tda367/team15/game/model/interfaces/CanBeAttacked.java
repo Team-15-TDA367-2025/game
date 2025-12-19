@@ -17,7 +17,8 @@ public interface CanBeAttacked extends HasPosition {
 
     /**
      * Instructs the object to notify the
-     * {@link se.chalmers.tda367.team15.game.model.DestructionListener} that it has died / been destroyed
+     * {@link se.chalmers.tda367.team15.game.model.DestructionListener} that it has
+     * died / been destroyed
      *
      */
     void die();

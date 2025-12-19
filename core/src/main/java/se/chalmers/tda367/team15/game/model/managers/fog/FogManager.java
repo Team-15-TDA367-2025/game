@@ -18,7 +18,7 @@ public class FogManager implements FogProvider, SimulationObserver {
     private final MapProvider mapProvider;
     private final EntityQuery entityQuery;
     private final List<FogObserver> observers = new CopyOnWriteArrayList<>();
-    
+
     public FogManager(EntityQuery entityQuery, MapProvider mapProvider) {
         this.mapProvider = mapProvider;
         this.entityQuery = entityQuery;
@@ -68,4 +68,3 @@ public class FogManager implements FogProvider, SimulationObserver {
         observers.remove(observer);
     }
 }
-

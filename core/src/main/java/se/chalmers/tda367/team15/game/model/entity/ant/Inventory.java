@@ -10,18 +10,22 @@ public class Inventory {
     private final int capacity;
 
     /**
-     * @param capacity The capacity of the inventory. If null, the inventory is "unlimited".
+     * @param capacity The capacity of the inventory. If null, the inventory is
+     *                 "unlimited".
      */
     public Inventory(Integer capacity) {
         this.capacity = capacity != null ? capacity : Integer.MAX_VALUE;
         this.resources = new HashMap<>();
     }
 
-    /** 
+    /**
      * Adds a resource to the inventory.
-     * @param type The type of resource to add.
-     * @param amount The amount of resource to add. Can also be negative to remove resources.
-     * @return True if the resource was added, false if the amount would exceed the capacity or be negative.
+     * 
+     * @param type   The type of resource to add.
+     * @param amount The amount of resource to add. Can also be negative to remove
+     *               resources.
+     * @return True if the resource was added, false if the amount would exceed the
+     *         capacity or be negative.
      */
     public boolean addResource(ResourceType type, int amount) {
         int newAmount = getAmount(type) + amount;

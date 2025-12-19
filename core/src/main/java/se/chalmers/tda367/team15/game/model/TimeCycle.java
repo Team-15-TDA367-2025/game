@@ -1,11 +1,11 @@
 package se.chalmers.tda367.team15.game.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import se.chalmers.tda367.team15.game.model.interfaces.observers.SimulationObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.TimeCycleDataProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TimeCycle implements SimulationObserver, TimeCycleDataProvider {
     private int minutes;

@@ -17,8 +17,8 @@ import se.chalmers.tda367.team15.game.model.interfaces.providers.PheromoneUsageP
  * controlled based on internal logic of the type of behaviour.
  */
 public abstract class AntBehavior implements GeneralizedBehaviour {
-    protected Ant ant;
-    protected EntityQuery entityQuery;
+    protected final Ant ant;
+    protected final EntityQuery entityQuery;
 
     public AntBehavior(Ant ant, EntityQuery entityQuery) {
         this.ant = ant;

@@ -8,7 +8,8 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
  */
 public interface Home extends HasPosition {
     boolean depositResources(Inventory inventory);
+
     boolean spendResources(ResourceType type, int amount);
+
     int getTotalResources(ResourceType type);
 }
-

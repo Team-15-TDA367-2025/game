@@ -111,7 +111,8 @@ public record AntType(
         }
 
         public AntType build() {
-            return new AntType(id, displayName, foodCost, visionRadius, developmentTicks, maxHealth, moveSpeed, carryCapacity,
+            return new AntType(id, displayName, foodCost, visionRadius, developmentTicks, maxHealth, moveSpeed,
+                    carryCapacity,
                     allowedPheromones, trailStrategy, hunger, homeBias);
         }
     }

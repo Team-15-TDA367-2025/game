@@ -35,7 +35,8 @@ public class GameModel {
     public GameModel(SimulationProvider simulationProvider, TimeCycleDataProvider timeProvider,
             FogProvider fogProvider, ColonyDataProvider colonyDataProvider,
             PheromoneUsageProvider pheromoneUsageProvider,
-            MapProvider mapProvider, AntTypeRegistry antTypeRegistry, StructureModificationProvider structureModificationProvider,
+            MapProvider mapProvider, AntTypeRegistry antTypeRegistry,
+            StructureModificationProvider structureModificationProvider,
             EntityQuery entityQuery, EggManager eggManager) {
         this.simulationProvider = simulationProvider;
         this.colonyDataProvider = colonyDataProvider;

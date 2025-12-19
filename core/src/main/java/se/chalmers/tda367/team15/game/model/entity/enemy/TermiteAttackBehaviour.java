@@ -13,7 +13,7 @@ public class TermiteAttackBehaviour extends MeleeAttackBehaviour {
 
     public TermiteAttackBehaviour(CanAttack canAttack, EntityQuery entityQuery,
             HashMap<AttackCategory, Integer> targetPriority) {
-        super(canAttack, entityQuery,targetPriority);
+        super(canAttack, entityQuery, targetPriority);
     }
 
     @Override

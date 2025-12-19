@@ -7,11 +7,12 @@ public class SpeedController implements SpeedControlsListener {
     private final GameModel gameModel;
 
     public SpeedController(GameModel gameModel) {
-        this.gameModel=gameModel;
+        this.gameModel = gameModel;
     }
 
     @Override
-    public void onFastSpeed() {gameModel.setTimeFast();
+    public void onFastSpeed() {
+        gameModel.setTimeFast();
     }
 
     @Override

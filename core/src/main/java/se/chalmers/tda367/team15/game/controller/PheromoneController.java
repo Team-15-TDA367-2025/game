@@ -72,7 +72,6 @@ public class PheromoneController extends InputAdapter {
         lastGridPos = pheromoneUsageProvider.drawPheromonesBetween(lastGridPos, gridPos, currentType);
     }
 
-
     /**
      * Converts world coordinates to pheromone grid coordinates.
      * Uses the denser pheromone grid (multiple cells per tile).

@@ -1,20 +1,15 @@
 package se.chalmers.tda367.team15.game.model;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.PatrolTrailStrategy;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.ExploreTrailStrategy;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.GatherTrailStrategy;
-import se.chalmers.tda367.team15.game.model.entity.ant.behavior.trail.TrailStrategy;
 import se.chalmers.tda367.team15.game.model.interfaces.EntityQuery;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
-import se.chalmers.tda367.team15.game.model.interfaces.providers.StructureProvider;
 import se.chalmers.tda367.team15.game.model.managers.PheromoneManager;
 import se.chalmers.tda367.team15.game.model.world.MapProvider;
-
-import java.util.HashMap;
 
 public class AntFactory {
     private final PheromoneManager pheromoneManager;
