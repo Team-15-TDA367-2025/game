@@ -11,7 +11,7 @@ import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.Home;
 import se.chalmers.tda367.team15.game.model.interfaces.observers.TimeObserver;
-import se.chalmers.tda367.team15.game.model.interfaces.providers.EggPurchaseProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EggProvider;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.EntityModificationProvider;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 
@@ -19,7 +19,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
  * Manages the collection of eggs and their development lifecycle.
  * Implements TimeObserver to tick eggs on game time updates.
  */
-public class EggManager implements TimeObserver, EggPurchaseProvider {
+public class EggManager implements TimeObserver, EggProvider {
     private final List<Egg> eggs;
     private final AntTypeRegistry antTypeRegistry;
     private final AntFactory antFactory;

@@ -10,7 +10,6 @@ import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.model.GameEndReason;
 import se.chalmers.tda367.team15.game.model.GameModel;
 import se.chalmers.tda367.team15.game.model.GameStats;
-import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
 import se.chalmers.tda367.team15.game.screens.EndScreen;
 import se.chalmers.tda367.team15.game.view.TextureRegistry;
 import se.chalmers.tda367.team15.game.view.camera.CameraView;
@@ -103,7 +102,7 @@ public class GameScreen extends ScreenAdapter {
         if (endReason != GameEndReason.STILL_PLAYING) {
             int totalDays = gameModel.getTimeProvider().getGameTime().totalDays();
             GameStats gameStats = new GameStats(totalDays);
-            
+
             gameStats.saveIfNewHighScore();
             game.setScreen(new EndScreen(game, endReason, gameFactory));
         }

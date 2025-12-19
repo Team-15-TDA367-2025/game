@@ -9,14 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import se.chalmers.tda367.team15.game.controller.EggController;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 import se.chalmers.tda367.team15.game.model.interfaces.providers.ColonyDataProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EggProvider;
 import se.chalmers.tda367.team15.game.model.managers.egg.Egg;
-import se.chalmers.tda367.team15.game.model.managers.egg.EggManager;
 import se.chalmers.tda367.team15.game.model.structure.resource.ResourceType;
-import se.chalmers.tda367.team15.game.view.TextureResolver;
 
 /**
  * UI panel for purchasing eggs and displaying egg development progress.
@@ -24,18 +22,17 @@ import se.chalmers.tda367.team15.game.view.TextureResolver;
  */
 public class EggPanelView {
     private final UiSkin uiSkin;
-    private final EggController eggController;
-    private final EggManager eggManager;
+    private final EggProvider eggProvider;
     private final Table panelTable;
     private final HorizontalGroup eggTypeGroup;
     private final ColonyDataProvider colonyDataProvider;
     private final AntTypeRegistry antTypeRegistry;
+    private EggPanelListener eggPanelListener;
 
-    public EggPanelView(UiSkin uiFactory, EggController eggController, EggManager eggManager,
-            ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry, TextureResolver textureResolver) {
+    public EggPanelView(UiSkin uiFactory, EggProvider eggProvider,
+            ColonyDataProvider colonyDataProvider, AntTypeRegistry antTypeRegistry) {
         this.uiSkin = uiFactory;
-        this.eggController = eggController;
-        this.eggManager = eggManager;
+        this.eggProvider = eggProvider;
         this.colonyDataProvider = colonyDataProvider;
         this.antTypeRegistry = antTypeRegistry;
         panelTable = new Table();
@@ -48,6 +45,15 @@ public class EggPanelView {
         buildEggTypeButtons();
 
         panelTable.add(eggTypeGroup);
+    }
+
+    /**
+     * Sets the listener for egg panel events.
+     *
+     * @param listener the listener to set
+     */
+    public void setEggPanelListener(EggPanelListener listener) {
+        this.eggPanelListener = listener;
     }
 
     /**
@@ -69,7 +75,9 @@ public class EggPanelView {
     private Table createEggTypeButton(AntType type) {
         // Create purchase button with the ant type's texture
         ImageButton button = uiSkin.createImageButton(type.id(), () -> {
-            eggController.purchaseEgg(type.id());
+            if (eggPanelListener != null) {
+                eggPanelListener.onPurchaseEgg(type.id());
+            }
         });
 
         // Name label below the button
@@ -115,7 +123,7 @@ public class EggPanelView {
                 int eggCount = 0;
                 float totalProgress = 0f;
 
-                for (Egg egg : eggManager.getEggs()) {
+                for (Egg egg : eggProvider.getEggs()) {
                     if (egg.getTypeId().equals(state.typeId)) {
                         eggCount++;
                         totalProgress += egg.getProgress();
@@ -133,7 +141,8 @@ public class EggPanelView {
 
                 Optional<AntType> type = antTypeRegistry.get(state.typeId);
                 if (type.isPresent()) {
-                    boolean canAfford = colonyDataProvider.getTotalResources(ResourceType.FOOD) >= type.orElseThrow().foodCost();
+                    boolean canAfford = colonyDataProvider.getTotalResources(ResourceType.FOOD) >= type.orElseThrow()
+                            .foodCost();
                     button.setDisabled(!canAfford);
                 }
             }

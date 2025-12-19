@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import se.chalmers.tda367.team15.game.GameConfiguration;
 import se.chalmers.tda367.team15.game.controller.CameraController;
+import se.chalmers.tda367.team15.game.controller.EggController;
 import se.chalmers.tda367.team15.game.controller.HudController;
 import se.chalmers.tda367.team15.game.controller.InputManager;
 import se.chalmers.tda367.team15.game.controller.PheromoneController;
@@ -51,6 +52,7 @@ import se.chalmers.tda367.team15.game.view.camera.ViewportListener;
 import se.chalmers.tda367.team15.game.view.renderers.FogRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.PheromoneRenderer;
 import se.chalmers.tda367.team15.game.view.renderers.WorldRenderer;
+import se.chalmers.tda367.team15.game.view.ui.EggPanelView;
 import se.chalmers.tda367.team15.game.view.ui.HudView;
 import se.chalmers.tda367.team15.game.view.ui.UiSkin;
 
@@ -86,6 +88,9 @@ public class GameFactory {
                 gameModel.getTimeProvider(), fogRenderer, viewportListener, gameConfiguration.noFog());
         PheromoneRenderer pheromoneView = new PheromoneRenderer(cameraView, gameModel.getPheromoneUsageProvider());
         HudView hudView = new HudView(hudBatch, uiFactory);
+        EggPanelView eggPanelView = new EggPanelView(uiFactory, gameModel.getEggManager(),
+                gameModel.getColonyDataProvider(),
+                gameModel.getAntTypeRegistry());
 
         // 4. Create Controllers
         InputManager inputManager = new InputManager(); // Used for wiring but not stored in screen
@@ -93,9 +98,10 @@ public class GameFactory {
         PheromoneController pheromoneController = new PheromoneController(gameModel.getPheromoneUsageProvider(),
                 cameraView);
         SpeedController speedController = new SpeedController(gameModel);
+        EggController eggController = new EggController(gameModel.getAntTypeRegistry(), gameModel.getEggManager());
         HudController hudController = new HudController(hudView, gameModel.getAntTypeRegistry(),
-                gameModel.getEggManager(), pheromoneController, speedController, uiFactory, gameModel.getTimeProvider(),
-                gameModel.getColonyDataProvider(), gameModel.getEggManager(), textureResolver);
+                pheromoneController, speedController, uiFactory, gameModel.getTimeProvider(),
+                gameModel.getColonyDataProvider(), eggController, eggPanelView);
 
         // 5. Wire Input
         inputManager.addProcessor(cameraController);

@@ -4,30 +4,31 @@ import java.util.Optional;
 
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
-import se.chalmers.tda367.team15.game.model.interfaces.providers.EggPurchaseProvider;
+import se.chalmers.tda367.team15.game.model.interfaces.providers.EggProvider;
+import se.chalmers.tda367.team15.game.view.ui.EggPanelListener;
 
-public class EggController {
+public class EggController implements EggPanelListener {
     private final AntTypeRegistry antTypeRegistry;
-    private final EggPurchaseProvider eggPurchaseProvider;
+    private final EggProvider eggProvider;
 
-    public EggController(AntTypeRegistry antTypeRegistry, EggPurchaseProvider eggPurchaseProvider) {
+    public EggController(AntTypeRegistry antTypeRegistry, EggProvider eggProvider) {
         this.antTypeRegistry = antTypeRegistry;
-        this.eggPurchaseProvider = eggPurchaseProvider;
+        this.eggProvider = eggProvider;
     }
 
     /**
      * Attempts to purchase an egg of the specified type.
      *
      * @param typeId the ID of the egg type to purchase
-     * @return true if the purchase was successful, false otherwise
      */
-    public boolean purchaseEgg(String typeId) {
+    @Override
+    public void onPurchaseEgg(String typeId) {
         Optional<AntType> type = antTypeRegistry.get(typeId);
 
         if (type.isEmpty()) {
-            return false;
+            return;
         }
 
-        return eggPurchaseProvider.purchaseEgg(type.orElseThrow());
+        eggProvider.purchaseEgg(type.orElseThrow());
     }
 }
