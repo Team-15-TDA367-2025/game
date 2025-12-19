@@ -10,7 +10,7 @@ import se.chalmers.tda367.team15.game.model.structure.resource.ResourceNode;
 
 /**
  * Resolves textures for GameObjects and string IDs.
- * Uses a data-driven approach for extensibility (OCP compliant).
+ * Uses a data-driven approach for extensibility.
  */
 public class TextureResolver {
     private final TextureRegistry registry;

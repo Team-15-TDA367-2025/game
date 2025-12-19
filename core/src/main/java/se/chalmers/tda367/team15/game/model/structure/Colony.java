@@ -22,7 +22,7 @@ public class Colony extends Structure implements Home, TimeObserver, ColonyDataP
     public Colony(GridPoint2 position, EntityQuery entityQuery, int initialFood) {
         super(position, 4);
         this.faction = Faction.DEMOCRATIC_REPUBLIC_OF_ANTS;
-        this.inventory = new Inventory(1000000); // test value for now
+        this.inventory = new Inventory(null); // test value for now
         this.inventory.addResource(ResourceType.FOOD, initialFood);
         this.entityQuery = entityQuery;
     }

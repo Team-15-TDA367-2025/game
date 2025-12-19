@@ -1,8 +1,7 @@
 package se.chalmers.tda367.team15.game.screens.game;
 
-import java.util.Set;
-
 import java.util.HashMap;
+import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -197,7 +196,8 @@ public class GameFactory {
 
     public void spawnInitialAnts(EntityManager entityManager, Home home, AntFactory antFactory,
             AntTypeRegistry antTypeRegistry) {
-        AntType type = antTypeRegistry.get(gameConfiguration.antType());
+        AntType type = antTypeRegistry.get(gameConfiguration.antType()).orElseThrow();
+
         for (int i = 0; i < gameConfiguration.startAnts(); i++) {
             Ant ant = antFactory.createAnt(home, type);
             entityManager.addEntity(ant);

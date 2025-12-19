@@ -1,5 +1,7 @@
 package se.chalmers.tda367.team15.game.model.egg;
 
+import java.util.Optional;
+
 import se.chalmers.tda367.team15.game.model.entity.ant.AntType;
 import se.chalmers.tda367.team15.game.model.entity.ant.AntTypeRegistry;
 
@@ -38,18 +40,18 @@ public class Egg {
 
     /** @return progress from 0.0 (just laid) to 1.0 (ready to hatch) */
     public float getProgress() {
-        AntType type = antTypeRegistry.get(typeId);
-        if (type == null) {
+        Optional<AntType> type = antTypeRegistry.get(typeId);
+        if (type.isEmpty()) {
             return 0.0f;
         }
 
-        int totalTicks = type.developmentTicks();
+        int totalTicks = type.orElseThrow().developmentTicks();
         int elapsedTicks = totalTicks - ticksRemaining;
         return Math.min(1.0f, (float) elapsedTicks / totalTicks);
     }
 
     /** @return the AntType, or null if not found */
-    public AntType getType() {
+    public Optional<AntType> getType() {
         return antTypeRegistry.get(typeId);
     }
 }

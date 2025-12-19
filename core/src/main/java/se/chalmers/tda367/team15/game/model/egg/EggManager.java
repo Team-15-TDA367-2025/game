@@ -3,6 +3,7 @@ package se.chalmers.tda367.team15.game.model.egg;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import se.chalmers.tda367.team15.game.model.AntFactory;
 import se.chalmers.tda367.team15.game.model.entity.ant.Ant;
@@ -49,13 +50,8 @@ public class EggManager implements TimeObserver, EggPurchaseProvider {
                 continue;
             }
 
-            AntType type = egg.getType();
-
-            if (type == null) {
-                throw new IllegalArgumentException("Egg type is null");
-            }
-
-            Ant ant = antFactory.createAnt(home, type);
+            Optional<AntType> type = egg.getType();
+            Ant ant = antFactory.createAnt(home, type.orElseThrow());
             entityManager.addEntity(ant);
         }
         eggs.removeIf(Egg::isHatched);

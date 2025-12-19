@@ -10,11 +10,9 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class PheromoneGridConverter {
     private final int pheromonesPerTile;
-    private final float pheromoneCellSize;
 
     public PheromoneGridConverter(int pheromonesPerTile) {
         this.pheromonesPerTile = pheromonesPerTile;
-        this.pheromoneCellSize = 1f / pheromonesPerTile;
     }
 
     /**
@@ -25,8 +23,8 @@ public class PheromoneGridConverter {
      */
     public GridPoint2 worldToPheromoneGrid(Vector2 worldPos) {
         return new GridPoint2(
-                (int) Math.floor(worldPos.x / pheromoneCellSize),
-                (int) Math.floor(worldPos.y / pheromoneCellSize));
+                (int) Math.floor(worldPos.x / getPheromoneCellSize()),
+                (int) Math.floor(worldPos.y / getPheromoneCellSize()));
     }
 
     /**
@@ -38,8 +36,8 @@ public class PheromoneGridConverter {
      */
     public Vector2 pheromoneGridToWorld(GridPoint2 gridPos) {
         return new Vector2(
-                gridPos.x * pheromoneCellSize + pheromoneCellSize / 2f,
-                gridPos.y * pheromoneCellSize + pheromoneCellSize / 2f);
+                gridPos.x * getPheromoneCellSize() + getPheromoneCellSize() / 2f,
+                gridPos.y * getPheromoneCellSize() + getPheromoneCellSize() / 2f);
     }
 
     /**
@@ -48,7 +46,7 @@ public class PheromoneGridConverter {
      * @return Pheromone cell size
      */
     public float getPheromoneCellSize() {
-        return pheromoneCellSize;
+        return 1f / pheromonesPerTile;
     }
 
     /**

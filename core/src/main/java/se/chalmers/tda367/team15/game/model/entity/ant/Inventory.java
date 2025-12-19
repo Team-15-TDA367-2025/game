@@ -9,8 +9,11 @@ public class Inventory {
     private final Map<ResourceType, Integer> resources;
     private final int capacity;
 
-    public Inventory(int capacity) {
-        this.capacity = capacity;
+    /**
+     * @param capacity The capacity of the inventory. If null, the inventory is "unlimited".
+     */
+    public Inventory(Integer capacity) {
+        this.capacity = capacity != null ? capacity : Integer.MAX_VALUE;
         this.resources = new HashMap<>();
     }
 

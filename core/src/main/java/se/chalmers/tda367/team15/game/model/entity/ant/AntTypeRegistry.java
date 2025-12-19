@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Central registry for ant types.
@@ -30,11 +31,9 @@ public class AntTypeRegistry {
         types.put(type.id(), type);
     }
 
-    // TODO - Antigravity: Returns null on missing key - consider Optional<AntType>
-    // or throw exception
     /** @return the ant type, or null if not found */
-    public AntType get(String id) {
-        return types.get(id);
+    public Optional<AntType> get(String id) {
+        return Optional.ofNullable(types.get(id));
     }
 
     public Collection<AntType> getAll() {

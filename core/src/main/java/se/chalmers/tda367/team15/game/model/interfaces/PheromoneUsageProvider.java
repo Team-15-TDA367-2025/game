@@ -13,6 +13,8 @@ public interface PheromoneUsageProvider {
 
     boolean addPheromone(GridPoint2 pos, PheromoneType type);
 
+    GridPoint2 drawPheromonesBetween(GridPoint2 start, GridPoint2 end, PheromoneType type);
+
     void removePheromone(GridPoint2 pos, PheromoneType type);
 
     void removeAllPheromones(GridPoint2 pos);

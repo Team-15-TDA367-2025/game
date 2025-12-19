@@ -18,14 +18,6 @@ public class PheromoneGrid {
     }
 
     /**
-     * Checks if any pheromone exists at the given position.
-     */
-    public boolean hasPheromoneAt(GridPoint2 pos) {
-        Map<PheromoneType, Pheromone> typeMap = pheromones.get(pos);
-        return typeMap != null && !typeMap.isEmpty();
-    }
-
-    /**
      * Checks if a pheromone of the given type exists at the position.
      */
     public boolean hasPheromoneAt(GridPoint2 pos, PheromoneType type) {
@@ -60,11 +52,13 @@ public class PheromoneGrid {
      */
     public void removePheromone(GridPoint2 pos, PheromoneType type) {
         Map<PheromoneType, Pheromone> typeMap = pheromones.get(pos);
-        if (typeMap != null) {
-            typeMap.remove(type);
-            if (typeMap.isEmpty()) {
-                pheromones.remove(pos);
-            }
+        if (typeMap == null) {
+            return;
+        }
+
+        typeMap.remove(type);
+        if (typeMap.isEmpty()) {
+            pheromones.remove(pos);
         }
     }
 
