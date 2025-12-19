@@ -9,7 +9,7 @@ import se.chalmers.tda367.team15.game.model.interfaces.SimulationObserver;
 public class SimulationManager implements SimulationProvider {
     private static final int baseTickPerSecond = 100; // Do not set lower than 50
     private static final double inGameTimePerTickMs = 1000.0 / baseTickPerSecond;
-    // TODO : Speed Factor instead
+    private int speedFactor = 3;
     private int iRLTicksPerSecond = baseTickPerSecond;
     private double accumulator = 0;
     private long previous = System.currentTimeMillis();
@@ -27,7 +27,7 @@ public class SimulationManager implements SimulationProvider {
     }
 
     public void setTimeFast() {
-        setTicksPerSecond(baseTickPerSecond * 3);
+        setTicksPerSecond(baseTickPerSecond * speedFactor);
     }
 
     public void setTimePaused() {

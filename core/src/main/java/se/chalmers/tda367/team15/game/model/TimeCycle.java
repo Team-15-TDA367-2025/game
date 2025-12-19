@@ -54,20 +54,16 @@ public class TimeCycle implements SimulationObserver, TimeCycleDataProvider {
         timeObservers.remove(observer);
     }
 
-    public int getTotalMinutes() { // TODO: Unnecessary function? just take minutes?
-        return minutes;
-    }
-
     public int getHour() {
-        return (getTotalMinutes() / 60) % 24;
+        return (minutes / 60) % 24;
     }
 
     public int getMinute() {
-        return getTotalMinutes() % 60;
+        return minutes % 60;
     }
 
     public GameTime getGameTime() {
-        return new GameTime((getTotalMinutes() / (24 * 60)) + 1, getHour(), getMinute(), minutes);
+        return new GameTime((minutes / (24 * 60)) + 1, getHour(), getMinute(), minutes);
     }
 
     public boolean getIsDay() {
@@ -76,6 +72,6 @@ public class TimeCycle implements SimulationObserver, TimeCycleDataProvider {
     }
 
     public int getTotalDays() {
-        return getTotalMinutes() / (60 * 24);
+        return minutes / (60 * 24);
     }
 }

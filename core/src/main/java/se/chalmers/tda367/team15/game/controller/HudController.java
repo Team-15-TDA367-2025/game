@@ -43,7 +43,7 @@ public class HudController implements PheromoneSelectionListener {
     private void initializeListeners() {
         view.setPheromoneSelectionListener(this);
         view.setEggPanelView(eggPanelView);
-        view.SetSpeedControlsListener(speedController);
+        view.setSpeedControlsListener(speedController);
     }
 
     @Override
